@@ -21,7 +21,7 @@
   pointer-events: none;
 }
 
-.ui-layer>* {
+.ui-layer > * {
   pointer-events: auto;
 }
 

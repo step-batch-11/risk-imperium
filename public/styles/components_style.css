@@ -104,7 +104,7 @@
 }
 
 .dice-group-label::after {
-  content: '';
+  content: "";
   display: block;
   width: 30px;
   height: 2px;
