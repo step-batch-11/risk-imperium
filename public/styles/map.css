@@ -10,21 +10,21 @@ body {
 
 .continent-outline {
   fill: none;
-  stroke-width: 6px;
+  stroke-width: 3px;
   opacity: 1;
   /* pointer-events: none; */
 }
 
 #australia-continent-outline {
-  stroke: rgb(168, 13, 170);
+  stroke: hsl(299, 86%, 36%);
 }
 
 #asia-continent-outline {
-  stroke: rgb(72, 199, 76);
+  stroke: hsl(122, 53%, 53%);
 }
 
 #europe-continent-outline {
-  stroke: #2293ac;
+  stroke: rgb(34, 147, 172);
 }
 
 #africa-continent-outline {
@@ -54,8 +54,8 @@ body {
 }
 
 .territory-name {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 8px;
+  font-weight: 600;
   text-transform: uppercase;
   text-anchor: middle;
   fill: var(--text-secondary);
