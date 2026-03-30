@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Strategy Game UI - Full Screen</title>
+    <script type="module" src="./scripts/main.js"></script>
     <link rel="stylesheet" href="./styles/map.css" />
     <link rel="stylesheet" href="./styles/root.css" />
     <link rel="stylesheet" href="./styles/effects.css" />
@@ -257,7 +258,7 @@
                   <tspan x="770" y="406">Siam</tspan>
                 </text>
               </g>
-              <g id="india">
+              <g id="india" data-tid="37">
                 <path
                   id="india-outline"
                   class="territory-outline"
@@ -675,5 +676,16 @@
         </div>
       </div>
     </div>
+    <dialog>
+      <form method="post" id="deploy-troops-form">
+        <input
+          type="number"
+          name="troop-count"
+          id="troop-count"
+          placeholder="Give number of troops"
+        />
+        <button type="submit" id="deploy-troops-btn">Deploy Troops</button>
+      </form>
+    </dialog>
   </body>
 </html>

@@ -12,7 +12,7 @@ body {
   fill: none;
   stroke-width: 6px;
   opacity: 1;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 #australia-continent-outline {
