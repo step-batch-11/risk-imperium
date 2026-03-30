@@ -1,0 +1,63 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-bg-main);
+}
+
+.continent-outline {
+  fill: none;
+  stroke-width: 6px;
+  opacity: 1;
+  pointer-events: none;
+}
+
+#australia-continent-outline {
+  stroke: rgb(168, 13, 170);
+}
+
+#asia-continent-outline {
+  stroke: rgb(72, 199, 76);
+}
+
+#europe-continent-outline {
+  stroke: #2293ac;
+}
+
+#africa-continent-outline {
+  stroke: rgb(120, 92, 5);
+}
+
+#north-america-continent-outline {
+  stroke: rgb(181, 184, 29);
+}
+
+#south-america-continent-outline {
+  stroke: rgb(156, 36, 15);
+}
+
+#sea-routes {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1;
+  stroke-dasharray: 4, 1;
+}
+
+.territory-outline {
+  fill: var(--color-surface);
+  stroke: none;
+  vector-effect: non-scaling-stroke;
+  transition: all 0.3s ease;
+}
+
+.territory-name {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--text-secondary);
+  pointer-events: none;
+}

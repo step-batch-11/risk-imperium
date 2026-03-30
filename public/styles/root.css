@@ -1,0 +1,28 @@
+:root {
+  --ui-border: 1px solid var(--color-border-ui);
+  --transition-speed: 0.3s;
+
+  --color-bg-main: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-border-ui: #cbd5e1;
+
+  --color-map-stroke: #c8d2e0;
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --accent-gold: #fbbf24;
+
+  --player-1: #f87171;
+  --player-2: #60a5fa;
+  --player-3: #78f871;
+  --player-4: #8460fa;
+  --player-5: #71f8e4;
+  --player-6: #faf260;
+
+  --cont-north-america: #d97706;
+  --cont-south-america: #dc2626;
+  --cont-europe: #2563eb;
+  --cont-africa: #92400e;
+  --cont-asia: #059669;
+  --cont-australia: #7c3aed;
+}

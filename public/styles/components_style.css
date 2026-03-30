@@ -1,0 +1,168 @@
+.sidebar-left {
+  position: absolute;
+  top: 50%;
+  left: 40px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.golden-cavalry-circle {
+  width: 150px;
+  height: 150px;
+  border: var(--ui-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+}
+
+.army-stats {
+  display: flex;
+  align-items: center;
+}
+
+.stat-box {
+  border: var(--ui-border);
+  padding: 8px 18px;
+  background: var(--color-surface);
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.stat-box.large {
+  padding: 12px 24px;
+  font-size: 1.4em;
+  z-index: 2;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box.side {
+  margin: 0 -1px;
+  color: var(--text-secondary);
+}
+
+.continent-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.continent-pill {
+  border: var(--ui-border);
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: white;
+}
+
+.pill-na {
+  background: var(--cont-north-america);
+}
+
+.pill-sa {
+  background: var(--cont-south-america);
+}
+
+.pill-eu {
+  background: var(--cont-europe);
+}
+
+.pill-af {
+  background: var(--cont-africa);
+}
+
+.pill-as {
+  background: var(--cont-asia);
+}
+
+.pill-au {
+  background: var(--cont-australia);
+}
+
+.dice-controls {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 60px;
+}
+
+.dice-group-label {
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.dice-group-label::after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 2px;
+  background: var(--accent-gold);
+  margin-top: 4px;
+}
+
+.dice-tray {
+  display: flex;
+  gap: 10px;
+}
+
+.die-slot {
+  width: 40px;
+  height: 40px;
+  background: var(--color-surface);
+  border: var(--ui-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.action-menu {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  display: flex;
+  gap: 15px;
+}
+
+.action-btn {
+  width: 65px;
+  height: 65px;
+  border: var(--ui-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.action-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+  margin-bottom: 4px;
+}
+
+.action-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
