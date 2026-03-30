@@ -12,12 +12,12 @@
   --text-secondary: #060606;
   --accent-gold: #fbbf24;
 
-  --player-1: hsl(0, 0%, 85%);
-  --player-2: hsl(0, 0%, 95%);
-  --player-3: hsl(0, 0%, 75%);
-  --player-4: hsl(0, 0%, 65%);
-  --player-5: hsl(0, 0%, 55%);
-  --player-6: hsl(0, 0%, 45%);
+  --player-1: hsl(0, 0%, 90%);
+  --player-2: hsl(0, 0%, 80%);
+  --player-3: hsl(0, 0%, 70%);
+  --player-4: hsl(0, 0%, 60%);
+  --player-5: hsl(0, 0%, 50%);
+  --player-6: hsl(0, 0%, 40%);
 
   --cont-north-america: #d97706;
   --cont-south-america: #dc2626;

@@ -25,7 +25,7 @@ export class Game {
     const opponentsDetails = {};
 
     for (const { id, ...details } of opponents) {
-      opponentsDetails[id] = { ...details, territories: [] };
+      opponentsDetails[id] = { ...details, id };
     }
     const currentPlayerDetials = this.#players.find(({ id }) =>
       id === playerId
@@ -34,7 +34,7 @@ export class Game {
     return {
       continents: this.#continents,
       territories: this.#territory,
-      player: { ...currentPlayerDetials, territories: [] },
+      player: { ...currentPlayerDetials },
       opponents: opponentsDetails,
       cards: [],
       currentPlayer: this.#activePlayerId,
@@ -57,7 +57,7 @@ export class Game {
         territoryId,
       );
       playerIndex++;
-    });
+    }); 0
 
     this.#state = STATES.INITIAL_TERRITORY_ALLOCATION;
     return { players: this.#players, territories: this.#territory };

@@ -6,18 +6,17 @@ const renderPlayerDetails = (player, continents) => {
     "#single-player-detail-template",
   );
   const clone = playerDetailsTemplate.content.cloneNode(true);
-
   const nameElement = clone.querySelector(".name");
 
   nameElement.textContent = player.name;
 
   const territoryCountElement = clone.querySelector(".territory-count");
   const territoryCount = player.territories.length;
-  territoryCountElement.textContent = territoryCount;
+  territoryCountElement.textContent = `T: ${territoryCount}`;
 
   const continentsCountElement = clone.querySelector(".continent-count");
   const owndedContinents = getOwnedContinents(player, continents);
-  continentsCountElement.textContent = owndedContinents.length;
+  continentsCountElement.textContent = `C : ${owndedContinents.length}`;
   return clone;
 };
 

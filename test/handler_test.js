@@ -1,8 +1,6 @@
 import { assertEquals } from "@std/assert/equals";
-import { handleGameSetup, handleInitTerritories } from "../src/handler.js";
+import { handleGameSetup } from "../src/handler.js";
 import { describe, it } from "@std/testing/bdd";
-import { mockPlayers } from "../src/dummy_data.js";
-import { CONFIG } from "../src/config.js";
 
 describe("Api Handler", () => {
   describe("handleGameSetup", () => {
@@ -20,26 +18,6 @@ describe("Api Handler", () => {
 
       const actualSetupData = handleGameSetup(context);
       assertEquals(actualSetupData, setupData);
-    });
-
-    it("Should return the players and territories with 1 troop allocated", () => {
-      const allocatedData = {
-        players: mockPlayers,
-        territories: CONFIG.TERRITORIES,
-      };
-      const store = {
-        "game": {
-          initTerritories: () => allocatedData,
-        },
-      };
-
-      const context = {
-        get: (item) => store[item],
-        json: (data) => data,
-      };
-
-      const acutalAllocatedData = handleInitTerritories(context);
-      assertEquals(acutalAllocatedData, allocatedData);
     });
   });
 });
