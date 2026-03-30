@@ -38,7 +38,7 @@ export class Game {
       opponents: opponentsDetails,
       cards: [],
       currentPlayer: this.#activePlayerId,
-      state: this.#state
+      state: this.#state,
     };
   }
 

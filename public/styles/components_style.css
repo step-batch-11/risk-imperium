@@ -172,14 +172,13 @@
   z-index: 10;
   padding: 10px;
 }
-.player-deatils{
+.player-deatils {
   display: flex;
   border: 1px solid gray;
   padding: 5px;
   gap: 10px;
-
 }
-.avatar{
+.avatar {
   border: 1px solid red;
   width: 50px;
   aspect-ratio: 1;

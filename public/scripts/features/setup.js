@@ -1,9 +1,10 @@
 import { addListernerToPlayerIcon } from "../listeners.js";
 import { getOwnedContinents } from "../utilities.js";
 
-
 const renderPlayerDetails = (player, continents) => {
-  const playerDetailsTemplate = document.querySelector("#single-player-detail-template");
+  const playerDetailsTemplate = document.querySelector(
+    "#single-player-detail-template",
+  );
   const clone = playerDetailsTemplate.content.cloneNode(true);
 
   const nameElement = clone.querySelector(".name");
@@ -18,7 +19,7 @@ const renderPlayerDetails = (player, continents) => {
   const owndedContinents = getOwnedContinents(player, continents);
   continentsCountElement.textContent = owndedContinents.length;
   return clone;
-}
+};
 
 const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayerNameHolder = document.querySelector(
@@ -38,9 +39,13 @@ export const setup = (gameState) => {
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);
   renderCurrentUserTurn(players, gameState.currentPlayer);
 
-  const playerDetailsDialog = document.querySelector("#player-details-container");
-  const allPlayersDetails = Object.values(players).map(player => renderPlayerDetails(player, gameState.continents))
-  playerDetailsDialog.append(...allPlayersDetails)
+  const playerDetailsDialog = document.querySelector(
+    "#player-details-container",
+  );
+  const allPlayersDetails = Object.values(players).map((player) =>
+    renderPlayerDetails(player, gameState.continents)
+  );
+  playerDetailsDialog.append(...allPlayersDetails);
 
-  addListernerToPlayerIcon(players, gameState.continents)
+  addListernerToPlayerIcon(players, gameState.continents);
 };
