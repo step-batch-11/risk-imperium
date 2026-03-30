@@ -1,0 +1,23 @@
+[data-player="1"] > path {
+  fill: var(--player-1);
+}
+
+[data-player="2"] > path {
+  fill: var(--player-2);
+}
+
+[data-player="3"] > path {
+  fill: var(--player-3);
+}
+
+[data-player="4"] > path {
+  fill: var(--player-4);
+}
+
+[data-player="5"] > path {
+  fill: var(--player-5);
+}
+
+[data-player="6"] > path {
+  fill: var(--player-6);
+}

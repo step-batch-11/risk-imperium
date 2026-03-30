@@ -4,4 +4,4 @@ export const longPool = async (api) => {
     return longPool(api);
   }
   return res.json();
-}
+};
