@@ -21,3 +21,27 @@
 [data-player="6"] > path {
   fill: var(--player-6);
 }
+
+[data-player-details="1"] {
+  border: 2px var(--player-1);
+}
+
+[data-player-details="2"] {
+  border: 2px var(--player-2);
+}
+
+[data-player-details="3"] {
+  border: 2px var(--player-3);
+}
+
+[data-player-details="4"] {
+  border: 2px var(--player-4);
+}
+
+[data-player-details="5"] {
+  border: 2px var(--player-5);
+}
+
+[data-player-details="6"] {
+  border: 2px var(--player-6);
+}

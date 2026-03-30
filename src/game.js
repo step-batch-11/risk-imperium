@@ -7,6 +7,7 @@ export class Game {
   #players;
   #continents;
   #state;
+  #initialTroopLimit;
 
   constructor(
     players = mockPlayers,
@@ -18,6 +19,7 @@ export class Game {
     this.#players = players;
     this.#continents = continents;
     this.#state = STATES.WAITING;
+    this.#initialTroopLimit = 13;
   }
 
   getSetup(playerId) {
@@ -25,16 +27,17 @@ export class Game {
     const opponentsDetails = {};
 
     for (const { id, ...details } of opponents) {
-      opponentsDetails[id] = { ...details, territories: [] };
+      opponentsDetails[id] = { ...details, id };
     }
-    const currentPlayerDetials = this.#players.find(({ id }) =>
+    const currentPlayerDetails = this.#players.find(({ id }) =>
       id === playerId
     );
 
+    this.#state = STATES.INITIAL_REINFORCEMENT;
     return {
       continents: this.#continents,
       territories: this.#territory,
-      player: { ...currentPlayerDetials, territories: [] },
+      player: { ...currentPlayerDetails },
       opponents: opponentsDetails,
       cards: [],
       currentPlayer: this.#activePlayerId,
@@ -58,17 +61,45 @@ export class Game {
       );
       playerIndex++;
     });
+    0;
 
     this.#state = STATES.INITIAL_TERRITORY_ALLOCATION;
     return { players: this.#players, territories: this.#territory };
   }
 
+  initialReinforcement(territoryId, troopCount) {
+    const territory = this.#territory[territoryId];
+
+    if (troopCount !== 1) {
+      return {
+        action: this.#state,
+        data: { territoryId, newTroopCount: territory.troopCount },
+      };
+    }
+
+    territory.troopCount++;
+    this.#initialTroopLimit--;
+
+    if (this.#initialTroopLimit === 0) {
+      this.#state = STATES.REINFORCE;
+    }
+
+    return {
+      action: this.#state,
+      data: { territoryId, newTroopCount: territory.troopCount },
+    };
+  }
+
   reinforce({ territoryId, troopCount }) {
+    if (this.#state === STATES.INITIAL_REINFORCEMENT) {
+      return this.initialReinforcement(territoryId, troopCount);
+    }
+
     const territory = this.#territory[territoryId];
     territory.troopCount += troopCount;
 
     return {
-      message: "Troops deployed successfully",
+      action: this.#state,
       data: { territoryId, newTroopCount: territory.troopCount },
     };
   }

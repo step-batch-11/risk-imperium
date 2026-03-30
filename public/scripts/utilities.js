@@ -45,3 +45,8 @@ export const longPool = async (api) => {
   }
   return res.json();
 };
+
+export const updateTroopCount = (territory, { newTroopCount }) => {
+  const troopCount = territory.querySelector(".troop-count");
+  troopCount.textContent = newTroopCount;
+};

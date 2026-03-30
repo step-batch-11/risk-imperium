@@ -1,32 +1,14 @@
-import { sendPostRequest } from "../server_calls.js";
+import { handleInitialReinforcement } from "./reinforce.js";
 
-const updateTroopCount = (territory, { newTroopCount }) => {
-  const troopCount = territory.querySelector(".troop-count");
-  troopCount.textContent = newTroopCount;
+const GAME_STATES = {
+  INITIAL_REINFORCEMENT: handleInitialReinforcement,
 };
 
-const openDialogBox = (territory) => {
-  const territoryId = Number(territory.dataset.territoryId);
-  const dialog = document.querySelector("dialog");
-  dialog.showModal();
+export const onMapAction = async (event, gameState) => {
+  const territory = event.target.closest(".territory");
 
-  const form = dialog.querySelector("#deploy-troops-form");
-  form.onsubmit = async (e) => {
-    e.preventDefault();
-    const input = form.querySelector("input");
-    const troopCount = input.value;
-    const reqData = {
-      userActions: "REINFORCE",
-      data: { territoryId, troopCount: Number(troopCount) },
-    };
-    const { data } = await sendPostRequest("/user-actions", reqData);
-    form.reset();
-    updateTroopCount(territory, data);
-    dialog.close();
-  };
-};
-
-export const onMapAction = (event) => {
-  const territory = event.target.closest("g");
-  openDialogBox(territory);
+  if (gameState.state in GAME_STATES) {
+    const stateToPerform = GAME_STATES[gameState.state];
+    await stateToPerform(territory, gameState);
+  }
 };
