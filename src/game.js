@@ -1,4 +1,4 @@
-import { CONFIG } from "./config.js";
+import { CONFIG, STATES } from "./config.js";
 import { mockPlayers } from "./dummy_data.js";
 
 export class Game {
@@ -6,6 +6,7 @@ export class Game {
   #territory;
   #players;
   #continents;
+  #state
 
   constructor(
     players = mockPlayers,
@@ -16,6 +17,7 @@ export class Game {
     this.#territory = territories;
     this.#players = players;
     this.#continents = continents;
+    this.#state = STATES.WAITING;
   }
 
   getSetup(playerId) {
@@ -23,16 +25,18 @@ export class Game {
     const opponentsDetails = {};
 
     for (const { id, ...details } of opponents) {
-      opponentsDetails[id] = { ...details };
+      opponentsDetails[id] = { ...details, territories: [] };
     }
+    const currentPlayerDetials = this.#players.find(({ id }) => id === playerId)
 
     return {
       continents: this.#continents,
       territories: this.#territory,
-      player: this.#players.find(({ id }) => id === playerId),
+      player: { ...currentPlayerDetials, territories: [] },
       opponents: opponentsDetails,
       cards: [],
       currentPlayer: this.#activePlayerId,
+      state: this.#state
     };
   }
 }

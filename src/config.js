@@ -153,3 +153,7 @@ export const CONFIG = {
     },
   },
 };
+export const STATES = {
+  WAITING: "WAITING",
+  START: "START",
+}
