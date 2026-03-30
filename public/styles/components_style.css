@@ -166,3 +166,25 @@
   color: var(--text-primary);
   transform: translateY(-2px);
 }
+
+#player-details-container {
+  border: 1px solid red;
+  z-index: 10;
+  padding: 10px;
+}
+.player-deatils{
+  display: flex;
+  border: 1px solid gray;
+  padding: 5px;
+  gap: 10px;
+
+}
+.avatar{
+  border: 1px solid red;
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
