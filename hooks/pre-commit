@@ -2,7 +2,7 @@
 
 set -e 
 
-deno task lint
 deno fmt --check
+deno task lint
 deno task test
 deno task coverage

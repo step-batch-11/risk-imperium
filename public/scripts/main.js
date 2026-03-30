@@ -5,9 +5,8 @@ import { getSetup } from "./server_calls.js";
 
 globalThis.onload = async () => {
   const gameState = await getSetup();
-  setupListeners();
+  setupListeners(gameState);
   setup(gameState);
-
   renderTerritoriesAndTroops(
     gameState.player,
     gameState.territories,
