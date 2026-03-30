@@ -176,7 +176,7 @@ const colorTerritories = (playerTerritories, playerId, territories) => {
 const allocateTroops = (territories) => {
   const territoryElements = document.querySelectorAll(".territory");
   territoryElements.forEach((territory) => {
-    const territoryId = territory.dataset.id;
+    const territoryId = territory.dataset.territoryId;
     const { troopCount } = territories[territoryId];
     const troopCountElement = territory.querySelector(".troop-count");
     troopCountElement.textContent = troopCount;

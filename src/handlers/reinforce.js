@@ -1,2 +1,2 @@
-export const handleReinforce = ({ _tid, _troopCount }) => {
+export const handleReinforce = ({ _territoryId, _troopCount }) => {
 };
