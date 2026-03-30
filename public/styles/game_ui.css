@@ -1,0 +1,34 @@
+.game-viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.map-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.ui-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: 30px;
+  pointer-events: none;
+}
+
+.ui-layer > * {
+  pointer-events: auto;
+}
+
+.username-display {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
