@@ -19,12 +19,11 @@ export class Game {
   }
 
   getSetup(playerId) {
-
-    const opponents = this.#players.filter(({ id }) => id !== playerId)
-    const opponentsDetails = {}
+    const opponents = this.#players.filter(({ id }) => id !== playerId);
+    const opponentsDetails = {};
 
     for (const { id, ...details } of opponents) {
-      opponentsDetails[id] = { ...details }
+      opponentsDetails[id] = { ...details };
     }
 
     return {
@@ -33,7 +32,7 @@ export class Game {
       player: this.#players.find(({ id }) => id === playerId),
       opponents: opponentsDetails,
       cards: [],
-      currentPlayer: this.#activePlayerId
-    }
+      currentPlayer: this.#activePlayerId,
+    };
   }
 }

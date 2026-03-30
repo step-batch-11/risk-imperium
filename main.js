@@ -2,7 +2,6 @@ import { createApp } from "./src/app.js";
 import { Game } from "./src/game.js";
 
 const main = () => {
-
   const game = new Game();
   const app = createApp(game);
 

@@ -3,7 +3,6 @@ import { serveStatic } from "hono/deno";
 import { logger } from "hono/logger";
 import { handleGameSetup } from "./handler.js";
 
-
 export const createApp = (game) => {
   const app = new Hono();
 
@@ -11,9 +10,9 @@ export const createApp = (game) => {
   app.use(async (context, next) => {
     context.set("game", game);
     await next();
-  })
+  });
 
-  app.get("/setup", handleGameSetup)
+  app.get("/setup", handleGameSetup);
   app.get("*", serveStatic({ root: "./public" }));
   return app;
 };
