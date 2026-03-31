@@ -19,7 +19,7 @@ body {
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.selected {
+.selected > .territory-outline {
   /* transform: scale(1.5); */
   stroke: var(--color-highlight);
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));

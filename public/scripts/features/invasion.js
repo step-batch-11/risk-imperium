@@ -1,5 +1,5 @@
 import { invade } from "../APIS.js";
-import { renderGameState } from "../utilities.js";
+import { removeHighlights, renderGameState } from "../utilities.js";
 
 const highlightTerritories = (territories) => {
   territories.forEach((territoryId) => {
@@ -8,7 +8,6 @@ const highlightTerritories = (territories) => {
     );
 
     territoryElement.parentElement.append(territoryElement);
-
     territoryElement.classList.add("highlight");
   });
 };
@@ -18,13 +17,6 @@ const opponentNeighbours = (player, territories, selectedTerritoryId) => {
   return neighbours.filter(
     (neighbour) => !player.territories.includes(neighbour),
   );
-};
-
-const removeHighlights = () => {
-  const territories = document.querySelectorAll(".territory");
-  territories.forEach((territory) => {
-    territory.classList.remove("highlight");
-  });
 };
 
 const isMyTerritory = (gameState, attacker) => {
@@ -55,7 +47,7 @@ const createMessage = (gameState, attackerTerritoryId, defenderTerritoryId) => {
 };
 
 const selectAttacker = (gameState, selectedTerritoryId) => {
-  removeHighlights();
+  removeHighlights("highlight", ".territory");
   const neighbours = opponentNeighbours(
     gameState.player,
     gameState.territories,
@@ -71,7 +63,7 @@ const selectAttacker = (gameState, selectedTerritoryId) => {
 };
 
 const selectDefender = async (gameState, selectedTerritoryId) => {
-  removeHighlights();
+  removeHighlights("highlight", ".territory");
   const attackerTerritoryId = gameState.invadeDetials.attacker;
   const defenderTerritoryId = selectedTerritoryId;
   const attackerTroops = getAttackingTroop(gameState, attackerTerritoryId);
@@ -84,6 +76,7 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
 
   gameState.state = action;
   renderGameState(action);
+  removeHighlights("selected");
 
   return {
     message: createMessage(gameState, attackerTerritoryId, defenderTerritoryId),
