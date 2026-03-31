@@ -67,7 +67,7 @@ export class Game {
   initTerritories() {
     const territoryIds = this.#shuffleTerritories(Object.keys(this.#territory));
     this.#initTerritory();
-
+    // this.#assignTerritories(territoryIds);
     territoryIds.forEach((territoryId, playerIndex) => {
       const territory = this.#territory[territoryId];
       territory.troopCount = 1;

@@ -1,7 +1,8 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertThrows } from "@std/assert";
 import { STATES } from "../src/config.js";
+import invasionState from "../data/states/invasion.json" with { type: "json" };
 
 describe("Game", () => {
   it("setup method should return data for the single user", () => {
@@ -289,6 +290,57 @@ describe("Game", () => {
       game.loadGameState(initializedGameState);
       const loadedGameState = game.getSavableGameState();
       assertEquals(loadedGameState.state, STATES.INITIAL_REINFORCEMENT);
+    });
+  });
+
+  describe("Invade", () => {
+    let game;
+    beforeEach(() => {
+      game = new Game();
+      const gameState = invasionState;
+      game.loadGameState(gameState);
+    });
+
+    it("invade should throw if troop count is invalid", () => {
+      const invadeDetails = {
+        attackerTerritoryId: 36,
+        defenderTerritoryId: 37,
+        attackingTroops: 6,
+      };
+
+      assertThrows(() => game.invade(invadeDetails));
+    });
+
+    it("invade should should change state to defend after attacking", () => {
+      const invadeDetails = {
+        attackerTerritoryId: 36,
+        defenderTerritoryId: 37,
+        attackerTroops: 3,
+      };
+      game.invade(invadeDetails);
+
+      const currentState = game.getSavableGameState();
+      assertEquals(currentState.state, STATES.DEFEND);
+    });
+
+    it("invade should throw if troop count is negative", () => {
+      const invadeDetails = {
+        attackerTerritoryId: 36,
+        defenderTerritoryId: 37,
+        attackingTroops: -1,
+      };
+
+      assertThrows(() => game.invade(invadeDetails));
+    });
+
+    it("invade should throw if attacker is invalid", () => {
+      const invadeDetails = {
+        attackerTerritoryId: 1,
+        defenderTerritoryId: 2,
+        attackingTroops: 2,
+      };
+
+      assertThrows(() => game.invade(invadeDetails));
     });
   });
 });

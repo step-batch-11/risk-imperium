@@ -1,4 +1,4 @@
-import { setupReinforcePhase } from "./transition.js";
+import { setupInvasionPhase, setupReinforcePhase } from "./transition.js";
 
 export const STATES = {
   WAITING: "WAITING",
@@ -13,4 +13,5 @@ export const STATES = {
 
 export const SETUP_TRANSITION = {
   REINFORCE: setupReinforcePhase,
+  INVASION: setupInvasionPhase,
 };
