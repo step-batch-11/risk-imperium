@@ -144,8 +144,8 @@ export class Game {
   }
 
   #calculateLoss(defenderDice, attackerDice) {
-    const attackerLoss = 0;
-    const defenderLoss = 0;
+    let attackerLoss = 0;
+    let defenderLoss = 0;
     for (let index = 0; index < defenderDice.length; index++) {
       attackerDice[index] < defenderDice[index]
         ? attackerLoss++
