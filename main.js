@@ -3,7 +3,7 @@ import { createApp } from "./src/app.js";
 import { Game } from "./src/game.js";
 
 const main = () => {
-  const game = new Game();
+  const game = new Game(Math.random);
   game.initTerritories();
   const isDevMode = Deno.env.get("DEV_MODE") === "true";
   const app = createApp(game, isDevMode, {
