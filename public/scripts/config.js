@@ -1,5 +1,3 @@
-import { setup } from "./features/setup.js";
-
 export const STATES = {
   WAITING: "WAITING",
   SETUP: "SETUP",
@@ -8,6 +6,5 @@ export const STATES = {
   REINFORCE: "REINFORCE",
   INITIAL_TERRITORY_ALLOCATION: "INITIAL_TERRITORY_ALLOCATION",
 };
-export const SETUP = {
-  [STATES.SETUP]: (gameState) => setup(gameState),
-};
+
+export const SETUP = {};

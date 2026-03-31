@@ -1,12 +1,15 @@
+import { handleDefend } from "./defend.js";
 import {
   displayRemainingTroopsToDisplay,
   showNotification,
 } from "../utilities.js";
 import { handleInitialReinforcement } from "./reinforce.js";
 import { handleInvasion } from "./invasion.js";
+
 const GAME_STATES = {
   INITIAL_REINFORCEMENT: handleInitialReinforcement,
   INVASION: handleInvasion,
+  DEFEND: handleDefend,
 };
 
 export const onMapAction = async (event, gameState) => {

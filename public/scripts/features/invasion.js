@@ -1,4 +1,5 @@
 import { invade } from "../APIS.js";
+import { renderGameState } from "../utilities.js";
 
 const highlightTerritories = (territories) => {
   territories.forEach((territoryId) => {
@@ -82,6 +83,7 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
   });
 
   gameState.state = action;
+  renderGameState(action);
 
   return {
     message: createMessage(gameState, attackerTerritoryId, defenderTerritoryId),

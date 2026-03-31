@@ -1,6 +1,8 @@
 const USER_ACTIONS = {
   REINFORCE: (game, data) => game.reinforce(data),
   INVADE: (game, data) => game.invade(data),
+  DEFEND: (game, data) => game.defend(data),
+  RESOLVE_COMBAT: (game, data) => game.resolveCombat(data),
 };
 
 export const handleUserActions = async (context) => {

@@ -1,5 +1,5 @@
 import { describe, it } from "@std/testing/bdd";
-import { assert, assertEquals, assertFalse } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { Game } from "../src/game.js";
@@ -61,7 +61,10 @@ describe("App Handler", () => {
           await next();
         };
       };
-      const app = createApp(game, false, mockLogger);
+      const app = createApp(game, false, {
+        logger: mockLogger,
+        readTextFileSync: () => {},
+      });
 
       const res = await app.request("/");
       res.text();
@@ -75,70 +78,38 @@ describe("App Handler", () => {
       await res.text();
     });
   });
+
   describe("DEV Mode", () => {
     it("should provide a path for /:state for valid states in dev mode", async () => {
-      const game = {};
-      const app = createApp(game, true);
-      const res = await app.request("/start-no-setup");
+      const configName = "start-no-setup";
+      let configToLoad = null;
+
+      const reader = async (fileName) => {
+        configToLoad = await fileName;
+        return JSON.stringify({});
+      };
+
+      const game = {
+        loadGameState: (data) => {
+          assertEquals(data, {});
+        },
+      };
+      const app = createApp(game, true, { readTextFile: reader });
+      const res = await app.request(`/${configName}`);
       assertEquals(res.status, 302);
+      assertEquals(configToLoad, `./data/states/${configName}.json`);
     });
 
     it("should provide not found for /:state for invalid states in dev mode", async () => {
       const game = {};
-      const app = createApp(game, true);
+      const reader = async () => {
+        throw await new Error("Not found");
+      };
+
+      const app = createApp(game, true, { readTextFile: reader });
       const res = await app.request("/non-existing-setup");
       assertEquals(res.status, 404);
       await res.text();
-    });
-    it("Should load the new state when valid state requirement is called", async () => {
-      let loadedState;
-      const game = {
-        loadGameState: (state) => {
-          loadedState = state;
-        },
-      };
-      const app = createApp(game, true);
-      const res = await app.request("/init-reinforced");
-      assertEquals(res.status, 302);
-
-      const expectedParameters = [
-        "activePlayerId",
-        "territory",
-        "players",
-        "continents",
-        "state",
-        "stateDetails",
-      ];
-      const parameters = Object.keys(loadedState);
-      assertEquals(expectedParameters.length, parameters.length);
-      assert(parameters.every((param) => expectedParameters.includes(param)));
-    });
-
-    it("Should load the new state when valid state requirement is called with start-no-setup", async () => {
-      let isNewStateLoaded = false;
-      const game = {
-        loadGameState: (_) => {
-          isNewStateLoaded = true;
-        },
-      };
-      const app = createApp(game, true);
-      const res = await app.request("/start-no-setup");
-      assertEquals(res.status, 302);
-      assertFalse(isNewStateLoaded);
-    });
-
-    it("Should load the new state when valid state requirement is called with start", async () => {
-      let initIsCalled = false;
-      const game = {
-        initTerritories: () => {
-          initIsCalled = true;
-        },
-      };
-      const app = createApp(game, true);
-      const res = await app.request("/start");
-      assertEquals(res.status, 302);
-
-      assert(initIsCalled);
     });
   });
 });
