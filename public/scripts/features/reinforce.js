@@ -4,6 +4,7 @@ import { sendPostRequest } from "../server_calls.js";
 import { setTroopLimit } from "../transition.js";
 import {
   displayRemainingTroopsToDeploy,
+  renderGameState,
   showNotification,
   updateTroopCount,
 } from "../utilities.js";
@@ -39,13 +40,17 @@ const deployTroops = async (
   const { action: nextState, data: updatedTerritory } = response;
 
   if (nextState !== gameState.state) {
+    renderGameState(nextState);
     setUpNextPhase(gameState, nextState);
   }
 
-  updateTroopCount(territory, updatedTerritory);
+  const { territoryId: updatedTerritoryId, newTroopCount } = updatedTerritory;
+  updateTroopCount(territory, newTroopCount);
+
+  gameState.territories[updatedTerritoryId].troopCount = newTroopCount;
 
   const playerName = gameState.player.name;
-  const territoryName = gameState.territories[territoryId].name;
+  const territoryName = gameState.territories[updatedTerritoryId].name;
 
   const message =
     `${playerName} deployed ${troopCount} troop in ${territoryName}`;
@@ -59,7 +64,7 @@ const deployTroops = async (
 };
 
 export const handleInitialReinforcement = async (territory, gameState) => {
-  const territoryId = territory.dataset.territoryId;
+  const territoryId = Number(territory.dataset.territoryId);
   const territories = gameState.player.territories;
 
   if (!isOwnedByCurrentPlayer(territoryId, territories)) {
@@ -90,7 +95,7 @@ const placeTroops = (gameState, territory, territoryId) => {
 };
 
 export const handleReinforcement = (territory, gameState) => {
-  const territoryId = territory.dataset.territoryId;
+  const territoryId = Number(territory.dataset.territoryId);
   const territories = gameState.player.territories;
 
   if (!isOwnedByCurrentPlayer(territoryId, territories)) {

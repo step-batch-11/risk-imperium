@@ -7,13 +7,16 @@ export class Game {
   #players;
   #continents;
   #state;
-  #stateDetails;
+  #randomFunction;
+  #stateDetails = {};
 
   constructor(
+    randomFunction = Math.random,
     players = mockPlayers(),
     territories = CONFIG.TERRITORIES,
     continents = CONFIG.CONTINENTS,
   ) {
+    this.#randomFunction = randomFunction;
     this.#activePlayerId = players[0].id;
     this.#territory = territories;
     this.#players = players;
@@ -47,20 +50,24 @@ export class Game {
   }
 
   #shuffleTerritories(territories) {
-    return territories.sort(() => Math.random() - 0.5);
+    return territories.sort(() => this.#randomFunction() - 0.5);
+  }
+
+  #initTerritory() {
+    this.#players.forEach((player) => {
+      player["territories"] = [];
+    });
   }
 
   initTerritories() {
     const territoryIds = this.#shuffleTerritories(Object.keys(this.#territory));
-    let playerIndex = 0;
+    this.#initTerritory();
 
-    territoryIds.forEach((territoryId) => {
+    territoryIds.forEach((territoryId, playerIndex) => {
       const territory = this.#territory[territoryId];
       territory.troopCount = 1;
-      this.#players[playerIndex % this.#players.length].territories.push(
-        territoryId,
-      );
-      playerIndex++;
+      const player = this.#players[playerIndex % this.#players.length];
+      player.territories.push(Number(territoryId));
     });
 
     this.#state = STATES.INITIAL_REINFORCEMENT;
@@ -118,8 +125,9 @@ export class Game {
     this.#stateDetails.remainingTroopsToDeploy -= troopCount;
 
     if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
-      this.#state = STATES.INVADE;
+      this.#state = STATES.INVASION;
     }
+
     return {
       action: this.#state,
       data: {
@@ -150,5 +158,116 @@ export class Game {
         data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
       };
     }
+  }
+
+  #isValidAttacker({ attackerTerritoryId }) {
+    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
+    return player.territories.includes(attackerTerritoryId);
+  }
+
+  #validDefender({ attackerTerritoryId, defenderTerritoryId }) {
+    const neighbours = this.#territory[attackerTerritoryId].neighbours;
+
+    const isNeighbour = neighbours.includes(defenderTerritoryId);
+    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
+    const isEnemy = !player.territories.includes(defenderTerritoryId);
+    return isNeighbour && isEnemy;
+  }
+
+  #isValidAttackerTroopsCount({ attackerTerritoryId, attackerTroops }) {
+    const availableTroopCount = this.#territory[attackerTerritoryId].troopCount;
+    const isInRange = attackerTroops <= 3 && attackerTroops > 0;
+
+    return availableTroopCount > attackerTroops && isInRange;
+  }
+
+  invade(invadeDetials) {
+    const isValidAttack = this.#isValidAttacker(invadeDetials) &&
+      this.#validDefender(invadeDetials) &&
+      this.#isValidAttackerTroopsCount(invadeDetials);
+
+    if (!isValidAttack) {
+      throw new Error("Invalid Attack");
+    }
+
+    this.#state = STATES.DEFEND;
+    this.#stateDetails = invadeDetials;
+    return { action: this.#state, data: {} };
+  }
+
+  defend(data) {
+    this.#state = STATES.COMBAT;
+    this.#stateDetails["defenderTroops"] = data.troopCount;
+    const { attackerId, defenderId, attackerTroops, defenderTroops } =
+      this.#state;
+    return {
+      action: this.state,
+      data: { attackerId, defenderId, attackerTroops, defenderTroops },
+    };
+  }
+
+  #rollDice(count) {
+    return Array.from(
+      { length: count },
+      Math.ceil(this.#randomFunction() * 6),
+    ).sort((a, b) => b - a);
+  }
+
+  #calculateLoss(defenderDice, attackerDice) {
+    const result = { attackerLoss: 0, defenderLoss: 0 };
+    for (let index = 0; index < defenderDice.length; index++) {
+      attackerDice[index] < defenderDice[index]
+        ? result.attackerLoss++
+        : result.defenderLoss++;
+    }
+    return { ...result };
+  }
+
+  #updateTroopCount(attackerTid, defenderTid, combatResult) {
+    this.#territory[attackerTid].troopCount -= combatResult.attackerLoss;
+    this.#territory[defenderTid].troopCount -= combatResult.defenderLoss;
+  }
+
+  resolveCombat() {
+    const { attackerTid, defenderTid, attackerTroops, defenderTroops } =
+      this.#state;
+    const attackerDice = this.#rollDice(attackerTroops);
+    const defenderDice = this.#rollDice(defenderTroops);
+    const combatResult = this.#calculateLoss(defenderDice, attackerDice);
+    this.#updateTroopCount(attackerTid, defenderTid, combatResult);
+    this.#state = "MOVE_IN";
+
+    return {
+      action: this.#state,
+      data: { attackerDice, defenderDice },
+    };
+  }
+
+  getSavableGameState() {
+    return {
+      activePlayerId: this.#activePlayerId,
+      territory: this.#territory,
+      players: this.#players,
+      continents: this.#continents,
+      state: this.#state,
+      stateDetails: this.#stateDetails,
+    };
+  }
+
+  loadGameState(gameState) {
+    const {
+      activePlayerId,
+      territory,
+      players,
+      continents,
+      state,
+      stateDetails,
+    } = gameState;
+    this.#activePlayerId = activePlayerId;
+    this.#territory = territory;
+    this.#players = players;
+    this.#continents = continents;
+    this.#state = state;
+    this.#stateDetails = stateDetails;
   }
 }

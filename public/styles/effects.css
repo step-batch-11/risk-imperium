@@ -24,3 +24,29 @@ body {
   stroke: var(--color-highlight);
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
+
+.highlight > .territory-outline {
+  stroke: purple;
+}
+
+.dice-roll {
+  animation: roll 0.5s linear;
+}
+
+@keyframes roll {
+  30% {
+    color: white;
+  }
+
+  50% {
+    color: transparent;
+  }
+
+  80% {
+    color: rgb(128, 128, 128);
+  }
+
+  100% {
+    color: var(--text-secondary);
+  }
+}
