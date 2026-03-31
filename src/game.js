@@ -109,4 +109,31 @@ export class Game {
       data: { territoryId, newTroopCount: territory.troopCount },
     };
   }
+
+  getSavableGameState() {
+    return {
+      activePlayerId: this.#activePlayerId,
+      territory: this.#territory,
+      players: this.#players,
+      continents: this.#continents,
+      state: this.#state,
+      stateDetails: this.#stateDetails,
+    };
+  }
+  loadGameState(gameState) {
+    const {
+      activePlayerId,
+      territory,
+      players,
+      continents,
+      state,
+      stateDetails,
+    } = gameState;
+    this.#activePlayerId = activePlayerId;
+    this.#territory = territory;
+    this.#players = players;
+    this.#continents = continents;
+    this.#state = state;
+    this.#stateDetails = stateDetails;
+  }
 }

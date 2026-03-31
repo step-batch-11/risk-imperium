@@ -1,4 +1,4 @@
-import { describe, it } from "@std/testing/bdd";
+import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
 import { assert, assertEquals } from "@std/assert";
 import { STATES } from "../src/config.js";
@@ -78,5 +78,67 @@ describe("Game", () => {
     assertEquals(action, STATES.REINFORCE);
     assertEquals(data.territoryId, 37);
     assertEquals(data.newTroopCount, expectedTroopCount);
+  });
+
+  describe("getSavableGameState", () => {
+    let game;
+    beforeEach(() => {
+      game = new Game();
+    });
+    it("Should return new game state when game is just initialize", () => {
+      const gameState = game.getSavableGameState();
+      const expectedParameters = [
+        "activePlayerId",
+        "territory",
+        "players",
+        "continents",
+        "state",
+        "stateDetails",
+      ];
+      const parameters = Object.keys(gameState);
+      assertEquals(expectedParameters.length, parameters.length);
+      assert(parameters.every((param) => expectedParameters.includes(param)));
+      assertEquals(gameState.state, STATES.SETUP);
+    });
+
+    it("Should return updated game state when game is initialize and troop initialization action is already done", () => {
+      game.initTerritories();
+      const gameState = game.getSavableGameState();
+      const expectedParameters = [
+        "activePlayerId",
+        "territory",
+        "players",
+        "continents",
+        "state",
+        "stateDetails",
+      ];
+      const parameters = Object.keys(gameState);
+      assertEquals(expectedParameters.length, parameters.length);
+      assert(parameters.every((param) => expectedParameters.includes(param)));
+      assertEquals(gameState.state, STATES.INITIAL_REINFORCEMENT);
+    });
+  });
+
+  describe("loadGameState", () => {
+    const game1 = new Game();
+    game1.initTerritories();
+    const initializedGameState = game1.getSavableGameState();
+    let game;
+    beforeEach(() => {
+      game = new Game();
+    });
+    it("Should reset the gameState when loaded with initialGameState", () => {
+      const initialGameState = game.getSavableGameState();
+      game.initTerritories();
+      game.loadGameState(initialGameState);
+      const loadedGameState = game.getSavableGameState();
+      assertEquals(loadedGameState.state, STATES.SETUP);
+    });
+
+    it("Should load the initialized game state when loaded with initializedGameState", () => {
+      game.loadGameState(initializedGameState);
+      const loadedGameState = game.getSavableGameState();
+      assertEquals(loadedGameState.state, STATES.INITIAL_REINFORCEMENT);
+    });
   });
 });

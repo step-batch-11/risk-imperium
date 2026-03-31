@@ -1,4 +1,4 @@
-export const addListernerToPlayerIcon = () => {
+export const addListenersToPlayerIcon = () => {
   const playerIcon = document.querySelector("#player-details-button");
   const playerDetailsDialog = document.querySelector(
     "#player-details-container",
