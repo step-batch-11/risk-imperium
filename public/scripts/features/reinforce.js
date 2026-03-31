@@ -40,6 +40,7 @@ const deployTroops = async (
   const { action: nextState, data: updatedTerritory } = response;
 
   if (nextState !== gameState.state) {
+    console.log(gameState);
     renderGameState(nextState);
     setUpNextPhase(gameState, nextState);
   }
@@ -78,7 +79,7 @@ export const handleInitialReinforcement = async (territory, gameState) => {
 };
 
 const placeTroops = (gameState, territory, territoryId) => {
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#deploy-troops-container");
   dialog.showModal();
 
   const form = dialog.querySelector("#deploy-troops-form");
