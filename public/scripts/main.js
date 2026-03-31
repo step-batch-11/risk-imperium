@@ -3,6 +3,7 @@ import { renderTerritoriesAndTroops } from "./features/initial_territory_allocat
 import { getSetup } from "./server_calls.js";
 import { SETUP } from "./config.js";
 import { renderCurrentPlayerName, renderGameState } from "./utilities.js";
+import { setup } from "./features/setup.js";
 
 globalThis.onload = async () => {
   const gameState = await getSetup();
@@ -11,6 +12,7 @@ globalThis.onload = async () => {
   renderCurrentPlayerName(gameState);
 
   renderGameState(gameState.state);
+  setup(gameState);
 
   if (gameState.state in SETUP) {
     SETUP[gameState.state](gameState);

@@ -1,20 +1,22 @@
 import { APIs } from "../APIS.js";
 import { SETUP } from "../config.js";
 import { sendPostRequest } from "../server_calls.js";
-import { updateTroopCount } from "../utilities.js";
+import { USER_ACTIONS } from "../user_action.js";
+import { renderGameState, updateTroopCount } from "../utilities.js";
 
 const isOwnedByCurrentPlayer = (territoryId, playerTerritoryIds) =>
   playerTerritoryIds.includes(territoryId);
 
 const placeInitialTroops = async (gameState, territory, territoryId) => {
   const payLoad = {
-    userActions: "REINFORCE",
+    userActions: USER_ACTIONS.REINFORCE,
     data: { territoryId, troopCount: 1 },
   };
 
   const response = await sendPostRequest(APIs.USER_ACTIONS, payLoad);
   const { action: nextState, data: updatedTerritory } = response;
   if (nextState !== gameState.state) {
+    renderGameState(nextState);
     if (nextState in SETUP) {
       SETUP[nextState](gameState);
     }

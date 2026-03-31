@@ -6,7 +6,10 @@ const main = () => {
   const game = new Game();
   game.initTerritories();
   const isDevMode = Deno.env.get("DEV_MODE") === "true";
-  const app = createApp(game, isDevMode, logger);
+  const app = createApp(game, isDevMode, {
+    logger,
+    readTextFile: Deno.readTextFile,
+  });
   const port = Deno.env.get("PORT") || 8000;
   Deno.serve({ port }, app.fetch);
 };

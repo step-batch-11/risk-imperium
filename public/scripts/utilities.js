@@ -41,7 +41,7 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
   currentPlayerNameHolder.textContent = currentPlayer.name;
 };
 
-const getAllPlayersDetail = (player, opponents) => {
+export const getAllPlayersDetail = (player, opponents) => {
   const { id: currentPlayerId, ...details } = player;
   return { ...opponents, [currentPlayerId]: details };
 };
