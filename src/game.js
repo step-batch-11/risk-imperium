@@ -144,14 +144,13 @@ export class Game {
   }
 
   #calculateLoss(defenderDice, attackerDice) {
-    let attackerLoss = 0;
-    let defenderLoss = 0;
+    const result = { attackerLoss: 0, defenderLoss: 0 };
     for (let index = 0; index < defenderDice.length; index++) {
       attackerDice[index] < defenderDice[index]
-        ? attackerLoss++
-        : defenderLoss++;
+        ? result.attackerLoss++
+        : result.defenderLoss++;
     }
-    return { attackerLoss, defenderLoss };
+    return { ...result };
   }
 
   #updateTroopCount(attackerTid, defenderTid, combatResult) {

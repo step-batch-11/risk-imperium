@@ -11,4 +11,11 @@ export const SAVED_STATES_GAMES = {
     const state = JSON.parse(rawStateData);
     game.loadGameState(state);
   },
+  "combat": (game) => {
+    const rawStateData = Deno.readTextFileSync(
+      "./data/states/combat_resolve.json",
+    );
+    const state = JSON.parse(rawStateData);
+    game.loadGameState(state);
+  },
 };

@@ -30,6 +30,7 @@ export const combat = async (data) => {
 
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
-export const getGameState = async () => {
-  return await fetch(APIs.GET_GAME_STATE).then((res) => res.json());
-};
+
+// export const getGameState = async () => {
+//   return await fetch(APIs.GET_GAME_STATE).then((res) => res.json());
+// };
