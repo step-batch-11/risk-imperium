@@ -28,13 +28,12 @@ export const defend = async (data) => {
     userActions: "DEFEND",
     data,
   };
-
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
 
 export const combat = async (data) => {
   const reqData = {
-    userActions: "COMBAT",
+    userActions: "RESOLVE_COMBAT",
     data,
   };
 

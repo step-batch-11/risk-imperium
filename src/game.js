@@ -8,7 +8,7 @@ export class Game {
   #continents;
   #state;
   #randomFunction;
-  #stateDetails = {};
+  #stateDetails;
 
   constructor(
     randomFunction = Math.random,
@@ -23,7 +23,12 @@ export class Game {
     this.#continents = continents;
     this.#state = STATES.SETUP;
     this.#stateDetails = {
-      initialTroopLimit: 13,
+      "initialTroopLimit": 13,
+      "remainingTroopsToDeploy": 0,
+      "attackerTerritoryId": "21",
+      "defenderTerritoryId": "22",
+      "attackerTroops": 3,
+      "defenderTroops": 1,
     };
   }
 
@@ -196,50 +201,79 @@ export class Game {
   }
 
   defend(data) {
-    this.#state = STATES.COMBAT;
+    this.#state = STATES.RESOLVE_COMBAT;
     this.#stateDetails["defenderTroops"] = data.troopCount;
-    const { attackerId, defenderId, attackerTroops, defenderTroops } =
-      this.#state;
+
+    const {
+      attackerTerritoryId,
+      defenderTerritoryId,
+      attackerTroops,
+      defenderTroops,
+    } = this.#stateDetails;
+
     return {
-      action: this.state,
-      data: { attackerId, defenderId, attackerTroops, defenderTroops },
+      action: this.#state,
+      data: {
+        attackerTerritoryId,
+        defenderTerritoryId,
+        attackerTroops,
+        defenderTroops,
+      },
     };
   }
 
   #rollDice(count) {
     return Array.from(
       { length: count },
-      Math.ceil(this.#randomFunction() * 6),
+      () => Math.ceil(this.#randomFunction() * 6),
     ).sort((a, b) => b - a);
   }
 
   #calculateLoss(defenderDice, attackerDice) {
-    const result = { attackerLoss: 0, defenderLoss: 0 };
-    for (let index = 0; index < defenderDice.length; index++) {
-      attackerDice[index] < defenderDice[index]
-        ? result.attackerLoss++
-        : result.defenderLoss++;
-    }
-    return { ...result };
+    return defenderDice.reduce(
+      (acc, dice, index) => {
+        attackerDice[index] < dice[index]
+          ? acc.attackerLoss++
+          : acc.defenderLoss++;
+        return acc;
+      },
+      { attackerLoss: 0, defenderLoss: 0 },
+    );
   }
 
-  #updateTroopCount(attackerTid, defenderTid, combatResult) {
-    this.#territory[attackerTid].troopCount -= combatResult.attackerLoss;
-    this.#territory[defenderTid].troopCount -= combatResult.defenderLoss;
+  #updateTroopCount(attackerTerritoryId, defenderTerritoryId, combatResult) {
+    const attackerTerritory = this.#territory[attackerTerritoryId];
+    const defenderTerritory = this.#territory[defenderTerritoryId];
+    attackerTerritory.troopCount -= combatResult.attackerLoss;
+    defenderTerritory.troopCount -= combatResult.defenderLoss;
+
+    return {
+      attackerTroops: attackerTerritory.troopCount,
+      defenderTroops: defenderTerritory.troopCount,
+    };
+  }
+
+  #constructCombatMsg(combatResult) {
+    return combatResult.attackerLoss < combatResult.defenderLoss
+      ? "Attack successful"
+      : "Attack failed";
   }
 
   resolveCombat() {
-    const { attackerTid, defenderTid, attackerTroops, defenderTroops } =
-      this.#state;
-    const attackerDice = this.#rollDice(attackerTroops);
-    const defenderDice = this.#rollDice(defenderTroops);
+    const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
+    const attackerDice = this.#rollDice(this.#stateDetails.attackerTroops);
+    const defenderDice = this.#rollDice(this.#stateDetails.defenderTroops);
     const combatResult = this.#calculateLoss(defenderDice, attackerDice);
-    this.#updateTroopCount(attackerTid, defenderTid, combatResult);
-    this.#state = "MOVE_IN";
-
+    const msg = this.#constructCombatMsg(combatResult);
+    const updatedTroops = this.#updateTroopCount(
+      attackerTerritoryId,
+      defenderTerritoryId,
+      combatResult,
+    );
+    this.#state = STATES.REINFORCE;
     return {
       action: this.#state,
-      data: { attackerDice, defenderDice },
+      data: { attackerDice, defenderDice, msg, ...updatedTroops },
     };
   }
 

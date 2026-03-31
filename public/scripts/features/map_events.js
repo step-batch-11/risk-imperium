@@ -10,7 +10,7 @@ const GAME_STATES = {
   [STATES.INITIAL_REINFORCEMENT]: handleInitialReinforcement,
   [STATES.REINFORCE]: handleReinforcement,
   [STATES.INVASION]: handleInvasion,
-  DEFEND: handleDefend,
+  [STATES.DEFEND]: handleDefend,
 };
 
 export const onMapAction = async (event, gameState) => {

@@ -582,12 +582,12 @@
       "armies": 2
     }
   },
-  "state": "COMBAT",
+  "state": "DEFEND",
   "stateDetails": {
     "initialTroopLimit": 13,
     "remainingTroopsToDeploy": 0,
-    "attackerId": "21",
-    "defenderId": "2",
+    "attackerTerritoryId": "21",
+    "defenderTerritoryId": "22",
     "attackerTroops": 3,
     "defenderTroops": 1
   }
