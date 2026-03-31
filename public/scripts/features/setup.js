@@ -1,4 +1,4 @@
-import { addListernerToPlayerIcon } from "../listeners.js";
+import { addListenersToPlayerIcon } from "../listeners.js";
 import { getOwnedContinents } from "../utilities.js";
 
 const renderPlayerDetails = (player, continents) => {
@@ -15,8 +15,8 @@ const renderPlayerDetails = (player, continents) => {
   territoryCountElement.textContent = `T: ${territoryCount}`;
 
   const continentsCountElement = clone.querySelector(".continent-count");
-  const owndedContinents = getOwnedContinents(player, continents);
-  continentsCountElement.textContent = `C : ${owndedContinents.length}`;
+  const ownedContinents = getOwnedContinents(player, continents);
+  continentsCountElement.textContent = `C : ${ownedContinents.length}`;
   return clone;
 };
 
@@ -46,5 +46,5 @@ export const setup = (gameState) => {
   );
   playerDetailsDialog.append(...allPlayersDetails);
 
-  addListernerToPlayerIcon(players, gameState.continents);
+  addListenersToPlayerIcon(players, gameState.continents);
 };

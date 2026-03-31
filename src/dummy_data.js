@@ -1,4 +1,4 @@
-export const mockPlayers = [
+export const mockPlayers = () => [
   { "id": 1, "name": "Jon", territories: [] },
   { "id": 2, "name": "Rob", territories: [] },
   { "id": 3, "name": "Sansa", territories: [] },

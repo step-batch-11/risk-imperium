@@ -8,6 +8,10 @@
 
   --color-map-stroke: #c8d2e0;
 
+  --color-warning: #faad14;
+  --color-info: #1890ff;
+  --color-success: #52c41a;
+
   --text-primary: #1e293b;
   --text-secondary: #060606;
   --accent-gold: #fbbf24;
