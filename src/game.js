@@ -110,10 +110,39 @@ export class Game {
     };
   }
 
+  #isValidAttacker({ attackerTerritoryId }) {
+    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
+    return player.territories.includes(attackerTerritoryId);
+  }
+
+  #validDefender({ attackerTerritoryId, defenderTerritoryId }) {
+    const neighbours = this.#territory[attackerTerritoryId].neighbours;
+
+    const isNeighbour = neighbours.includes(defenderTerritoryId);
+    const player = this.#players.find(({ id }) => id === this.#activePlayerId);
+    const isEnemy = !player.territories.includes(defenderTerritoryId);
+    return isNeighbour && isEnemy;
+  }
+
+  #isValidTroopCount({ attackerTerritoryId, attackerTroops }) {
+    const availableTroopCount = this.#territory[attackerTerritoryId].troopCount;
+    const isInRange = attackerTroops <= 3 && attackerTroops > 0;
+
+    return availableTroopCount > attackerTroops && isInRange;
+  }
+
   invade(invadeDetials) {
+    const isValidAttack = this.#isValidAttacker(invadeDetials) &&
+      this.#validDefender(invadeDetials) &&
+      this.#isValidTroopCount(invadeDetials);
+
+    if (!isValidAttack) {
+      throw new Error("Invalid Attack");
+    }
+
     this.#state = STATES.DEFEND;
     this.#stateDetails = invadeDetials;
-    return {};
+    return { action: this.#state, data: {} };
   }
 
   getSavableGameState() {

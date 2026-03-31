@@ -8,5 +8,9 @@ export const APIs = {
 
 export const invade = async (invasionDetails) => {
   const reqData = { userActions: "INVADE", data: invasionDetails };
-  return await sendPostRequest("/user-actions", reqData);
+  try {
+    return await sendPostRequest("/user-actions", reqData);
+  } catch (e) {
+    console.log(e);
+  }
 };
