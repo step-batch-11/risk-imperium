@@ -1,10 +1,10 @@
-import { invade } from "../APIS.js";
-import {
-  removeHighlights,
-  renderGameState,
-  setUpNextPhase,
-  showNotification,
-} from "../utilities.js";
+import { invade } from "../server_calls.js";
+import { renderGameState } from "../utilities/render_UI.js";
+import { removeHighlights } from "../utilities/highlight.js";
+import { showNotification } from "../utilities/notifications.js";
+import { setUpNextPhase } from "../transition_handlers.js";
+import { NOTIFICATION_MESSAGES } from "../configs/notification_config.js";
+import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 
 const highlightTerritories = (territories) => {
   territories.forEach((territoryId) => {
@@ -100,5 +100,8 @@ export const handleInvasion = async (territory, gameState) => {
     return await selectDefender(gameState, selectedTerritoryId);
   }
 
-  showNotification("Invalid Territory", "warning");
+  showNotification(
+    NOTIFICATION_MESSAGES.INVALID_TERRITORY,
+    NOTIFICATION_TYPES.WARNING,
+  );
 };

@@ -1,5 +1,5 @@
 import { CONFIG, STATES } from "./config.js";
-import { mockPlayers } from "./dummy_data.js";
+import { mockPlayers } from "./mock_data.js";
 
 export class Game {
   #activePlayerId;

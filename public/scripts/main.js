@@ -1,8 +1,11 @@
-import { setupListeners } from "./setup_listeners.js";
+import { setupListeners } from "./listeners.js";
 import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
 import { getSetup } from "./server_calls.js";
-import { SETUP_TRANSITION } from "./config.js";
-import { renderCurrentPlayerName, renderGameState } from "./utilities.js";
+import { SETUP_TRANSITION } from "./transition_handlers.js";
+import {
+  renderCurrentPlayerName,
+  renderGameState,
+} from "./utilities/render_UI.js";
 import { setup } from "./features/setup.js";
 
 globalThis.onload = async () => {

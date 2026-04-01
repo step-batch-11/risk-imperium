@@ -1,5 +1,3 @@
-import { setupInvasionPhase, setupReinforcePhase } from "./transition.js";
-
 export const STATES = {
   WAITING: "WAITING",
   SETUP: "SETUP",
@@ -9,9 +7,4 @@ export const STATES = {
   INITIAL_TERRITORY_ALLOCATION: "INITIAL_TERRITORY_ALLOCATION",
   INVASION: "INVASION",
   DEFEND: "DEFEND",
-};
-
-export const SETUP_TRANSITION = {
-  REINFORCE: setupReinforcePhase,
-  INVASION: setupInvasionPhase,
 };

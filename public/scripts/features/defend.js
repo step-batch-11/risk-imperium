@@ -1,4 +1,4 @@
-import { defend } from "../APIS.js";
+import { defend } from "../server_calls.js";
 import { handleCombat } from "./resolve_combat.js";
 
 export const handleDefend = async (territory, gameState) => {

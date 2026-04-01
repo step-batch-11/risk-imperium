@@ -1,9 +1,7 @@
-import { combat } from "../APIS.js";
-import {
-  renderGameState,
-  setUpNextPhase,
-  showNotification,
-} from "../utilities.js";
+import { combat } from "../server_calls.js";
+import { renderGameState } from "../utilities/render_UI.js";
+import { showNotification } from "../utilities/notifications.js";
+import { setUpNextPhase } from "../transition_handlers.js";
 
 const updateTroopsInMap = (territoryId, troopsCount) => {
   const territoryElement = document.querySelector(
@@ -14,9 +12,11 @@ const updateTroopsInMap = (territoryId, troopsCount) => {
 };
 
 const updateMap = (prevData, data) => {
-  updateTroopsInMap(prevData.attackerTerritoryId, data.attackerTroops);
-  updateTroopsInMap(prevData.defenderTerritoryId, data.defenderTroops);
-  showNotification(data.notifyMsg.msg, data.notifyMsg.status);
+  setTimeout(() => {
+    updateTroopsInMap(prevData.attackerTerritoryId, data.attackerTroops);
+    updateTroopsInMap(prevData.defenderTerritoryId, data.defenderTroops);
+    showNotification(data.notifyMsg.msg, data.notifyMsg.status);
+  }, 1100);
 };
 
 const updateDiceTray = (selector, diceValues) => {
@@ -28,12 +28,16 @@ const updateDiceTray = (selector, diceValues) => {
     if (rollValue) {
       dice.innerHTML = `&#${9855 + rollValue};`;
       dice.classList.add("dice-roll");
-      dice.addEventListener("animationend", (e) => {
-        if (e.animationName === "roll") {
-          dice.classList.remove("dice-roll");
-          dice.innerHTML = `&#${9855 + rollValue};`;
-        }
-      }, { once: true });
+      dice.addEventListener(
+        "animationend",
+        (e) => {
+          if (e.animationName === "roll") {
+            dice.classList.remove("dice-roll");
+            dice.innerHTML = `&#${9855 + rollValue};`;
+          }
+        },
+        { once: true },
+      );
     }
   });
 };
