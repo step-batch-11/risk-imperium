@@ -7,8 +7,9 @@ export const getOwnedContinents = (player, continents) => {
 };
 
 export const getAllPlayersDetail = (player, opponents) => {
-  const { id: currentPlayerId, ...details } = player;
-  return { ...opponents, [currentPlayerId]: details };
+  const { id: currentPlayerId } = player;
+
+  return { ...opponents, [currentPlayerId]: player };
 };
 
 export const setTroopLimit = (maxTroops, min = 1) => {

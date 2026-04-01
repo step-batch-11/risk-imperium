@@ -33,7 +33,7 @@ export const CONFIG = {
     },
     16: {
       name: "Ukraine",
-      neighbours: [15, 18, 19, 20, 27, 34],
+      neighbours: [15, 18, 20, 23, 28, 35],
       troopCount: 0,
     },
     17: {
@@ -69,28 +69,28 @@ export const CONFIG = {
     },
     24: {
       name: "East Africa",
-      neighbours: [21, 22, 23, 25, 26, 28],
+      neighbours: [21, 22, 23, 25, 26, 27],
       troopCount: 0,
     },
     25: { name: "Congo", neighbours: [21, 24, 26], troopCount: 0 },
     26: { name: "South Africa", neighbours: [24, 25, 27], troopCount: 0 },
     27: { name: "Madagascar", neighbours: [26, 24], troopCount: 0 },
-    28: { name: "Ural", neighbours: [16, 23, 29, 31], troopCount: 0 },
+    28: { name: "Ural", neighbours: [16, 23, 29, 37, 36], troopCount: 0 },
     29: {
       name: "Siberia",
       neighbours: [28, 30, 31, 33, 36],
       troopCount: 0,
     },
-    30: { name: "Yakutsk", neighbours: [1, 29, 32, 33], troopCount: 0 },
-    31: { name: "Irkutsk", neighbours: [29, 30, 32, 33, 34], troopCount: 0 },
+    30: { name: "Yakutsk", neighbours: [29, 31, 32], troopCount: 0 },
+    31: { name: "Irkutsk", neighbours: [29, 30, 32, 33], troopCount: 0 },
     32: {
       name: "Kamchatka",
-      neighbours: [29, 30, 31, 33, 35],
+      neighbours: [1, 30, 31, 33, 34],
       troopCount: 0,
     },
     33: {
       name: "Mongolia",
-      neighbours: [29, 30, 32, 34, 35],
+      neighbours: [29, 31, 32, 34, 36],
       troopCount: 0,
     },
     34: { name: "Japan", neighbours: [32, 33], troopCount: 0 },
@@ -113,7 +113,7 @@ export const CONFIG = {
       neighbours: [39, 40, 42],
       troopCount: 0,
     },
-    42: { name: "Eastern Australia", neighbours: [40, 41], troopCount: 0 },
+    42: { name: "Eastern Australia", neighbours: [39, 40, 41], troopCount: 0 },
   },
   CONTINENTS: {
     1: {
