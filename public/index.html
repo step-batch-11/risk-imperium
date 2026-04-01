@@ -20,7 +20,7 @@
     <div class="game-viewport">
       <div class="map-layer">
         <div style="color: #ccc; font-style: italic">
-          <svg width="99vw" height="99vh" viewBox="200 100 700 550" id="game">
+          <svg width="100vw" height="100vh" viewBox="200 100 700 550" id="game">
             <!-- Continent Outlines -->
 
             <g id="australia-continent-outline" class="continent-outline">
@@ -976,7 +976,7 @@
       </div>
       <div class="ui-layer">
         <div class="username-display">
-          Playing: <span id="current-player-name"></span>
+          Current Player: <span id="current-player-name"></span>
         </div>
         <div class="sidebar-left">
           <div class="golden-cavalry-circle">
@@ -1037,7 +1037,11 @@
         </div>
 
         <div class="action-menu">
-          <button class="action-btn" id="player-details-button" popovertarget="player-details-container">
+          <button
+            class="action-btn"
+            id="player-details-button"
+            popovertarget="player-details-container"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -1085,13 +1089,13 @@
 
     <dialog id="player-details-container">
       <ul></ul>
-      <button id="close-player-details-button">close</button>
+      <button id="close-player-details-button">Close</button>
     </dialog>
 
     <template id="single-player-detail-template">
       <li class="player-deatils">
         <div class="avatar">
-          <p>Jon</p>
+          <!-- <p>Jon</p> -->
         </div>
 
         <div class="player-info">

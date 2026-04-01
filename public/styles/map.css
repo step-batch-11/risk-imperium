@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=MedievalSharp&display=swap");
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
+@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=MedievalSharp&display=swap");
 
 body {
   font-family: var(--primary-font);
@@ -19,27 +19,27 @@ body {
 }
 
 #australia-continent-outline {
-  stroke: var(--cont-australia)
+  stroke: var(--cont-australia);
 }
 
 #europe-continent-outline {
-  stroke: var(--cont-europe)
+  stroke: var(--cont-europe);
 }
 
 #south-america-continent-outline {
-  stroke: var(--cont-south-america)
+  stroke: var(--cont-south-america);
 }
 
 #north-america-continent-outline {
-  stroke: var(--cont-north-america)
+  stroke: var(--cont-north-america);
 }
 
 #africa-continent-outline {
-  stroke: var(--cont-africa)
+  stroke: var(--cont-africa);
 }
 
 #asia-continent-outline {
-  stroke: var(--cont-asia)
+  stroke: var(--cont-asia);
 }
 
 #sea-routes {
@@ -58,11 +58,11 @@ body {
 }
 
 .territory-name {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 600;
   text-transform: uppercase;
   text-anchor: middle;
-  fill: var(--text-secondary);
+  fill: var(--text-primary);
   pointer-events: none;
 }
 

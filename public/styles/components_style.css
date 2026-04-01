@@ -176,12 +176,17 @@
 #game-state-container {
   border: 1px solid rgba(0, 0, 0, 0.5);
   position: fixed;
-  top: 0;
-  left: 0;
-  padding: 0.2em;
-  background-color: gray;
-  color: white;
+  top: 20px;
+  left: 20px;
+  padding: 0.6em;
+  background-color: hsl(0, 0%, 95%);
+  color: rgb(0, 0, 0);
   z-index: 100;
+  font-size: 1.3em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 12px;
+  font-family: sans-serif;
 }
 
 .notification {
@@ -238,4 +243,3 @@
   width: 60%;
   padding: 5px 3px;
 }
-

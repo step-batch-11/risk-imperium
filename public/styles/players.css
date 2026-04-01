@@ -1,60 +1,60 @@
-[data-player="1"]>path {
+[data-player="1"] > path {
   fill: var(--player-1);
 }
 
-[data-player="2"]>path {
+[data-player="2"] > path {
   fill: var(--player-2);
 }
 
-[data-player="3"]>path {
+[data-player="3"] > path {
   fill: var(--player-3);
 }
 
-[data-player="4"]>path {
+[data-player="4"] > path {
   fill: var(--player-4);
 }
 
-[data-player="5"]>path {
+[data-player="5"] > path {
   fill: var(--player-5);
 }
 
-[data-player="6"]>path {
+[data-player="6"] > path {
   fill: var(--player-6);
 }
 
-[data-player-details="1"] {
+[data-player-id="1"] {
   border: 2px var(--player-1);
 }
 
-[data-player-details="2"] {
+[data-player-id="2"] {
   border: 2px var(--player-2);
 }
 
-[data-player-details="3"] {
+[data-player-id="3"] {
   border: 2px var(--player-3);
 }
 
-[data-player-details="4"] {
+[data-player-id="4"] {
   border: 2px var(--player-4);
 }
 
-[data-player-details="5"] {
+[data-player-id="5"] {
   border: 2px var(--player-5);
 }
 
-[data-player-details="6"] {
+[data-player-id="6"] {
   border: 2px var(--player-6);
-}
-
-#player-details-button {
-  position: relative;
 }
 
 #close-player-details-button {
   position: absolute;
   bottom: 0.5em;
-  margin-left: 3em;
-  width: 15em;
+  margin-left: 1em;
+  width: 20em;
+  padding: 0.12em;
+  font-size: 14px;
+  background-color: rgb(230, 229, 229);
+  border: 1px black solid;
 }
 
 #player-details-container:open {
@@ -62,29 +62,42 @@
   inset: 36% 82%;
   border: none;
   width: 20em;
-  padding: 16px;
-  /* gap: 10px;
+  padding: 0.8em 0.8em 2.2em 0.8em;
   display: flex;
-  flex-direction: column; */
-}
-
-.player-info {
-  border: none;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 12px;
 }
 
 .player-deatils {
   display: flex;
   border: 1px solid rgb(224, 224, 224);
   padding: 6px;
-  gap: 10px;
+  gap: 14px;
+  border-radius: 10px;
 }
 
 .avatar {
-  border: 1px solid red;
-  width: 50px;
+  border: 1px solid rgb(0, 0, 0);
+  width: 4.5em;
   aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.player-info {
+  font-family: sans-serif;
+  line-height: 1.2em;
+}
+
+.player-info .name {
+  line-height: 2em;
+  font-weight: 700;
+}
+
+.username-display{
+  font-family: sans-serif;
+  font-size: 1.4em;
 }
