@@ -213,12 +213,19 @@
   padding: 7px 20px;
   border-radius: 6px;
   min-width: 200px;
+  top: 20px;
+  left: 40%;
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .notification.success {
   background: var(--color-success);
+  opacity: 1;
+}
+
+.notification.fail {
+  background: var(--color-fail);
   opacity: 1;
 }
 

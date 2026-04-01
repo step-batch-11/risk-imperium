@@ -16,7 +16,7 @@ const updateTroopsInMap = (territoryId, troopsCount) => {
 const updateMap = (prevData, data) => {
   updateTroopsInMap(prevData.attackerTerritoryId, data.attackerTroops);
   updateTroopsInMap(prevData.defenderTerritoryId, data.defenderTroops);
-  showNotification(data.msg, "success");
+  showNotification(data.notifyMsg.msg, data.notifyMsg.status);
 };
 
 const updateDiceTray = (selector, diceValues) => {

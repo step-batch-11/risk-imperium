@@ -254,8 +254,8 @@ export class Game {
 
   #constructCombatMsg(combatResult) {
     return combatResult.attackerLoss < combatResult.defenderLoss
-      ? "Attack successful"
-      : "Attack failed";
+      ? { status: "success", msg: "Attack Successful" }
+      : { status: "fail", msg: "Attack Unsuccessful" };
   }
 
   resolveCombat() {
@@ -263,7 +263,7 @@ export class Game {
     const attackerDice = this.#rollDice(this.#stateDetails.attackerTroops);
     const defenderDice = this.#rollDice(this.#stateDetails.defenderTroops);
     const combatResult = this.#calculateLoss(defenderDice, attackerDice);
-    const msg = this.#constructCombatMsg(combatResult);
+    const notifyMsg = this.#constructCombatMsg(combatResult);
     const updatedTroops = this.#updateTroopCount(
       attackerTerritoryId,
       defenderTerritoryId,
@@ -273,7 +273,7 @@ export class Game {
 
     return {
       action: this.#state,
-      data: { attackerDice, defenderDice, msg, ...updatedTroops },
+      data: { attackerDice, defenderDice, notifyMsg, ...updatedTroops },
     };
   }
 
