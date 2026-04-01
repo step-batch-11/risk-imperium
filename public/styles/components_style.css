@@ -10,10 +10,10 @@
 }
 
 .golden-cavalry-circle {
-  width: 150px;
-  height: 150px;
-  border: var(--ui-border);
-  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  /* border: var(--ui-border);
+  border-radius: 50%; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +91,7 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 60px;
+  gap: 9.5rem;
 }
 
 .dice-group-label {
@@ -118,15 +118,21 @@
 }
 
 .die-slot {
-  width: 40px;
-  height: 40px;
-  background: var(--color-surface);
-  border: var(--ui-border);
-  border-radius: 8px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  width: 3rem;
+  aspect-ratio: 1 / 1;
+  font-size: 2.2rem;
+  border: var(--ui-border);
+  border-radius: 0.4rem;
+  background: var(--color-surface);
+  line-height: 1;
+}
+
+#defender-dice {
+  margin-left: 6rem;
 }
 
 .action-menu {
@@ -199,4 +205,34 @@
   background-color: gray;
   color: white;
   z-index: 100;
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--color-surface);
+  padding: 7px 20px;
+  border-radius: 6px;
+  min-width: 200px;
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.notification.success {
+  background: var(--color-success);
+  opacity: 1;
+}
+
+.notification.info {
+  background: var(--color-info);
+  opacity: 1;
+}
+
+.notification.warning {
+  background: var(--color-warning);
+  opacity: 1;
 }
