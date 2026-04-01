@@ -139,8 +139,8 @@ describe("Game", () => {
           attackerDice: [2, 2, 2],
           defenderDice: [2],
           msg: "Attack successful",
-          attackerTroops: 1,
-          defenderTroops: 0,
+          attackerTroops: 0,
+          defenderTroops: 1,
         },
       };
       assertEquals(action, expected.action);

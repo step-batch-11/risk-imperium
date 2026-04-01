@@ -1,5 +1,11 @@
 import { SETUP_TRANSITION } from "./config.js";
 
+export const NOTIFY_STATUS = {
+  WARNING: "warning",
+  SUCCESS: "success",
+  INFO: "info",
+};
+
 export const getOwnedContinents = (player, continents) => {
   return Object.values(continents).filter((continent) => {
     continent.territories.every((territory) =>
@@ -79,8 +85,24 @@ export const setUpNextPhase = (gameState, nextState) => {
   if (gameState.state === nextState) {
     return;
   }
+
   gameState.state = nextState;
   if (nextState in SETUP_TRANSITION) {
     return SETUP_TRANSITION[nextState](gameState);
   }
+};
+
+export const notifyNotOwned = (gameState, id) => {
+  const territoryName = gameState.territories[id].name;
+  const message = `${territoryName} isn't under your control`;
+
+  showNotification(message, NOTIFY_STATUS.WARNING);
+};
+
+export const notifyDeployment = (gameState, data, troopCount) => {
+  const player = gameState.player.name;
+  const territoryName = gameState.territories[data.territoryId].name;
+
+  const message = `${player} deployed ${troopCount} troops in ${territoryName}`;
+  showNotification(message, NOTIFY_STATUS.SUCCESS);
 };

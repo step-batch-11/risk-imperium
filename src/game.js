@@ -230,15 +230,14 @@ export class Game {
   }
 
   #calculateLoss(defenderDice, attackerDice) {
-    return defenderDice.reduce(
-      (acc, dice, index) => {
-        attackerDice[index] < dice[index]
-          ? acc.attackerLoss++
-          : acc.defenderLoss++;
-        return acc;
-      },
-      { attackerLoss: 0, defenderLoss: 0 },
-    );
+    const combatResult = { attackerLoss: 0, defenderLoss: 0 };
+    const dicesCount = Math.min(defenderDice.length, attackerDice.length);
+    for (let index = 0; index < dicesCount; index++) {
+      attackerDice[index] <= defenderDice[index]
+        ? combatResult.attackerLoss++
+        : combatResult.defenderLoss++;
+    }
+    return combatResult;
   }
 
   #updateTroopCount(attackerTerritoryId, defenderTerritoryId, combatResult) {

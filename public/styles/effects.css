@@ -20,8 +20,10 @@ body {
 }
 
 .selected > .territory-outline {
-  /* transform: scale(1.5); */
-  stroke: var(--color-highlight);
+  stroke: green;
+  stroke-opacity: 1;
+  fill: rgb(8, 204, 8);
+  fill-opacity: 0.5;
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 
@@ -30,19 +32,80 @@ body {
 }
 
 .dice-roll {
-  animation: roll 0.5s linear;
+  color: transparent !important;
+}
+
+.dice-roll::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  inset: 0;
+  color: var(--text-primary);
+  justify-content: center;
+  align-items: center;
+  animation:
+    dice-faces 0.2s step-end infinite,
+    roll 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
+
+@keyframes dice-faces {
+  0% {
+    content: "\2680";
+  }
+
+  16% {
+    content: "\2681";
+  }
+
+  32% {
+    content: "\2682";
+  }
+
+  48% {
+    content: "\2683";
+  }
+
+  64% {
+    content: "\2684";
+  }
+
+  80% {
+    content: "\2685";
+  }
 }
 
 @keyframes roll {
   0% {
-    color: transparent;
+    transform: scale(0) rotate;
+    opacity: 0;
   }
 
-  50% {
-    color: transparent;
+  15% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.1);
+  }
+
+  60% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(1.05);
+  }
+
+  90% {
+    transform: scale(1);
   }
 
   100% {
-    color: var(--text-secondary);
+    transform: scale(1);
   }
 }
