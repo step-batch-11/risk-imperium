@@ -20,8 +20,13 @@ body {
 }
 
 .selected > .territory-outline {
-  /* transform: scale(1.5); */
-  stroke: var(--color-highlight);
+  /* transform: scale(1.005);
+  transform-origin: center;
+  transform-box: fill-box; */
+  stroke: black;
+  stroke-opacity: 0.3;
+  fill: rgb(8, 204, 8);
+  fill-opacity: 0.5;
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 

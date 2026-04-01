@@ -16,7 +16,7 @@ export const invade = async (invasionDetails) => {
   }
 };
 
-export const reinforce = async (data) => {
+export const sendReinforceRequest = async (data) => {
   const reqData = {
     userActions: USER_ACTIONS.REINFORCE,
     data,
