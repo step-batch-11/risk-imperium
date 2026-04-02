@@ -388,7 +388,8 @@ export class Game {
     if (this.#stateDetails.hasCaptured) {
       card = this.#cards.drawCard();
       this.#stateDetails.hasCaptured = false;
-      this.#players[this.#activePlayerId].cards.push(card);
+      const activePlayer = this.#getActivePlayer();
+      activePlayer.cards.push(card);
     }
     this.#state = STATES.REINFORCE;
     this.#setReinforcements();

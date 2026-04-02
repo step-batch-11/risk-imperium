@@ -4,6 +4,7 @@ import { assert, assertEquals, assertThrows } from "@std/assert";
 import { STATES } from "../src/config.js";
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
+import getCardState from "../data/states/getCard.json" with { type: "json" };
 
 import fortification from "../data/states/fortification.json" with {
   type: "json",
@@ -18,6 +19,7 @@ import initialReinforcementState from "../data/states/init-reinforcement.json" w
   type: "json",
 };
 import { ContinentsHandler } from "../src/models/continents_handler.js";
+import { Cards } from "../src/models/cards.js";
 
 describe("Game", () => {
   let game;
@@ -386,6 +388,26 @@ describe("Game", () => {
       game.skipInvasion();
       const state = game.getGameState();
       assertEquals(state, STATES.FORTIFICATION);
+    });
+  });
+
+  describe("Get a card ", () => {
+    it("should not get a card on unsuccesful invasion and move the phase reinforcement", () => {
+      game.loadGameState(getCardState);
+      const res = game.getCard();
+      assertEquals(res.action, STATES.REINFORCE);
+      assertEquals(res.data.card, undefined);
+    });
+    it("should get a card on unsuccesful invasion and move the phase reinforcement", () => {
+      getCardState.stateDetails.hasCaptured = true;
+      const cards = new Cards();
+      const continent = new ContinentsHandler();
+      const gme = new Game(continent, cards);
+      gme.loadGameState(getCardState);
+      const res = gme.getCard();
+      const typeOfCard = typeof res.data.card;
+      assertEquals(res.action, STATES.REINFORCE);
+      assertEquals(typeOfCard, "string");
     });
   });
 });

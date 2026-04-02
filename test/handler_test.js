@@ -188,4 +188,26 @@ describe("Api Handler", () => {
       assertEquals(data.action, STATES.WAITING);
     });
   });
+  describe("Get card", () => {
+    it("testing get card ", async () => {
+      const game = {
+        getCard: () => {
+          return "2";
+        },
+      };
+      const context = {
+        get: (name) => {
+          if (name === "game") {
+            return game;
+          }
+        },
+        req: {
+          json: () => ({ userActions: STATES.GET_CARD, data: [] }),
+        },
+        json: (data) => data,
+      };
+      const data = await handleUserActions(context);
+      assertEquals(data, "2");
+    });
+  });
 });
