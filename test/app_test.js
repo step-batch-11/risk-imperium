@@ -82,36 +82,67 @@ describe("App Handler", () => {
   });
 
   describe("DEV Mode", () => {
-    it("should provide a path for /:state for valid states in dev mode", async () => {
-      const configName = "start-no-setup";
-      let configToLoad = null;
+    describe("Load Game", () => {
+      it("should provide a path for /:state for valid states in dev mode", async () => {
+        const configName = "start-no-setup";
+        let configToLoad = null;
 
-      const reader = async (fileName) => {
-        configToLoad = await fileName;
-        return JSON.stringify({});
-      };
+        const reader = async (fileName) => {
+          configToLoad = await fileName;
+          return JSON.stringify({});
+        };
 
-      const game = {
-        loadGameState: (data) => {
-          assertEquals(data, {});
-        },
-      };
-      const app = createApp(game, true, { readTextFile: reader });
-      const res = await app.request(`/${configName}`);
-      assertEquals(res.status, 302);
-      assertEquals(configToLoad, `./data/states/${configName}.json`);
+        const game = {
+          loadGameState: (data) => {
+            assertEquals(data, {});
+          },
+        };
+        const app = createApp(game, true, { readTextFile: reader });
+        const res = await app.request(`/${configName}`);
+        assertEquals(res.status, 302);
+        assertEquals(configToLoad, `./data/states/${configName}.json`);
+      });
+
+      it("should provide not found for /:state for invalid states in dev mode", async () => {
+        const game = {};
+        const reader = async () => {
+          throw await new Error("Not found");
+        };
+
+        const app = createApp(game, true, { readTextFile: reader });
+        const res = await app.request("/non-existing-setup");
+        assertEquals(res.status, 404);
+        await res.text();
+      });
     });
 
-    it("should provide not found for /:state for invalid states in dev mode", async () => {
-      const game = {};
-      const reader = async () => {
-        throw await new Error("Not found");
-      };
+    describe("Save Game", () => {
+      it("should provide a path for /save/:name for in dev mode to store gameState", async () => {
+        let actualStoringPath = null;
+        let actualStoringData = null;
 
-      const app = createApp(game, true, { readTextFile: reader });
-      const res = await app.request("/non-existing-setup");
-      assertEquals(res.status, 404);
-      await res.text();
+        const configName = "sampleSave";
+        const gameData = { data: "Some game state" };
+
+        const writer = (path, data) => {
+          actualStoringPath = path;
+          console.log("here", data, path);
+
+          actualStoringData = data;
+        };
+
+        const game = {
+          getSavableGameState: () => {
+            return gameData;
+          },
+        };
+
+        const app = createApp(game, true, { writeTextFile: writer });
+        const res = await app.request(`/save/${configName}`);
+        assertEquals(res.status, 302);
+        assertEquals(actualStoringPath, `./data/states/${configName}.json`);
+        assertEquals(actualStoringData, JSON.stringify(gameData));
+      });
     });
   });
 });
