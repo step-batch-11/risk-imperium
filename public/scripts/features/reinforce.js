@@ -6,10 +6,7 @@ import {
   NOTIFICATION_MESSAGES,
   NOTIFICATION_TYPES,
 } from "../configs/notification_config.js";
-import {
-  renderGameState,
-  renderRemainingTroopsToDeploy,
-} from "../utilities/render_UI.js";
+import { renderRemainingTroopsToDeploy } from "../utilities/render_UI.js";
 
 const notifyNotOwned = (gameState, id) => {
   const territoryName = gameState.territories[id].name;
@@ -34,14 +31,11 @@ const updateRemainingTroops = (remainingTroops) => {
   }
 };
 
-const updateAfterDeploy = (gameState, _territory, response, troopCount) => {
+const updateAfterDeploy = (gameState, response, troopCount) => {
   const { action: nextState, data: { updatedTerritory, remainingTroops } } =
     response;
 
-  renderGameState(nextState);
-
   updateTroopsInTerritories(gameState, updatedTerritory);
-
   const updatedTerritoryId = updatedTerritory[0].territoryId;
 
   notifyDeployment(gameState, updatedTerritoryId, troopCount);
@@ -49,7 +43,7 @@ const updateAfterDeploy = (gameState, _territory, response, troopCount) => {
   setUpNextPhase(gameState, nextState);
 };
 
-const handleCustomDeployment = (gameState, territory, territoryId) => {
+const handleCustomDeployment = (gameState, territoryId) => {
   const dialog = document.querySelector("#deploy-troops-container");
   const form = dialog.querySelector("#deploy-troops-form");
   const input = form.querySelector("input");
@@ -60,7 +54,7 @@ const handleCustomDeployment = (gameState, territory, territoryId) => {
     e.preventDefault();
 
     const troopCount = Number(input.value);
-    await deployTroops(gameState, territory, territoryId, troopCount);
+    await deployTroops(gameState, territoryId, troopCount);
 
     const remainingTroops = Number(input.max) - troopCount;
     setTroopLimit(remainingTroops);
@@ -72,13 +66,12 @@ const handleCustomDeployment = (gameState, territory, territoryId) => {
 
 const deployTroops = async (
   gameState,
-  territory,
   territoryId,
   troopCount = 1,
 ) => {
   try {
     const res = await sendReinforceRequest({ territoryId, troopCount });
-    updateAfterDeploy(gameState, territory, res, troopCount);
+    updateAfterDeploy(gameState, res, troopCount);
   } catch {
     showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
   }
@@ -89,7 +82,7 @@ const handleReinforcement = (territory, gameState, handleDeployment) => {
   if (!isOwned(gameState, territoryId)) {
     return notifyNotOwned(gameState, territoryId);
   }
-  handleDeployment(gameState, territory, territoryId);
+  handleDeployment(gameState, territoryId);
 };
 
 export const initialReinforcement = (territory, gameState) => {

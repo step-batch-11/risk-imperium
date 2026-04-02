@@ -48,3 +48,11 @@ export const updateTroopsInTerritories = (gameState, territories) => {
     gameState.territories[territoryId].troopCount = troopCount;
   });
 };
+
+export const delay = (duration) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1);
+    }, duration);
+  });
+};

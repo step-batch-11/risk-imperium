@@ -3,7 +3,10 @@ import { sendPostRequest } from "./server_calls.js";
 import { setTroopLimit } from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
-import { renderRemainingTroopsToDeploy } from "./utilities/render_UI.js";
+import {
+  renderGameState,
+  renderRemainingTroopsToDeploy,
+} from "./utilities/render_UI.js";
 import {
   highlightTerritories,
   removeHighlights,
@@ -51,6 +54,8 @@ export const setUpNextPhase = (gameState, nextState) => {
   if (gameState.state === nextState) {
     return;
   }
+
+  renderGameState(nextState);
 
   gameState.state = nextState;
   if (nextState in SETUP_TRANSITION) {

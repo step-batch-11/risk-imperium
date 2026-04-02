@@ -1,5 +1,4 @@
 import { invade } from "../server_calls.js";
-import { renderGameState } from "../utilities/render_UI.js";
 import { removeHighlights } from "../utilities/highlight.js";
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
@@ -78,7 +77,6 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
   deleteInvadeDetails(gameState);
   removeHighlights("selected");
 
-  renderGameState(newState);
   setUpNextPhase(gameState, newState);
 };
 

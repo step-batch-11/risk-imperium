@@ -1,10 +1,13 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
 import { handleUserActions } from "./handlers/user_actions.js";
+import { handleGameSetup } from "./handler.js";
 
-import { handleGameSetup, handleGetGameState } from "./handler.js";
-
-export const createApp = (game, isDevMode, { logger, readTextFile } = {}) => {
+export const createApp = (
+  game,
+  isDevMode,
+  { logger, readTextFile, writeTextFile } = {},
+) => {
   const app = new Hono();
 
   if (logger) {
@@ -17,7 +20,6 @@ export const createApp = (game, isDevMode, { logger, readTextFile } = {}) => {
   });
 
   app.get("/setup", handleGameSetup);
-  app.get("/get-game-state", handleGetGameState);
 
   app.post("/user-actions", handleUserActions);
 
@@ -31,6 +33,14 @@ export const createApp = (game, isDevMode, { logger, readTextFile } = {}) => {
       }).catch(() => {
         return c.body("Bad Request", 404);
       });
+    });
+
+    app.get("/save/:name", (c) => {
+      const { name } = c.req.param();
+      const gameState = game.getSavableGameState();
+      const savingData = JSON.stringify(gameState);
+      writeTextFile(`./data/states/${name}.json`, savingData);
+      return c.redirect("/");
     });
   }
   app.get("*", serveStatic({ root: "./public" }));

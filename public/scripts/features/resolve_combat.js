@@ -1,23 +1,8 @@
 import { combat } from "../server_calls.js";
-import { renderGameState } from "../utilities/render_UI.js";
+
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
-
-const updateTroopsInMap = (territoryId, troopsCount) => {
-  const territoryElement = document.querySelector(
-    `[data-territory-id="${territoryId}"]`,
-  );
-  const troopCountElement = territoryElement.querySelector(".troop-count");
-  troopCountElement.textContent = troopsCount;
-};
-
-const updateMap = (prevData, data) => {
-  setTimeout(() => {
-    updateTroopsInMap(prevData.attackerTerritoryId, data.attackerTroops);
-    updateTroopsInMap(prevData.defenderTerritoryId, data.defenderTroops);
-    showNotification(data.notifyMsg.msg, data.notifyMsg.status);
-  }, 1100);
-};
+import { delay, updateTroopsInTerritories } from "../utilities.js";
 
 const updateDiceTray = (selector, diceValues) => {
   const dieElements = document.querySelectorAll(`${selector} .die-slot`);
@@ -44,11 +29,15 @@ const updateDiceTray = (selector, diceValues) => {
 
 export const handleCombat = async (prevData, _action, gameState) => {
   const { action: newState, data } = await combat(prevData);
+  console.log("COMBAT", { data });
+
   updateDiceTray("#attacker-dice", data.attackerDice);
   updateDiceTray("#defender-dice", data.defenderDice);
 
-  renderGameState(newState);
-  updateMap(prevData, data);
+  await delay(1100);
+
+  updateTroopsInTerritories(gameState, data.updatedTerritories);
+  showNotification(data.notifyMsg.msg, data.notifyMsg.status);
 
   setUpNextPhase(gameState, newState);
 };

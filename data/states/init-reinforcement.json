@@ -582,6 +582,9 @@
       "armies": 2
     }
   },
-  "state": "INVASION",
-  "stateDetails": {}
+  "state": "INITIAL_REINFORCEMENT",
+  "stateDetails": {
+    "initialTroopLimit": 13,
+    "remainingTroopsToDeploy": 14
+  }
 }
