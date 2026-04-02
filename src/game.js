@@ -38,6 +38,7 @@ export class Game {
 
   skipFortification() {
     this.#updateState(STATES.REINFORCE);
+    this.#setReinforcements();
   }
 
   #updateState(state) {
@@ -114,6 +115,7 @@ export class Game {
 
     if (this.#stateDetails.remainingTroopsToDeploy <= 0) {
       this.#state = STATES.REINFORCE;
+      this.#setReinforcements();
     }
 
     return {
@@ -166,13 +168,38 @@ export class Game {
     );
   }
 
+  #getOwnedContinents() {
+    const activePlayer = this.#getActivePlayer();
+    return Object.values(this.#continents).filter((continent) => {
+      return continent.territories.every((territory) =>
+        activePlayer.territories.includes(territory)
+      );
+    });
+  }
+
+  #getContinentsBonus() {
+    const ownedContinents = this.#getOwnedContinents();
+    return ownedContinents.reduce((total, { armies }) => total + armies, 0);
+  }
+
+  #getOwnedTerritoryCount() {
+    return this.#getActivePlayer().territories.length;
+  }
+
+  #getActivePlayer() {
+    return this.#players.find((player) => player.id === this.#activePlayerId);
+  }
+
   #setReinforcements() {
-    this.#stateDetails.remainingTroopsToDeploy = 3;
+    const territoryCount = this.#getOwnedTerritoryCount();
+    const continentBonus = this.#getContinentsBonus();
+    const troopsForTerritory = Math.max(3, Math.floor(territoryCount / 3));
+    const totalTroops = troopsForTerritory + continentBonus;
+    this.#stateDetails.remainingTroopsToDeploy = totalTroops;
   }
 
   setupNextPhase() {
     if (this.#state === STATES.INITIAL_REINFORCEMENT) {
-      this.#stateDetails.remainingTroopsToDeploy = 13;
       return {
         action: this.#state,
         data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
@@ -180,7 +207,6 @@ export class Game {
     }
 
     if (this.#state === STATES.REINFORCE) {
-      this.#setReinforcements();
       return {
         action: this.#state,
         data: { troopsToReinforce: this.#stateDetails.remainingTroopsToDeploy },
@@ -299,6 +325,7 @@ export class Game {
       defenderTerritoryId,
       combatResult,
     );
+
     this.#state = STATES.FORTIFICATION;
 
     return {
