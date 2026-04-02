@@ -25,10 +25,8 @@ const renderPlayerDetails = (player, continents) => {
   return clone;
 };
 
-export const setup = (gameState) => {
-  const playerDetailsDialog = document.querySelector(
-    "#player-details-container",
-  );
+export const renderPlayersDetails = (gameState) => {
+  const playerDetailsDialog = document.querySelector("#players-info");
 
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);
 
@@ -36,6 +34,12 @@ export const setup = (gameState) => {
     renderPlayerDetails(player, gameState.continents)
   );
 
+  playerDetailsDialog.replaceChildren();
   playerDetailsDialog.append(...allPlayersDetails);
+  return players;
+};
+
+export const setup = (gameState) => {
+  const players = renderPlayersDetails(gameState);
   addListenersToPlayerIcon(players, gameState.continents);
 };

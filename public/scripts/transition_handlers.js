@@ -1,5 +1,5 @@
 import { APIs } from "./configs/APIS.js";
-import { sendPostRequest } from "./server_calls.js";
+import { sendPostRequest, skipFortificationRequest } from "./server_calls.js";
 import { setTroopLimit } from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
@@ -44,10 +44,29 @@ const setupInvasionPhase = (gameState) => {
   highlightTerritories(attackableTerritories);
 };
 
+export const setupFortification = (gameState) => {
+  const skipButtonTemplate = document.querySelector(
+    "#skip-button-template",
+  );
+
+  const cloneNode = skipButtonTemplate.content.cloneNode(true);
+  const body = document.querySelector("body");
+  const skipButtonElement = cloneNode.querySelector("#skip-button");
+
+  skipButtonElement.addEventListener("click", async () => {
+    const { action: newState } = await skipFortificationRequest();
+
+    setUpNextPhase(gameState, newState);
+    skipButtonElement.remove();
+  });
+  body.append(cloneNode);
+};
+
 export const SETUP_TRANSITION = {
   [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
   [STATES.REINFORCE]: setupReinforcePhase,
   [STATES.INVASION]: setupInvasionPhase,
+  [STATES.FORTIFICATION]: setupFortification,
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

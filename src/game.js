@@ -29,7 +29,24 @@ export class Game {
       defenderTerritoryId: "22",
       attackerTroops: 3,
       defenderTroops: 1,
+      hasCaptured: false,
     };
+  }
+
+  getGameState() {
+    return this.#state;
+  }
+
+  skipFortification() {
+    this.#updateState(STATES.REINFORCE);
+    this.#setReinforcements();
+  }
+
+  #updateState(state) {
+    if (state in STATES) {
+      this.#state = state;
+    }
+    return state;
   }
 
   getSetup(playerId) {
@@ -291,19 +308,56 @@ export class Game {
       : { status: "fail", msg: "Attack Unsuccessful" };
   }
 
+  #getPlayerById(territoryId) {
+    return this.#players.find((player) =>
+      player.territories.includes(territoryId)
+    );
+  }
+
+  #getIndexOf(territories, defenderTerritoryId) {
+    return territories.findIndex((territoryId) =>
+      territoryId === defenderTerritoryId
+    );
+  }
+
+  captureTerritory(attackerTroops) {
+    const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
+    this.#stateDetails.hasCaptured = true;
+    const defender = this.#getPlayerById(defenderTerritoryId);
+    const attacker = this.#getPlayerById(attackerTerritoryId);
+    const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
+    attacker.territories.push(...defender.territories.splice(index, 1));
+    this.#territories[defenderTerritoryId].troopCount = attackerTroops;
+    this.#territories[attackerTerritoryId].troopCount -= attackerTroops;
+    return [
+      {
+        territoryId: attackerTerritoryId,
+        troopCount: this.#territories[attackerTerritoryId].troopCount,
+      },
+      {
+        territoryId: defenderTerritoryId,
+        troopCount: this.#territories[defenderTerritoryId].troopCount,
+      },
+    ];
+  }
+
   resolveCombat() {
     const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
     const attackerDice = this.#rollDice(this.#stateDetails.attackerTroops);
     const defenderDice = this.#rollDice(this.#stateDetails.defenderTroops);
     const combatResult = this.#calculateLoss(defenderDice, attackerDice);
     const notifyMsg = this.#constructCombatMsg(combatResult);
-    const updatedTerritories = this.#updateTroopCount(
+    let updatedTerritories = this.#updateTroopCount(
       attackerTerritoryId,
       defenderTerritoryId,
       combatResult,
     );
-    this.#state = STATES.REINFORCE;
-    this.#setReinforcements();
+
+    if (this.#territories[defenderTerritoryId].troopCount === 0) {
+      this.#stateDetails.hasCaptured = true;
+      updatedTerritories = this.captureTerritory(attackerDice.length);
+    }
+    this.#state = STATES.FORTIFICATION;
 
     return {
       action: this.#state,
@@ -312,6 +366,7 @@ export class Game {
         defenderDice,
         notifyMsg,
         updatedTerritories,
+        hasCaptured: this.#stateDetails.hasCaptured,
       },
     };
   }

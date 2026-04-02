@@ -10,8 +10,10 @@
 }
 
 .golden-cavalry-circle {
-  width: 100px;
-  height: 100px;
+  position: relative;
+  top: 20px;
+  width: 60px;
+  height: 60px;
   /* border: var(--ui-border);
   border-radius: 50%; */
   /* background: var(--color-surface); */
@@ -255,4 +257,20 @@
   outline: none;
   padding: 8px;
   border-radius: 5px;
+}
+
+#skip-button {
+  z-index: 10;
+  position: fixed;
+  right: 3%;
+  bottom: 20%;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background: white;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+}
+
+#skip-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
 }

@@ -49,3 +49,11 @@ export const combat = async (data) => {
 
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
+
+export const skipFortificationRequest = async () => {
+  const reqData = {
+    userActions: USER_ACTIONS.SKIP_FORTIFICATION,
+    data: [],
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
