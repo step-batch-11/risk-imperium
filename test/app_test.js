@@ -37,7 +37,7 @@ describe("App Handler", () => {
         method: "POST",
         headers: { "content-type": "applications/json" },
         body: JSON.stringify({
-          "userActions": "REINFORCE",
+          userActions: "REINFORCE",
           data: { territoryId: 37, troopCount: 1 },
         }),
       });

@@ -1,11 +1,15 @@
 import { assertEquals } from "@std/assert/equals";
 import { handleGameSetup } from "../src/handler.js";
-import { describe, it } from "@std/testing/bdd";
+import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
 import { assertRejects } from "@std/assert/rejects";
 import { handleUserActions } from "../src/handlers/user_actions.js";
 
 describe("Api Handler", () => {
+  let game;
+  beforeEach(() => {
+    game = new Game();
+  });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
       const setupData = { data: "this is the setup Data" };
@@ -26,7 +30,6 @@ describe("Api Handler", () => {
 
   describe("handleUserActions", () => {
     it("Should handle user actions when called", async () => {
-      const game = new Game();
       game.initTerritories();
       const context = {
         get: () => game,
@@ -54,7 +57,6 @@ describe("Api Handler", () => {
     });
 
     it("SETUP : Should handle user actions when called", async () => {
-      const game = new Game();
       game.initTerritories();
       for (let i = 1; i <= 13; i++) {
         game.reinforce({ territoryId: 37, troopCount: 1 });

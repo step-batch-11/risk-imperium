@@ -3,7 +3,7 @@ import { mockPlayers } from "./mock_data.js";
 
 export class Game {
   #activePlayerId;
-  #territory;
+  #territories;
   #players;
   #continents;
   #state;
@@ -18,7 +18,7 @@ export class Game {
   ) {
     this.#randomFunction = randomFunction;
     this.#activePlayerId = players[0].id;
-    this.#territory = territories;
+    this.#territories = territories;
     this.#players = players;
     this.#continents = continents;
     this.#state = STATES.SETUP;
@@ -45,7 +45,7 @@ export class Game {
 
     return {
       continents: this.#continents,
-      territories: this.#territory,
+      territories: this.#territories,
       player: { ...currentPlayerDetails },
       opponents: opponentsDetails,
       cards: [],
@@ -65,11 +65,12 @@ export class Game {
   }
 
   initTerritories() {
-    const territoryIds = this.#shuffleTerritories(Object.keys(this.#territory));
+    const territoryIds = this.#shuffleTerritories(
+      Object.keys(this.#territories),
+    );
     this.#initTerritory();
-    // this.#assignTerritories(territoryIds);
     territoryIds.forEach((territoryId, playerIndex) => {
-      const territory = this.#territory[territoryId];
+      const territory = this.#territories[territoryId];
       territory.troopCount = 1;
       const player = this.#players[playerIndex % this.#players.length];
       player.territories.push(Number(territoryId));
@@ -78,11 +79,11 @@ export class Game {
     this.#state = STATES.INITIAL_REINFORCEMENT;
     this.#stateDetails.remainingTroopsToDeploy = 13;
 
-    return { players: this.#players, territories: this.#territory };
+    return { players: this.#players, territories: this.#territories };
   }
 
   initialReinforcement(territoryId, troopCount) {
-    const territory = this.#territory[territoryId];
+    const territory = this.#territories[territoryId];
 
     if (troopCount !== 1) {
       return {
@@ -110,7 +111,7 @@ export class Game {
   }
 
   reinforce({ territoryId, troopCount }) {
-    const territory = this.#territory[territoryId];
+    const territory = this.#territories[territoryId];
 
     if (this.#isValidTroopCount(troopCount)) {
       return {
@@ -178,7 +179,7 @@ export class Game {
   }
 
   #validDefender({ attackerTerritoryId, defenderTerritoryId }) {
-    const neighbours = this.#territory[attackerTerritoryId].neighbours;
+    const neighbours = this.#territories[attackerTerritoryId].neighbours;
 
     const isNeighbour = neighbours.includes(defenderTerritoryId);
     const player = this.#players.find(({ id }) => id === this.#activePlayerId);
@@ -187,7 +188,8 @@ export class Game {
   }
 
   #isValidAttackerTroopsCount({ attackerTerritoryId, attackerTroops }) {
-    const availableTroopCount = this.#territory[attackerTerritoryId].troopCount;
+    const availableTroopCount =
+      this.#territories[attackerTerritoryId].troopCount;
     const isInRange = attackerTroops <= 3 && attackerTroops > 0;
 
     return availableTroopCount > attackerTroops && isInRange;
@@ -248,8 +250,8 @@ export class Game {
   }
 
   #updateTroopCount(attackerTerritoryId, defenderTerritoryId, combatResult) {
-    const attackerTerritory = this.#territory[attackerTerritoryId];
-    const defenderTerritory = this.#territory[defenderTerritoryId];
+    const attackerTerritory = this.#territories[attackerTerritoryId];
+    const defenderTerritory = this.#territories[defenderTerritoryId];
     attackerTerritory.troopCount -= combatResult.attackerLoss;
     defenderTerritory.troopCount -= combatResult.defenderLoss;
 
@@ -298,7 +300,7 @@ export class Game {
   getSavableGameState() {
     return {
       activePlayerId: this.#activePlayerId,
-      territory: this.#territory,
+      territories: this.#territories,
       players: this.#players,
       continents: this.#continents,
       state: this.#state,
@@ -309,14 +311,14 @@ export class Game {
   loadGameState(gameState) {
     const {
       activePlayerId,
-      territory,
+      territories,
       players,
       continents,
       state,
       stateDetails,
     } = gameState;
     this.#activePlayerId = activePlayerId;
-    this.#territory = territory;
+    this.#territories = territories;
     this.#players = players;
     this.#continents = continents;
     this.#state = state;
