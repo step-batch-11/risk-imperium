@@ -2,7 +2,11 @@ import { combat } from "../server_calls.js";
 
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
-import { delay, updateTroopsInTerritories } from "../utilities.js";
+import {
+  delay,
+  getTerritoryElementById,
+  updateTroopsInTerritories,
+} from "../utilities.js";
 import { renderPlayersDetails } from "./setup.js";
 
 const updateDiceTray = (selector, diceValues) => {
@@ -51,7 +55,11 @@ const captureTerritory = (
 
   const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
   const index = getIndexOf(defender.territories, defenderTerritoryId);
-
+  const territoryElement = getTerritoryElementById(
+    gameState.territories,
+    defenderTerritoryId,
+  );
+  territoryElement.setAttribute("data-player", gameState.player.id);
   gameState.player.territories.push(...defender.territories.splice(index, 1));
 
   const msg = `${gameState.player.name} captured ${

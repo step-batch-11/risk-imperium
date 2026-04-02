@@ -331,14 +331,17 @@ export class Game {
       territoryId === defenderTerritoryId
     );
   }
-
-  captureTerritory(attackerTroops) {
-    const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
-    this.#stateDetails.hasCaptured = true;
+  #updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId) {
     const defender = this.#getPlayerById(defenderTerritoryId);
     const attacker = this.#getPlayerById(attackerTerritoryId);
     const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
     attacker.territories.push(...defender.territories.splice(index, 1));
+  }
+
+  captureTerritory(attackerTroops) {
+    const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
+    this.#stateDetails.hasCaptured = true;
+    this.#updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId);
     this.#territories[defenderTerritoryId].troopCount = attackerTroops;
     this.#territories[attackerTerritoryId].troopCount -= attackerTroops;
     return [
@@ -353,6 +356,15 @@ export class Game {
     ];
   }
 
+  #handleCapture(defenderTerritoryId, updatedTerritories, attackerDice) {
+    if (this.#territories[defenderTerritoryId].troopCount === 0) {
+      this.#stateDetails.hasCaptured = true;
+      updatedTerritories = this.captureTerritory(attackerDice.length);
+    }
+    this.#state = STATES.INVASION;
+    return updatedTerritories;
+  }
+
   resolveCombat() {
     const { attackerTerritoryId, defenderTerritoryId } = this.#stateDetails;
     const attackerDice = this.#rollDice(this.#stateDetails.attackerTroops);
@@ -365,11 +377,11 @@ export class Game {
       combatResult,
     );
 
-    if (this.#territories[defenderTerritoryId].troopCount === 0) {
-      this.#stateDetails.hasCaptured = true;
-      updatedTerritories = this.captureTerritory(attackerDice.length);
-    }
-    this.#state = STATES.INVASION;
+    updatedTerritories = this.#handleCapture(
+      defenderTerritoryId,
+      updatedTerritories,
+      attackerDice,
+    );
 
     return {
       action: this.#state,
