@@ -3,6 +3,7 @@ export const highlightTerritories = (territories, className = "selected") => {
     const territoryElement = document.querySelector(
       `[data-territory-id="${territory}"]`,
     );
+
     territoryElement.classList.add(className);
     territoryElement.parentElement.append(territoryElement);
   });

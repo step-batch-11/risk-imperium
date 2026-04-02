@@ -374,6 +374,36 @@ export class Game {
     };
   }
 
+  isCurrentUserTerritory(territoryId) {
+    const player = this.#players.find((player) =>
+      this.#activePlayerId === player.id
+    );
+    return player.territories.includes(territoryId);
+  }
+
+  fortify(from, to, count) {
+    if (this.#territories[from].troopCount < count + 1) {
+      return [];
+    }
+
+    const fromTerritory = this.#territories[from];
+    fromTerritory.troopCount -= count;
+
+    const toTerritory = this.#territories[to];
+    toTerritory.troopCount += count;
+
+    this.#state = STATES.REINFORCE;
+    this.#setReinforcements();
+
+    return [{
+      territoryId: from,
+      troopCount: fromTerritory.troopCount,
+    }, {
+      territoryId: to,
+      troopCount: toTerritory.troopCount,
+    }];
+  }
+
   getSavableGameState() {
     return {
       activePlayerId: this.#activePlayerId,

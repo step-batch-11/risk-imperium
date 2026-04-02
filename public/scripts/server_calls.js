@@ -65,3 +65,11 @@ export const skipInvasionRequest = async () => {
   };
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
+
+export const fortifyRequest = async (data) => {
+  const reqData = {
+    userActions: USER_ACTIONS.FORTIFICATION,
+    data,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};

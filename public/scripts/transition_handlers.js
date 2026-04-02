@@ -16,6 +16,7 @@ import {
   removeHighlights,
 } from "./utilities/highlight.js";
 import { STATES } from "./configs/game_states.js";
+import { territoryToFortifyFrom } from "./handlers/fortified_handler.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -50,26 +51,37 @@ const addInvasionSkipButton = (gameState) => {
   skipButtonElement.addEventListener("click", async () => {
     const { action: newState } = await skipInvasionRequest();
 
-    setUpNextPhase(gameState, newState);
     removeHighlights("selected");
     skipButtonElement.remove();
+    setUpNextPhase(gameState, newState);
   });
   body.append(cloneNode);
 };
 
+const sourceTerritoryForAttacks = (territoryIds, gameState) => {
+  return territoryIds.filter((territoryId) => {
+    const territory = gameState.territories[territoryId];
+    const isValidTroopCount = territory.troopCount > 1;
+    const canAttackNeighbour = territory.neighbours.some(
+      (neighbourId) => (!territoryIds.includes(neighbourId)),
+    );
+    return isValidTroopCount && canAttackNeighbour;
+  });
+};
+
 const setupInvasionPhase = (gameState) => {
   const territoryIds = gameState.player.territories;
-  const attackableTerritories = territoryIds.filter((territoryId) => {
-    return gameState.territories[territoryId].troopCount > 1;
-  });
+  const attackableTerritories = sourceTerritoryForAttacks(
+    territoryIds,
+    gameState,
+  );
 
   addInvasionSkipButton(gameState);
-
   removeHighlights("selected");
   highlightTerritories(attackableTerritories);
 };
 
-export const setupFortification = (gameState) => {
+const createSkipButtonElement = () => {
   const skipButtonTemplate = document.querySelector(
     "#skip-button-template",
   );
@@ -77,14 +89,21 @@ export const setupFortification = (gameState) => {
   const cloneNode = skipButtonTemplate.content.cloneNode(true);
   const body = document.querySelector("body");
   const skipButtonElement = cloneNode.querySelector("#skip-button");
+  body.append(cloneNode);
+  return skipButtonElement;
+};
+
+export const setupFortification = (gameState) => {
+  const skipButtonElement = createSkipButtonElement();
+  const fortifiableTerritory = territoryToFortifyFrom(gameState);
+
+  highlightTerritories(fortifiableTerritory.flat());
 
   skipButtonElement.addEventListener("click", async () => {
     const { action: newState } = await skipFortificationRequest();
-
     setUpNextPhase(gameState, newState);
     skipButtonElement.remove();
   });
-  body.append(cloneNode);
 };
 
 export const SETUP_TRANSITION = {

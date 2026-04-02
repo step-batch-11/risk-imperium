@@ -1,424 +1,142 @@
 {
   "activePlayerId": 1,
   "territories": {
-    "1": {
-      "name": "Alaska",
-      "neighbours": [
-        2,
-        4,
-        32
-      ],
-      "troopCount": 1
-    },
+    "1": { "name": "Alaska", "neighbours": [2, 4, 32], "troopCount": 1 },
     "2": {
       "name": "Northwest Territory",
-      "neighbours": [
-        1,
-        3,
-        4,
-        5
-      ],
+      "neighbours": [1, 3, 4, 5],
       "troopCount": 1
     },
-    "3": {
-      "name": "Greenland",
-      "neighbours": [
-        2,
-        5,
-        6,
-        14
-      ],
-      "troopCount": 1
-    },
-    "4": {
-      "name": "Alberta",
-      "neighbours": [
-        1,
-        2,
-        5,
-        7
-      ],
-      "troopCount": 1
-    },
+    "3": { "name": "Greenland", "neighbours": [2, 5, 6, 14], "troopCount": 1 },
+    "4": { "name": "Alberta", "neighbours": [1, 2, 5, 7], "troopCount": 1 },
     "5": {
       "name": "Ontario",
-      "neighbours": [
-        2,
-        3,
-        4,
-        6,
-        7,
-        8
-      ],
+      "neighbours": [2, 3, 4, 6, 7, 8],
       "troopCount": 1
     },
-    "6": {
-      "name": "Quebec",
-      "neighbours": [
-        3,
-        5,
-        8
-      ],
-      "troopCount": 1
-    },
+    "6": { "name": "Quebec", "neighbours": [3, 5, 8], "troopCount": 1 },
     "7": {
       "name": "Western United States",
-      "neighbours": [
-        4,
-        5,
-        8,
-        9
-      ],
+      "neighbours": [4, 5, 8, 9],
       "troopCount": 1
     },
     "8": {
       "name": "Eastern United States",
-      "neighbours": [
-        5,
-        6,
-        7,
-        9
-      ],
+      "neighbours": [5, 6, 7, 9],
       "troopCount": 1
     },
     "9": {
       "name": "Central America",
-      "neighbours": [
-        7,
-        8,
-        10
-      ],
+      "neighbours": [7, 8, 10],
       "troopCount": 1
     },
-    "10": {
-      "name": "Venezuela",
-      "neighbours": [
-        9,
-        11,
-        12
-      ],
-      "troopCount": 1
-    },
-    "11": {
-      "name": "Peru",
-      "neighbours": [
-        10,
-        12,
-        13
-      ],
-      "troopCount": 1
-    },
-    "12": {
-      "name": "Brazil",
-      "neighbours": [
-        10,
-        11,
-        13,
-        21
-      ],
-      "troopCount": 1
-    },
-    "13": {
-      "name": "Argentina",
-      "neighbours": [
-        11,
-        12
-      ],
-      "troopCount": 1
-    },
-    "14": {
-      "name": "Iceland",
-      "neighbours": [
-        3,
-        15,
-        17
-      ],
-      "troopCount": 1
-    },
+    "10": { "name": "Venezuela", "neighbours": [9, 11, 12], "troopCount": 1 },
+    "11": { "name": "Peru", "neighbours": [10, 12, 13], "troopCount": 1 },
+    "12": { "name": "Brazil", "neighbours": [10, 11, 13, 21], "troopCount": 1 },
+    "13": { "name": "Argentina", "neighbours": [11, 12], "troopCount": 1 },
+    "14": { "name": "Iceland", "neighbours": [3, 15, 17], "troopCount": 1 },
     "15": {
       "name": "Scandinavia",
-      "neighbours": [
-        14,
-        16,
-        17,
-        18
-      ],
+      "neighbours": [14, 16, 17, 18],
       "troopCount": 1
     },
     "16": {
       "name": "Ukraine",
-      "neighbours": [
-        15,
-        18,
-        20,
-        23,
-        28,
-        35
-      ],
-      "troopCount": 4
+      "neighbours": [15, 18, 20, 23, 28, 35],
+      "troopCount": 1
     },
     "17": {
       "name": "Great Britain",
-      "neighbours": [
-        14,
-        15,
-        18,
-        19
-      ],
+      "neighbours": [14, 15, 18, 19],
       "troopCount": 1
     },
     "18": {
       "name": "Northern Europe",
-      "neighbours": [
-        15,
-        16,
-        17,
-        19,
-        20
-      ],
+      "neighbours": [15, 16, 17, 19, 20],
       "troopCount": 1
     },
     "19": {
       "name": "Western Europe",
-      "neighbours": [
-        17,
-        18,
-        20,
-        21
-      ],
+      "neighbours": [17, 18, 20, 21],
       "troopCount": 1
     },
     "20": {
       "name": "Southern Europe",
-      "neighbours": [
-        16,
-        18,
-        19,
-        21,
-        22,
-        23
-      ],
+      "neighbours": [16, 18, 19, 21, 22, 23],
       "troopCount": 1
     },
     "21": {
       "name": "North Africa",
-      "neighbours": [
-        12,
-        19,
-        20,
-        22,
-        24,
-        25
-      ],
+      "neighbours": [12, 19, 20, 22, 24, 25],
       "troopCount": 1
     },
-    "22": {
-      "name": "Egypt",
-      "neighbours": [
-        20,
-        21,
-        23,
-        24
-      ],
-      "troopCount": 10
-    },
+    "22": { "name": "Egypt", "neighbours": [20, 21, 23, 24], "troopCount": 10 },
     "23": {
       "name": "Middle East",
-      "neighbours": [
-        16,
-        20,
-        22,
-        24,
-        35,
-        37
-      ],
+      "neighbours": [16, 20, 22, 24, 35, 37],
       "troopCount": 1
     },
     "24": {
       "name": "East Africa",
-      "neighbours": [
-        21,
-        22,
-        23,
-        25,
-        26,
-        27
-      ],
-      "troopCount": 10
+      "neighbours": [21, 22, 23, 25, 26, 27],
+      "troopCount": 22
     },
-    "25": {
-      "name": "Congo",
-      "neighbours": [
-        21,
-        24,
-        26
-      ],
-      "troopCount": 1
-    },
+    "25": { "name": "Congo", "neighbours": [21, 24, 26], "troopCount": 1 },
     "26": {
       "name": "South Africa",
-      "neighbours": [
-        24,
-        25,
-        27
-      ],
+      "neighbours": [24, 25, 27],
       "troopCount": 1
     },
-    "27": {
-      "name": "Madagascar",
-      "neighbours": [
-        26,
-        24
-      ],
-      "troopCount": 1
-    },
+    "27": { "name": "Madagascar", "neighbours": [26, 24], "troopCount": 1 },
     "28": {
       "name": "Ural",
-      "neighbours": [
-        16,
-        23,
-        29,
-        37,
-        36
-      ],
+      "neighbours": [16, 23, 29, 37, 36],
       "troopCount": 1
     },
     "29": {
       "name": "Siberia",
-      "neighbours": [
-        28,
-        30,
-        31,
-        33,
-        36
-      ],
-      "troopCount": 1
+      "neighbours": [28, 30, 31, 33, 36],
+      "troopCount": 2
     },
-    "30": {
-      "name": "Yakutsk",
-      "neighbours": [
-        29,
-        31,
-        32
-      ],
-      "troopCount": 1
-    },
+    "30": { "name": "Yakutsk", "neighbours": [29, 31, 32], "troopCount": 1 },
     "31": {
       "name": "Irkutsk",
-      "neighbours": [
-        29,
-        30,
-        32,
-        33
-      ],
+      "neighbours": [29, 30, 32, 33],
       "troopCount": 1
     },
     "32": {
       "name": "Kamchatka",
-      "neighbours": [
-        1,
-        30,
-        31,
-        33,
-        34
-      ],
+      "neighbours": [1, 30, 31, 33, 34],
       "troopCount": 1
     },
     "33": {
       "name": "Mongolia",
-      "neighbours": [
-        29,
-        31,
-        32,
-        34,
-        36
-      ],
+      "neighbours": [29, 31, 32, 34, 36],
       "troopCount": 1
     },
-    "34": {
-      "name": "Japan",
-      "neighbours": [
-        32,
-        33
-      ],
-      "troopCount": 1
-    },
+    "34": { "name": "Japan", "neighbours": [32, 33], "troopCount": 1 },
     "35": {
       "name": "Afghanistan",
-      "neighbours": [
-        16,
-        23,
-        28,
-        36,
-        37
-      ],
-      "troopCount": 1
+      "neighbours": [16, 23, 28, 36, 37],
+      "troopCount": 3
     },
     "36": {
       "name": "China",
-      "neighbours": [
-        28,
-        29,
-        35,
-        33,
-        37,
-        38
-      ],
+      "neighbours": [28, 29, 35, 33, 37, 38],
       "troopCount": 1
     },
-    "37": {
-      "name": "India",
-      "neighbours": [
-        35,
-        36,
-        38,
-        23
-      ],
-      "troopCount": 1
-    },
-    "38": {
-      "name": "Siam",
-      "neighbours": [
-        36,
-        37,
-        39
-      ],
-      "troopCount": 1
-    },
-    "39": {
-      "name": "Indonesia",
-      "neighbours": [
-        38,
-        40,
-        41
-      ],
-      "troopCount": 1
-    },
-    "40": {
-      "name": "New Guinea",
-      "neighbours": [
-        39,
-        41,
-        42
-      ],
-      "troopCount": 1
-    },
+    "37": { "name": "India", "neighbours": [35, 36, 38, 23], "troopCount": 1 },
+    "38": { "name": "Siam", "neighbours": [36, 37, 39], "troopCount": 1 },
+    "39": { "name": "Indonesia", "neighbours": [38, 40, 41], "troopCount": 1 },
+    "40": { "name": "New Guinea", "neighbours": [39, 41, 42], "troopCount": 1 },
     "41": {
       "name": "Western Australia",
-      "neighbours": [
-        39,
-        40,
-        42
-      ],
+      "neighbours": [39, 40, 42],
       "troopCount": 1
     },
     "42": {
       "name": "Eastern Australia",
-      "neighbours": [
-        39,
-        40,
-        41
-      ],
+      "neighbours": [39, 40, 41],
       "troopCount": 1
     }
   },
@@ -426,168 +144,49 @@
     {
       "id": 1,
       "name": "Jon",
-      "territories": [
-        21,
-        36,
-        7,
-        24,
-        5,
-        16,
-        22
-      ]
+      "territories": [21, 36, 7, 24, 5, 16, 22, 23, 37, 28, 29, 35]
     },
-    {
-      "id": 2,
-      "name": "Rob",
-      "territories": [
-        9,
-        11,
-        42,
-        27,
-        15,
-        40,
-        41
-      ]
-    },
-    {
-      "id": 3,
-      "name": "Sansa",
-      "territories": [
-        33,
-        30,
-        1,
-        17,
-        13,
-        26,
-        38
-      ]
-    },
-    {
-      "id": 4,
-      "name": "Arya",
-      "territories": [
-        23,
-        6,
-        19,
-        12,
-        10,
-        35,
-        3
-      ]
-    },
-    {
-      "id": 5,
-      "name": "Rickon",
-      "territories": [
-        39,
-        20,
-        28,
-        8,
-        4,
-        31,
-        29
-      ]
-    },
-    {
-      "id": 6,
-      "name": "Bran",
-      "territories": [
-        2,
-        25,
-        14,
-        32,
-        34,
-        18,
-        37
-      ]
-    }
+    { "id": 2, "name": "Rob", "territories": [9, 11, 42, 27, 15, 40, 41] },
+    { "id": 3, "name": "Sansa", "territories": [33, 30, 1, 17, 13, 26, 38] },
+    { "id": 4, "name": "Arya", "territories": [6, 19, 12, 10, 3] },
+    { "id": 5, "name": "Rickon", "territories": [39, 20, 8, 4, 31] },
+    { "id": 6, "name": "Bran", "territories": [2, 25, 14, 32, 34, 18] }
   ],
   "continents": {
     "1": {
       "name": "Asia",
-      "territories": [
-        28,
-        29,
-        30,
-        31,
-        32,
-        33,
-        34,
-        35,
-        36,
-        37,
-        38,
-        23
-      ],
+      "territories": [28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 23],
       "armies": 7
     },
     "2": {
       "name": "Africa",
-      "territories": [
-        21,
-        22,
-        24,
-        25,
-        26,
-        27
-      ],
+      "territories": [21, 22, 24, 25, 26, 27],
       "armies": 3
     },
     "3": {
       "name": "North America",
-      "territories": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9
-      ],
+      "territories": [1, 2, 3, 4, 5, 6, 7, 8, 9],
       "armies": 5
     },
     "4": {
       "name": "South America",
-      "territories": [
-        10,
-        11,
-        12,
-        13
-      ],
+      "territories": [10, 11, 12, 13],
       "armies": 2
     },
     "5": {
       "name": "Europe",
-      "territories": [
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20
-      ],
+      "territories": [14, 15, 16, 17, 18, 19, 20],
       "armies": 5
     },
-    "6": {
-      "name": "Australia",
-      "territories": [
-        39,
-        40,
-        41,
-        42
-      ],
-      "armies": 2
-    }
+    "6": { "name": "Australia", "territories": [39, 40, 41, 42], "armies": 2 }
   },
   "state": "FORTIFICATION",
   "stateDetails": {
-    "attackerTerritoryId": 24,
-    "defenderTerritoryId": 26,
+    "attackerTerritoryId": 23,
+    "defenderTerritoryId": 35,
     "attackerTroops": 3,
     "defenderTroops": 1,
+    "hasCaptured": true,
     "remainingTroopsToDeploy": 0
   }
 }
