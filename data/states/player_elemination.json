@@ -312,5 +312,12 @@
     }
   },
   "state": "INVASION",
-  "stateDetails": {}
+  "stateDetails": {
+    "initialTroopLimit": 13,
+    "remainingTroopsToDeploy": 0,
+    "attackerTerritoryId": 1,
+    "defenderTerritoryId": 2,
+    "attackerTroops": 3,
+    "defenderTroops": 1
+  }
 }

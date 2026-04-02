@@ -34,6 +34,7 @@ export class Game {
       attackerTroops: 3,
       defenderTroops: 1,
       hasCaptured: false,
+      hasEliminated: false,
     };
   }
 
@@ -326,16 +327,24 @@ export class Game {
     );
   }
 
-  #getIndexOf(territories, defenderTerritoryId) {
-    return territories.findIndex((territoryId) =>
-      territoryId === defenderTerritoryId
-    );
+  #getIndexOf(collection, target) {
+    return collection.findIndex((element) => element === target);
   }
+
   #updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId) {
     const defender = this.#getPlayerById(defenderTerritoryId);
     const attacker = this.#getPlayerById(attackerTerritoryId);
     const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
     attacker.territories.push(...defender.territories.splice(index, 1));
+    if (this.#isEliminated(defender)) {
+      const index = this.#getIndexOf(this.#players, defender);
+      this.#players.splice(index, 1);
+      this.#stateDetails.hasEliminated = true;
+    }
+  }
+
+  #isEliminated(defender) {
+    return defender.territories.length <= 0;
   }
 
   captureTerritory(attackerTroops) {
@@ -391,6 +400,7 @@ export class Game {
         notifyMsg,
         updatedTerritories,
         hasCaptured: this.#stateDetails.hasCaptured,
+        hasEliminated: this.#stateDetails.hasEliminated,
       },
     };
   }

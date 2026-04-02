@@ -18,6 +18,9 @@ import reinforceState from "../data/states/reinforce.json" with {
 import initialReinforcementState from "../data/states/init-reinforcement.json" with {
   type: "json",
 };
+import playerElimination from "../data/states/player_elemination.json" with {
+  type: "json",
+};
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { Cards } from "../src/models/cards.js";
 
@@ -370,8 +373,12 @@ describe("Game", () => {
   });
 
   describe("CAPTURE", () => {
+    let game;
+    beforeEach(() => {
+      const continentsHandler = new ContinentsHandler();
+      game = new Game(continentsHandler, () => 0.3);
+    });
     it("should return updated territory details ", () => {
-      const game = new Game(() => 0.3);
       game.loadGameState(combatResolve);
       const result = game.captureTerritory(3);
       const expected = [
@@ -380,6 +387,17 @@ describe("Game", () => {
       ];
       assertEquals(expected, result);
     });
+  });
+  it("should eliminate the player if he doesn't have a territories ", () => {
+    game.loadGameState(playerElimination);
+    const result = game.captureTerritory(3);
+    const expected = [
+      { territoryId: 1, troopCount: 27 },
+      { territoryId: 2, troopCount: 3 },
+    ];
+    const currentState = game.getSavableGameState();
+    assertEquals(expected, result);
+    assertEquals(currentState.players.length, 5);
   });
 
   describe("skipInvasion", () => {
