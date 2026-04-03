@@ -3,11 +3,22 @@ import { createApp } from "./src/app.js";
 import { Game } from "./src/game.js";
 import { Cards } from "./src/models/cards.js";
 import { ContinentsHandler } from "./src/models/continents_handler.js";
+import { mockPlayers } from "./src/mock_data.js";
+import { CONFIG } from "./src/config.js";
+import { FortificationHandler } from "./src/models/fortification_handler.js";
 
 const main = () => {
-  const cards = new Cards();
-  const continentsHandler = new ContinentsHandler();
-  const game = new Game(continentsHandler, cards, Math.random);
+  const handlers = {
+    fortificationHandler: new FortificationHandler(CONFIG.TERRITORIES),
+    continentsHandler: new ContinentsHandler(),
+    cardsHandler: new Cards(),
+  };
+
+  const utilities = {
+    random: Math.random,
+  };
+
+  const game = new Game(mockPlayers(), CONFIG.TERRITORIES, handlers, utilities);
   game.initTerritories();
   const isDevMode = Deno.env.get("DEV_MODE") === "true";
   const app = createApp(game, isDevMode, {

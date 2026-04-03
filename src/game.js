@@ -10,21 +10,22 @@ export class Game {
   #randomFunction;
   #stateDetails;
   #cards;
+  #fortificationHandler;
 
   constructor(
-    continentsHandler,
-    cards,
-    randomFunction = Math.random,
     players = mockPlayers(),
     territories = CONFIG.TERRITORIES,
+    handlers = {},
+    utilities = {},
   ) {
-    this.#randomFunction = randomFunction;
+    this.#randomFunction = utilities.random;
     this.#activePlayerId = players[0].id;
     this.#territories = territories;
     this.#players = players;
-    this.#cards = cards;
-    this.#continentsHandler = continentsHandler;
+    this.#cards = handlers.cardsHandler;
+    this.#continentsHandler = handlers.continentsHandler;
     this.#state = STATES.SETUP;
+    this.#fortificationHandler = handlers.fortificationHandler;
 
     this.#stateDetails = {
       initialTroopLimit: 2,
@@ -446,26 +447,35 @@ export class Game {
     return player.territories.includes(territoryId);
   }
 
+  #getCurrentPlayer() {
+    return this.#players.find(({ id }) => id === this.#activePlayerId);
+  }
+
+  #getTerritoryAndTroopsCount(...territoryIds) {
+    const territoriesDetails = [];
+    for (const territoryId of territoryIds) {
+      const territory = this.#territories[territoryId];
+      const troopCount = territory.troopCount;
+      territoriesDetails.push({ territoryId, troopCount });
+    }
+    return territoriesDetails;
+  }
+
   fortification(from, to, count) {
-    if (this.#territories[from].troopCount < count + 1) {
+    const currentPlayer = this.#getCurrentPlayer();
+    try {
+      this.#fortificationHandler.moveTroops(
+        from,
+        to,
+        count,
+        currentPlayer.territories,
+      );
+      this.#updateState(STATES.GET_CARD);
+      const updatedTerritories = this.#getTerritoryAndTroopsCount(from, to);
+      return updatedTerritories;
+    } catch {
       return [];
     }
-
-    const fromTerritory = this.#territories[from];
-    fromTerritory.troopCount -= count;
-
-    const toTerritory = this.#territories[to];
-    toTerritory.troopCount += count;
-
-    this.#updateState(STATES.GET_CARD);
-
-    return [{
-      territoryId: from,
-      troopCount: fromTerritory.troopCount,
-    }, {
-      territoryId: to,
-      troopCount: toTerritory.troopCount,
-    }];
   }
 
   getSavableGameState() {
@@ -479,15 +489,15 @@ export class Game {
     };
   }
 
-  loadGameState(gameState) {
+  loadGameState(gameState, handlers = {}) {
     const { activePlayerId, territories, players, state, stateDetails } =
       gameState;
-
     this.#activePlayerId = activePlayerId;
     this.#territories = territories;
     this.#players = players;
     this.#initCards();
     this.#state = state;
     this.#stateDetails = stateDetails;
+    this.#fortificationHandler = handlers.fortificationHandler;
   }
 }

@@ -3,8 +3,9 @@ import { assert, assertEquals } from "@std/assert";
 import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { Game } from "../src/game.js";
-import { STATES } from "../src/config.js";
+import { CONFIG, STATES } from "../src/config.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
+import { mockPlayers } from "../src/mock_data.js";
 
 it("Create app should return the instance of the Hono class", () => {
   const app = createApp({});
@@ -33,7 +34,12 @@ describe("App Handler", () => {
 
     beforeAll(() => {
       const continentsHandler = new ContinentsHandler();
-      game = new Game(continentsHandler, () => {}, () => 0.3);
+      game = new Game(
+        mockPlayers(),
+        CONFIG.TERRITORIES,
+        { continentsHandler },
+        { random: () => 0.3 },
+      );
       game.initTerritories();
       const gameState = game.getSetup(1);
       gameState.state = STATES.INITIAL_REINFORCEMENT;

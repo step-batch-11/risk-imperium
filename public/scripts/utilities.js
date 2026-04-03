@@ -1,5 +1,4 @@
 export const getOwnedContinents = (player, continents) => {
-  console.log({ player, continents });
   return Object.values(continents).filter((continent) => {
     return continent.territories.every((territory) =>
       player.territories.includes(territory)

@@ -4,17 +4,21 @@ import { handleGameSetup } from "../src/handler.js";
 import { Game } from "../src/game.js";
 import { handleUserActions } from "../src/handlers/user_actions.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
-import { STATES } from "../src/config.js";
+import { CONFIG, STATES } from "../src/config.js";
 import { fortificationHandler } from "../src/handlers/fortification_handler.js";
 import fortification from "../data/states/fortification.json" with {
   type: "json",
 };
+import { mockPlayers } from "../src/mock_data.js";
+import { FortificationHandler } from "../src/models/fortification_handler.js";
 
 describe("Api Handler", () => {
   let game;
   beforeEach(() => {
     const continentsHandler = new ContinentsHandler();
-    game = new Game(continentsHandler);
+    game = new Game(mockPlayers(), CONFIG.TERRITORIES, { continentsHandler }, {
+      random: () => 0.3,
+    });
   });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
@@ -208,7 +212,13 @@ describe("Api Handler", () => {
           troopCount: 10,
         },
       ];
-      game.loadGameState(fortification);
+
+      const savedState = fortification;
+      const handler = {
+        fortificationHandler: new FortificationHandler(savedState.territories),
+      };
+      game.loadGameState(savedState, handler);
+
       const data = fortificationHandler(game, { from: 22, to: 16, count: 9 });
       assertEquals(data, { action: STATES.GET_CARD, data: expectedData });
     });

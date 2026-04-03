@@ -1,7 +1,7 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../src/game.js";
 import { assert, assertEquals, assertFalse, assertThrows } from "@std/assert";
-import { STATES } from "../src/config.js";
+import { CONFIG, STATES } from "../src/config.js";
 import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
 import getCardState from "../data/states/getCard.json" with { type: "json" };
@@ -24,15 +24,29 @@ import initialReinforcementState from "../data/states/init-reinforcement.json" w
 import playerElimination from "../data/states/player_elemination.json" with {
   type: "json",
 };
+
 import { ContinentsHandler } from "../src/models/continents_handler.js";
+import { FortificationHandler } from "../src/models/fortification_handler.js";
+
 import { Cards } from "../src/models/cards.js";
+import { mockPlayers } from "../src/mock_data.js";
 
 describe("Game", () => {
   let game;
   let continentsHandler;
+  let fortificationHandler;
   beforeEach(() => {
+    const territories = CONFIG.TERRITORIES;
     continentsHandler = new ContinentsHandler();
-    game = new Game(continentsHandler);
+    fortificationHandler = new FortificationHandler(territories);
+
+    game = new Game(
+      mockPlayers(),
+      territories,
+      { continentsHandler, fortificationHandler },
+      { random: () => 0.3 },
+      "HERWE",
+    );
   });
 
   it("setup method should return data for the single user", () => {
@@ -84,7 +98,11 @@ describe("Game", () => {
 
   describe("INITIAL REINFORCEMENT", () => {
     beforeEach(() => {
-      game.loadGameState(initialReinforcementState);
+      const savedState = initialReinforcementState;
+      const handler = {
+        fortificationHandler: new FortificationHandler(savedState.territories),
+      };
+      game.loadGameState(savedState, handler);
     });
 
     it("reinforce method should return the updated troop count with the territory id", () => {
@@ -125,7 +143,11 @@ describe("Game", () => {
           remainingTroopsToDeploy: 1,
         },
       };
-      game.loadGameState(mockGameState);
+      const savedState = mockGameState;
+      const handler = {
+        fortificationHandler: new FortificationHandler(savedState.territories),
+      };
+      game.loadGameState(savedState, handler);
 
       const expectedTroopCount = mockGameState.territories[37].troopCount + 1;
 
@@ -144,8 +166,19 @@ describe("Game", () => {
 
   describe("DEFEND", () => {
     it("should return next state and data", () => {
-      const game = new Game(continentsHandler, () => 0.3);
-      game.loadGameState(defendState);
+      const continentsHandler = new ContinentsHandler();
+
+      const game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+        continentsHandler,
+        fortificationHandler,
+      }, { random: () => 0.3 });
+
+      const savedState = defendState;
+      const handler = {
+        fortificationHandler: new FortificationHandler(defendState.territories),
+      };
+      game.loadGameState(savedState, handler);
+
       const defendData = { territoryId: "22", troopCount: 1 };
       const { action, data } = game.defend(defendData);
       const { stateDetails } = game.getSavableGameState();
@@ -160,7 +193,11 @@ describe("Game", () => {
 
   describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
-      const game = new Game(continentsHandler, "cards", () => 0.3);
+      const continentsHandler = new ContinentsHandler();
+      const game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+        continentsHandler,
+        fortificationHandler,
+      }, { random: () => 0.3 });
       game.initTerritories();
       game.getSetup(1);
       const { action, data } = game.resolveCombat();
@@ -293,7 +330,10 @@ describe("Game", () => {
 
   describe("LOADGAMESTATE", () => {
     const continentsHandler = new ContinentsHandler();
-    const game1 = new Game(continentsHandler);
+    const game1 = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+      continentsHandler,
+      fortificationHandler,
+    }, { random: () => 0.3 });
     game1.initTerritories();
     const initializedGameState = game1.getSavableGameState();
     it("Should reset the gameState when loaded with initialGameState", () => {
@@ -379,7 +419,10 @@ describe("Game", () => {
     let game;
     beforeEach(() => {
       const continentsHandler = new ContinentsHandler();
-      game = new Game(continentsHandler, () => 0.3);
+      game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+        continentsHandler,
+        fortificationHandler,
+      }, { random: () => 0.3 });
     });
     it("should return updated territory details ", () => {
       game.loadGameState(combatResolve);
@@ -408,7 +451,7 @@ describe("Game", () => {
     let game;
     beforeEach(() => {
       const continentsHandler = new ContinentsHandler();
-      game = new Game(continentsHandler, () => 0.3);
+      game = new Game(mockPlayers(), CONFIG.TERRITORIES, { continentsHandler });
     });
 
     it("game state should change to won", () => {
@@ -431,7 +474,11 @@ describe("Game", () => {
 
   describe("fortification", () => {
     it("Should update the troop from when move from place to another", () => {
-      game.loadGameState(fortification);
+      const savedState = fortification;
+      const handler = {
+        fortificationHandler: new FortificationHandler(savedState.territories),
+      };
+      game.loadGameState(savedState, handler);
 
       const from = 22;
       const to = 16;
@@ -448,6 +495,7 @@ describe("Game", () => {
         },
       ];
       const data = game.fortification(from, to, count);
+
       assertEquals(data, expectedData);
     });
     it("Should update update nothing when invalid troop count", () => {
@@ -484,9 +532,13 @@ describe("Game", () => {
     });
     it("should get a card on unsuccesful invasion and move the phase reinforcement", () => {
       getCardState.stateDetails.hasCaptured = true;
-      const cards = new Cards();
-      const continent = new ContinentsHandler();
-      const gme = new Game(continent, cards);
+      const cardsHandler = new Cards();
+      const continentsHandler = new ContinentsHandler();
+      const gme = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+        continentsHandler,
+        cardsHandler,
+        fortificationHandler,
+      }, { random: () => 0.3 });
       gme.loadGameState(getCardState);
       const res = gme.getCard();
       const typeOfCard = typeof res.data.card;
