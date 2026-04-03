@@ -126,9 +126,9 @@ export const setUpNextPhase = (gameState, nextState) => {
     return;
   }
 
-  renderGameState(nextState);
-
   gameState.state = nextState;
+  renderGameState(gameState);
+
   if (nextState in SETUP_TRANSITION) {
     return SETUP_TRANSITION[nextState](gameState);
   }
