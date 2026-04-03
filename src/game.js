@@ -335,15 +335,24 @@ export class Game {
     return collection.findIndex((element) => element === target);
   }
 
+  #hasWinner() {
+    if (this.#players.length === 1) {
+      this.#stateDetails.hasWon = true;
+    }
+  }
+
+  #getDefenderCards(attacker, defender) {
+    attacker.cards.push(...defender.cards);
+  }
+
   #eliminatePlayer(defender) {
     if (this.#isEliminated(defender)) {
       const index = this.#getIndexOf(this.#players, defender);
+      const attacker = this.#getActivePlayer();
+      this.#getDefenderCards(attacker, defender);
       this.#players.splice(index, 1);
       this.#stateDetails.hasEliminated = true;
-      if (this.#players.length === 1) {
-        console.log("entire world is your's now");
-        this.#stateDetails.hasWon = true;
-      }
+      this.#hasWinner();
     }
   }
 
@@ -419,6 +428,7 @@ export class Game {
         hasCaptured: this.#stateDetails.hasCaptured,
         hasEliminated: this.#stateDetails.hasEliminated,
         hasWon: this.#stateDetails.hasWon,
+        newCards: this.#getActivePlayer().cards,
       },
     };
   }
@@ -443,8 +453,8 @@ export class Game {
   }
 
   isCurrentUserTerritory(territoryId) {
-    const player = this.#players.find((player) =>
-      this.#activePlayerId === player.id
+    const player = this.#players.find(
+      (player) => this.#activePlayerId === player.id,
     );
     return player.territories.includes(territoryId);
   }
@@ -497,7 +507,6 @@ export class Game {
     this.#activePlayerId = activePlayerId;
     this.#territories = territories;
     this.#players = players;
-    this.#initCards();
     this.#state = state;
     this.#stateDetails = stateDetails;
     this.#fortificationHandler = handlers.fortificationHandler;

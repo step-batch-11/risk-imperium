@@ -5,7 +5,7 @@ import { sendPostRequest } from "../server_calls.js";
 import { showNotification } from "../utilities/notifications.js";
 import { addListenerToCard, updateCards } from "./setup.js";
 
-const addCardAlert = () => {
+export const addCardAlert = () => {
   const cardElement = document.querySelector("#cards");
   const circle = cardElement.querySelector("circle");
   circle.classList.add("card-alert");

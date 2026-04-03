@@ -1,7 +1,8 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import { getTerritoryElementById } from "../utilities.js";
 import { showNotification } from "../utilities/notifications.js";
-import { renderPlayersDetails } from "./setup.js";
+import { addCardAlert } from "./cards.js";
+import { renderPlayersDetails, updateCards } from "./setup.js";
 
 const getPlayerById = (players, territoryId) =>
   Object.values(players).find((player) =>
@@ -16,6 +17,8 @@ export const captureTerritory = (
   { defenderTerritoryId },
   combatResult,
 ) => {
+  console.log(combatResult);
+
   combatResult.updatedTerritories.forEach(({ territoryId, troopCount }) => {
     gameState.territories[territoryId].troopCount = troopCount;
   });
@@ -34,14 +37,19 @@ export const captureTerritory = (
     gameState.territories[defenderTerritoryId].name
   }`;
 
-  renderPlayersDetails(gameState);
   showNotification(msg);
 
   if (combatResult.hasEliminated) {
     const msg = `${defender.name} has eliminated`;
+    gameState.player.cards = combatResult.newCards;
+    updateCards(gameState.player.cards);
+    addCardAlert();
+    console.log(gameState);
     delete gameState.opponents[defender.id];
     showNotification(msg, NOTIFICATION_TYPES.WARNING);
   }
+
+  renderPlayersDetails(gameState);
 
   if (combatResult.hasWon) {
     const glassBox = document.querySelector("#glass-box");
