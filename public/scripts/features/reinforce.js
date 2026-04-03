@@ -11,6 +11,7 @@ import {
   NOTIFICATION_TYPES,
 } from "../configs/notification_config.js";
 import { renderRemainingTroopsToDeploy } from "../utilities/render_UI.js";
+import { removeCardAreaListener } from "./cards.js";
 
 const notifyNotOwned = (gameState, id) => {
   const territoryName = gameState.territories[id].name;
@@ -54,12 +55,11 @@ const handleCustomDeployment = (event, gameState, territoryId) => {
   const handleSelection = (troopCount) =>
     deployTroops(event, gameState, territoryId, troopCount);
 
-  const dialog = document.querySelector("#deploy-troops-container");
-
-  displayTroopSelector(event, dialog, handleSelection, gameState);
+  displayTroopSelector(event, handleSelection);
 };
 
 const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
+  removeCardAreaListener(gameState);
   return sendReinforceRequest({ territoryId, troopCount })
     .then((res) => updateAfterDeploy(gameState, res, troopCount))
     .catch(() => {

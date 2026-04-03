@@ -6,9 +6,8 @@ import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
 import getCardState from "../data/states/getCard.json" with { type: "json" };
 
-import playerWon from "../data/states/won.json" with {
-  type: "json",
-};
+import playerWon from "../data/states/won.json" with { type: "json" };
+import wonstate from "../data/states/player_won.json" with { type: "json" };
 import fortification from "../data/states/fortification.json" with {
   type: "json",
 };
@@ -16,6 +15,9 @@ import combatResolve from "../data/states/resolve_combat.json" with {
   type: "json",
 };
 import reinforceState from "../data/states/reinforce.json" with {
+  type: "json",
+};
+import trade from "../data/states/trade.json" with {
   type: "json",
 };
 import initialReinforcementState from "../data/states/init-reinforcement.json" with {
@@ -30,6 +32,7 @@ import { FortificationHandler } from "../src/models/fortification_handler.js";
 
 import { Cards } from "../src/models/cards.js";
 import { mockPlayers } from "../src/mock_data.js";
+import { Cavalry } from "../src/models/cavalry.js";
 
 describe("Game", () => {
   let game;
@@ -39,11 +42,12 @@ describe("Game", () => {
     const territories = CONFIG.TERRITORIES;
     continentsHandler = new ContinentsHandler();
     fortificationHandler = new FortificationHandler(territories);
+    const cavalry = new Cavalry();
 
     game = new Game(
       mockPlayers(),
       territories,
-      { continentsHandler, fortificationHandler },
+      { continentsHandler, fortificationHandler, cavalry },
       { random: () => 0.3 },
       "HERWE",
     );
@@ -168,10 +172,15 @@ describe("Game", () => {
     it("should return next state and data", () => {
       const continentsHandler = new ContinentsHandler();
 
-      const game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
-        continentsHandler,
-        fortificationHandler,
-      }, { random: () => 0.3 });
+      const game = new Game(
+        mockPlayers(),
+        CONFIG.TERRITORIES,
+        {
+          continentsHandler,
+          fortificationHandler,
+        },
+        { random: () => 0.3 },
+      );
 
       const savedState = defendState;
       const handler = {
@@ -194,10 +203,17 @@ describe("Game", () => {
   describe("COMBAT_RESOLVE", () => {
     it("should return dice roll, new state, combat info, combat msg", () => {
       const continentsHandler = new ContinentsHandler();
-      const game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
-        continentsHandler,
-        fortificationHandler,
-      }, { random: () => 0.3 });
+      const cavalry = new Cavalry();
+      const game = new Game(
+        mockPlayers(),
+        CONFIG.TERRITORIES,
+        {
+          continentsHandler,
+          fortificationHandler,
+          cavalry,
+        },
+        { random: () => 0.3 },
+      );
       game.initTerritories();
       game.getSetup(1);
       const { action, data } = game.resolveCombat();
@@ -330,10 +346,15 @@ describe("Game", () => {
 
   describe("LOADGAMESTATE", () => {
     const continentsHandler = new ContinentsHandler();
-    const game1 = new Game(mockPlayers(), CONFIG.TERRITORIES, {
-      continentsHandler,
-      fortificationHandler,
-    }, { random: () => 0.3 });
+    const game1 = new Game(
+      mockPlayers(),
+      CONFIG.TERRITORIES,
+      {
+        continentsHandler,
+        fortificationHandler,
+      },
+      { random: () => 0.3 },
+    );
     game1.initTerritories();
     const initializedGameState = game1.getSavableGameState();
     it("Should reset the gameState when loaded with initialGameState", () => {
@@ -419,10 +440,15 @@ describe("Game", () => {
     let game;
     beforeEach(() => {
       const continentsHandler = new ContinentsHandler();
-      game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
-        continentsHandler,
-        fortificationHandler,
-      }, { random: () => 0.3 });
+      game = new Game(
+        mockPlayers(),
+        CONFIG.TERRITORIES,
+        {
+          continentsHandler,
+          fortificationHandler,
+        },
+        { random: () => 0.3 },
+      );
     });
     it("should return updated territory details ", () => {
       game.loadGameState(combatResolve);
@@ -443,7 +469,21 @@ describe("Game", () => {
       ];
       const currentState = game.getSavableGameState();
       assertEquals(expected, result);
-      assertEquals(currentState.players.length, 5);
+      assertEquals(currentState.players.length, 2);
+    });
+  });
+
+  describe("GET OPPONENT CARDS", () => {
+    let game;
+    beforeEach(() => {
+      const continentsHandler = new ContinentsHandler();
+      game = new Game(mockPlayers(), CONFIG.TERRITORIES, { continentsHandler });
+    });
+    it("should get all cards owned by defender after elimination", () => {
+      game.loadGameState(wonstate);
+      const currentGameState = game.getSavableGameState();
+      game.captureTerritory(3);
+      assertEquals(currentGameState.players[0].cards.length, 5);
     });
   });
 
@@ -534,16 +574,44 @@ describe("Game", () => {
       getCardState.stateDetails.hasCaptured = true;
       const cardsHandler = new Cards();
       const continentsHandler = new ContinentsHandler();
-      const gme = new Game(mockPlayers(), CONFIG.TERRITORIES, {
-        continentsHandler,
-        cardsHandler,
-        fortificationHandler,
-      }, { random: () => 0.3 });
+      const gme = new Game(
+        mockPlayers(),
+        CONFIG.TERRITORIES,
+        {
+          continentsHandler,
+          cardsHandler,
+          fortificationHandler,
+        },
+        { random: () => 0.3 },
+      );
       gme.loadGameState(getCardState);
       const res = gme.getCard();
       const typeOfCard = typeof res.data.card;
       assertEquals(res.action, STATES.REINFORCE);
       assertEquals(typeOfCard, "string");
+    });
+  });
+
+  describe("trade card tests", () => {
+    let game;
+    beforeEach(() => {
+      const cavalry = new Cavalry();
+      const cards = new Cards();
+      game = new Game(mockPlayers(), CONFIG.TERRITORIES, {
+        cardsHandler: cards,
+        cavalry,
+      });
+      game.loadGameState(trade);
+    });
+    it("should trade the cards", () => {
+      const cards = ["2", "2", "2"];
+      const { troops, positions } = game.tradeCard(cards);
+      assertEquals(troops, 7);
+      assertEquals(positions, [4, 6, 8]);
+    });
+    it("should throw", () => {
+      const cards = ["2", "2", "1"];
+      assertThrows(() => game.tradeCard(cards));
     });
   });
 });

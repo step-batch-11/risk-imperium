@@ -1,4 +1,3 @@
-import { removeCardAreaListener } from "./features/cards.js";
 import { setupDeployControls } from "./listeners.js";
 
 export const getOwnedContinents = (player, continents) => {
@@ -15,11 +14,11 @@ export const getAllPlayersDetail = (player, opponents) => {
   return { ...opponents, [currentPlayerId]: player };
 };
 
-export const setTroopLimit = (maxTroops, min = 1) => {
+export const setTroopLimit = (maxTroops, min = 1, defaultValue = 1) => {
   const input = document.querySelector("#troop-count-input");
   input.max = maxTroops;
   input.min = min;
-  input.value = min;
+  input.value = defaultValue;
 };
 
 const getTerritoryElementIdByTerritoryId = (territories, territoryId) => {
@@ -66,12 +65,8 @@ const setLocation = (dialog, x, y) => {
   dialog.style.top = `${y}px`;
 };
 
-export const displayTroopSelector = (
-  event,
-  dialog,
-  handleSelection,
-  gameState,
-) => {
+export const displayTroopSelector = (event, handleSelection) => {
+  const dialog = document.querySelector("#deploy-troops-container");
   const form = dialog.querySelector("#deploy-troops-form");
   const input = form.querySelector("input");
 
@@ -85,7 +80,6 @@ export const displayTroopSelector = (
 
     const troopCount = Number(input.value);
     await handleSelection(troopCount);
-    removeCardAreaListener(gameState);
 
     dialog.close();
   };
@@ -93,5 +87,5 @@ export const displayTroopSelector = (
 
 export const removeSkipButton = () => {
   const skipButtonElement = document.querySelector("#skip-button");
-  skipButtonElement.remove();
+  if (skipButtonElement) skipButtonElement.remove();
 };

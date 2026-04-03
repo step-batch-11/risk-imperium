@@ -48,6 +48,7 @@ export const handleUserActions = async (context) => {
 
     return context.json(result);
   } catch (e) {
+    console.log(e.message);
     return context.json({ msg: e.message }, 500);
   }
 };

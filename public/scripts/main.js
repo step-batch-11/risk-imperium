@@ -17,8 +17,7 @@ globalThis.onload = async () => {
   gameState.selectedCards = {};
   setupListeners(gameState);
   renderCurrentPlayerName(gameState);
-
-  renderGameState(gameState.state);
+  renderGameState(gameState);
   setup(gameState);
   addListenerToTrade(gameState);
   addListenerToCardIcon(gameState.player);

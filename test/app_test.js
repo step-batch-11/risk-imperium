@@ -6,6 +6,7 @@ import { Game } from "../src/game.js";
 import { CONFIG, STATES } from "../src/config.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { mockPlayers } from "../src/mock_data.js";
+import { Cavalry } from "../src/models/cavalry.js";
 
 it("Create app should return the instance of the Hono class", () => {
   const app = createApp({});
@@ -34,10 +35,11 @@ describe("App Handler", () => {
 
     beforeAll(() => {
       const continentsHandler = new ContinentsHandler();
+      const cavalry = new Cavalry();
       game = new Game(
         mockPlayers(),
         CONFIG.TERRITORIES,
-        { continentsHandler },
+        { continentsHandler, cavalry },
         { random: () => 0.3 },
       );
       game.initTerritories();

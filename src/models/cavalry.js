@@ -8,12 +8,18 @@ export class Cavalry {
   getCurrentCount() {
     return this.#positions[this.#currentPosition];
   }
-  isAtMaxPos() {
+
+  moveToMax() {
+    this.#currentPosition = this.#positions.length - 1;
+    return "at max";
+  }
+  #isAtMaxPos() {
     return (this.#currentPosition + 1) === this.#positions.length;
   }
   moveCavalry() {
-    if (this.isAtMaxPos()) return;
+    if (this.#isAtMaxPos()) return "is at max";
     this.#currentPosition++;
+    return "moved";
   }
   getPos(idx) {
     return this.#positions[idx];

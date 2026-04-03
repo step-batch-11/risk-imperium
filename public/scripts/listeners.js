@@ -3,6 +3,7 @@ import {
   renderTradeIndicator,
   tradeCard,
 } from "./features/cards.js";
+import { updateCavalry } from "./features/cavalryUpdate.js";
 import { onMapAction } from "./features/map_events.js";
 import { updateCards } from "./features/setup.js";
 import { setTroopLimit } from "./utilities.js";
@@ -53,7 +54,8 @@ export const addListenerToTrade = (gameState) => {
     showNotification("Traded the card ");
     const selectedCards = Object.values(gameState.selectedCards);
     const selected = [...selectedCards];
-    const { troops, _positions } = await tradeCard(selected);
+    const { troops, positions } = await tradeCard(selected);
+    updateCavalry(positions);
     renderRemainingTroopsToDeploy(troops);
     setTroopLimit(troops);
     for (const card of selected) {
