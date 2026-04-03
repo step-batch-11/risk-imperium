@@ -47,23 +47,18 @@ export const handleFortified = async (territory, gameState) => {
   const id = Number(territory.dataset.territoryId);
   const territoriesSets = getFortifiableTerritory(gameState);
   const connectedTerritories = territoriesSets.find((set) => set.includes(id));
-  console.log({ connectedTerritories });
 
   if (!connectedTerritories) {
     return;
   }
-  console.log({ connectedTerritories });
 
   if (!gameState.fortifyFrom) {
-    console.log("setting fortify from");
     handleFortifyTerritoryFromSelection(gameState, territory);
     return;
   }
-  console.log("setting fortify to", territory);
 
   if (connectedTerritories.includes(gameState.fortifyFrom)) {
     const nextPhase = await handleFortifyTo(gameState, territory);
-    console.log("hre", nextPhase);
 
     removeSkipButton();
     setUpNextPhase(gameState, nextPhase);

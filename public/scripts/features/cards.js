@@ -5,7 +5,7 @@ import { setUpNextPhase } from "../transition_handlers.js";
 import { showNotification } from "../utilities/notifications.js";
 import { updateCards } from "./setup.js";
 
-const addCardAlert = () => {
+export const addCardAlert = () => {
   const cardElement = document.querySelector("#cards");
   const circle = cardElement.querySelector("circle");
   circle.classList.add("card-alert");

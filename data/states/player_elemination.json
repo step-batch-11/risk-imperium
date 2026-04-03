@@ -251,27 +251,14 @@
         26,
         18,
         12
-      ]
+      ],
+      "cards": ["2"]
     },
     {
       "id": 2,
       "name": "Rob",
-      "territories": [2]
-    },
-    {
-      "id": 3,
-      "name": "Sansa",
-      "territories": []
-    },
-    {
-      "id": 4,
-      "name": "Arya",
-      "territories": []
-    },
-    {
-      "id": 5,
-      "name": "Rickon",
-      "territories": []
+      "territories": [2],
+      "cards": ["2"]
     },
     {
       "id": 6,
