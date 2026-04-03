@@ -7,6 +7,7 @@ import {
   NOTIFICATION_TYPES,
 } from "../configs/notification_config.js";
 import { renderRemainingTroopsToDeploy } from "../utilities/render_UI.js";
+import { removeCardAreaListener } from "./cards.js";
 
 const notifyNotOwned = (gameState, id) => {
   const territoryName = gameState.territories[id].name;
@@ -55,12 +56,14 @@ const handleCustomDeployment = (gameState, territoryId) => {
 
     const troopCount = Number(input.value);
     await deployTroops(gameState, territoryId, troopCount);
-
     const remainingTroops = Number(input.max) - troopCount;
     setTroopLimit(remainingTroops);
 
     form.reset();
     dialog.close();
+    console.log("here");
+
+    removeCardAreaListener(gameState);
   };
 };
 

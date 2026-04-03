@@ -1,5 +1,8 @@
+import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import { addListenersToPlayerIcon } from "../listeners.js";
 import { getAllPlayersDetail, getOwnedContinents } from "../utilities.js";
+import { showNotification } from "../utilities/notifications.js";
+import { canBeTraded } from "./cards.js";
 
 const renderPlayerDetails = (player, continents) => {
   const playerDetailsTemplate = document.querySelector(
@@ -44,15 +47,49 @@ export const setup = (gameState) => {
   addListenersToPlayerIcon(players, gameState.continents);
 };
 
+export const addListenerToCard = (gameState, cardArea) => {
+  cardArea.onclick = (e) => {
+    const id = e.target.id;
+    const list = e.target.classList;
+    console.log(list, !list.contains("card"));
+
+    if (!list.contains("card")) return;
+
+    const cardId = +id.split("-")[1];
+
+    const card = cardArea.querySelector(`#${id}`);
+    const cards = gameState.player.cards;
+    const selectedCards = gameState.selectedCards;
+    if (selectedCards[id]) {
+      delete selectedCards[id];
+      card.classList.remove("glow");
+      canBeTraded(gameState.selectedCards);
+      return;
+    }
+
+    if (Object.entries(selectedCards).length === 3) {
+      showNotification(
+        "deselect to select all cards",
+        NOTIFICATION_TYPES.WARNING,
+      );
+      return;
+    }
+
+    gameState.selectedCards[id] = cards[cardId];
+    card.classList.add("glow");
+    canBeTraded(gameState.selectedCards);
+  };
+};
+
 export const updateCards = (cards) => {
   const cardsArea = document.querySelector("#card-area > div");
   cardsArea.textContent = "";
-  const cardElements = cards.map((card) => {
-    const element = document.createElement("div");
-
-    element.textContent = card;
-    element.classList.add("card");
-    return element;
+  const cardElements = cards.map((card, i) => {
+    const cardElement = document.createElement("div");
+    cardElement.textContent = card;
+    cardElement.classList.add("card");
+    cardElement.id = `card-${i}`;
+    return cardElement;
   });
 
   cardsArea.append(...cardElements);
