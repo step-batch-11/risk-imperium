@@ -1,6 +1,7 @@
+import { STATES } from "../configs/game_states.js";
 import { getFortifiableTerritory } from "../handlers/fortified_handler.js";
 import { fortifyRequest } from "../server_calls.js";
-import { setUpNextPhase } from "../transition_handlers.js";
+import { SETUP_TRANSITION, setUpNextPhase } from "../transition_handlers.js";
 import { removeSkipButton, updateTroopsInTerritories } from "../utilities.js";
 import {
   highlightTerritories,
@@ -16,11 +17,11 @@ const handleFortifyTerritoryFromSelection = (gameState, territory) => {
     return;
   }
 
-  const territoryToMoveTo = connectedTerritories.filter((tid) => tid !== id);
+  const territoriesToMoveTo = connectedTerritories.filter((tid) => tid !== id);
+  highlightTerritories([id], "reinforce-from-selected");
   removeHighlights("selected");
-  highlightTerritories(territoryToMoveTo);
+  highlightTerritories(territoriesToMoveTo);
   gameState.fortifyFrom = id;
-  return;
 };
 
 const handleFortifyTo = async (gameState, territory) => {
@@ -47,24 +48,27 @@ export const handleFortified = async (territory, gameState) => {
   const id = Number(territory.dataset.territoryId);
   const territoriesSets = getFortifiableTerritory(gameState);
   const connectedTerritories = territoriesSets.find((set) => set.includes(id));
-  console.log({ connectedTerritories });
 
   if (!connectedTerritories) {
     return;
   }
-  console.log({ connectedTerritories });
 
   if (!gameState.fortifyFrom) {
-    console.log("setting fortify from");
     handleFortifyTerritoryFromSelection(gameState, territory);
     return;
   }
-  console.log("setting fortify to", territory);
+
+  if (id === gameState.fortifyFrom) {
+    delete gameState.fortifyFrom;
+    removeHighlights("reinforce-from-selected");
+    removeHighlights("selected");
+    SETUP_TRANSITION[STATES.FORTIFICATION](gameState);
+    return;
+  }
 
   if (connectedTerritories.includes(gameState.fortifyFrom)) {
     const nextPhase = await handleFortifyTo(gameState, territory);
-    console.log("hre", nextPhase);
-
+    removeHighlights("reinforce-from-selected");
     removeSkipButton();
     setUpNextPhase(gameState, nextPhase);
   }
