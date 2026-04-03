@@ -4,7 +4,7 @@ import {
   skipFortificationRequest,
   skipInvasionRequest,
 } from "./server_calls.js";
-import { setTroopLimit } from "./utilities.js";
+import { removeSkipButton, setTroopLimit } from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
 import {
@@ -51,9 +51,9 @@ const addInvasionSkipButton = (gameState) => {
 
   skipButtonElement.addEventListener("click", async () => {
     const { action: newState } = await skipInvasionRequest();
-
     removeHighlights("selected");
-    skipButtonElement.remove();
+    removeHighlights("highlight");
+    removeSkipButton();
     setUpNextPhase(gameState, newState);
   });
   body.append(cloneNode);
@@ -103,7 +103,7 @@ export const setupFortification = (gameState) => {
   skipButtonElement.addEventListener("click", async () => {
     const { action: newState } = await skipFortificationRequest();
     setUpNextPhase(gameState, newState);
-    skipButtonElement.remove();
+    removeSkipButton();
   });
 };
 

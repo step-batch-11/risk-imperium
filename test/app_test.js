@@ -1,10 +1,11 @@
-import { describe, it } from "@std/testing/bdd";
+import { beforeAll, describe, it } from "@std/testing/bdd";
 import { assert, assertEquals } from "@std/assert";
 import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { Game } from "../src/game.js";
-import { STATES } from "../src/config.js";
+import { CONFIG, STATES } from "../src/config.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
+import { mockPlayers } from "../src/mock_data.js";
 
 it("Create app should return the instance of the Hono class", () => {
   const app = createApp({});
@@ -28,13 +29,23 @@ describe("App Handler", () => {
   });
 
   describe("POST /user-actions", () => {
-    it("REINFORCE user-actions should return updated troop count with their territory Id", async () => {
+    let game;
+    let app;
+
+    beforeAll(() => {
       const continentsHandler = new ContinentsHandler();
-      const game = new Game(continentsHandler);
+      game = new Game(
+        mockPlayers(),
+        CONFIG.TERRITORIES,
+        { continentsHandler },
+        { random: () => 0.3 },
+      );
       game.initTerritories();
       const gameState = game.getSetup(1);
       gameState.state = STATES.INITIAL_REINFORCEMENT;
-      const app = createApp(game);
+      app = createApp(game);
+    });
+    it("REINFORCE user-actions should return updated troop count with their territory Id", async () => {
       const response = await app.request("/user-actions", {
         method: "POST",
         headers: { "content-type": "applications/json" },
@@ -52,6 +63,36 @@ describe("App Handler", () => {
       const updatedTerritory = data.updatedTerritory[0];
       assertEquals(updatedTerritory.territoryId, 37);
       assertEquals(updatedTerritory.troopCount, 2);
+    });
+    it("DEFEND should move game to RESOLVE_COMBAT after a valid invasion", async () => {
+      const response = await app.request("/user-actions", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          userActions: "DEFEND",
+          data: {
+            territoryId: 2,
+            troopCount: 1,
+          },
+        }),
+      });
+      const result = await response.json();
+      assertEquals(response.status, 200);
+      assertEquals(result.action, STATES.RESOLVE_COMBAT);
+    });
+    it("RESOLVE_COMBAT should resolve and update territories", async () => {
+      const response = await app.request("/user-actions", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          userActions: STATES.RESOLVE_COMBAT,
+          data: {},
+        }),
+      });
+      const result = await response.json();
+      assertEquals(response.status, 200);
+      assertEquals(result.data.notifyMsg.status, "fail");
+      // assertEquals(result.action, STATES.`INVASION`);
     });
   });
 

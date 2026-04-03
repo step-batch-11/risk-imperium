@@ -34,14 +34,20 @@ export const captureTerritory = (
     gameState.territories[defenderTerritoryId].name
   }`;
 
+  renderPlayersDetails(gameState);
+  showNotification(msg);
+
   if (combatResult.hasEliminated) {
     const msg = `${defender.name} has eliminated`;
     delete gameState.opponents[defender.id];
     showNotification(msg, NOTIFICATION_TYPES.WARNING);
   }
 
-  setTimeout(() => {
-    renderPlayersDetails(gameState);
-    showNotification(msg);
-  }, 1000);
+  if (combatResult.hasWon) {
+    const glassBox = document.querySelector("#glass-box");
+    glassBox.classList.remove("d-none");
+    // setTimeout(() => {
+    //   redirect
+    // })
+  }
 };

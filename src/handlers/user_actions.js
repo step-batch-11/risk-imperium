@@ -24,6 +24,7 @@ const USER_ACTIONS = {
 
   SKIP_INVASION: (game) => {
     const state = game.getGameState();
+
     if (state !== STATES.INVASION) {
       return { action: state, data: [] };
     }

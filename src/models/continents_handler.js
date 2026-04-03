@@ -22,13 +22,17 @@ export class ContinentsHandler {
     return this.#continents[id].territories;
   }
 
-  calculateContinentsBonus(territoryIds) {
-    const ownedContinents = Object.values(this.#continents).filter(
+  getOwnedContients = (territoryIds) => {
+    return Object.values(this.#continents).filter(
       (continent) =>
         continent.territories.every((territoryId) =>
           territoryIds.includes(territoryId)
         ),
     );
+  };
+
+  calculateContinentsBonus(territoryIds) {
+    const ownedContinents = this.getOwnedContients(territoryIds);
 
     return ownedContinents.reduce((total, { armies }) => total + armies, 0);
   }

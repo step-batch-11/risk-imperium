@@ -169,4 +169,5 @@ export const STATES = {
   GET_CARD: "GET_CARD",
   CAPTURE: "CAPTURE",
   SKIP_INVASION: "SKIP_INVASION",
+  WON: "WON",
 };

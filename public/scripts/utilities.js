@@ -2,7 +2,7 @@ import { setupDeployControls } from "./listeners.js";
 
 export const getOwnedContinents = (player, continents) => {
   return Object.values(continents).filter((continent) => {
-    continent.territories.every((territory) =>
+    return continent.territories.every((territory) =>
       player.territories.includes(territory)
     );
   });
@@ -82,4 +82,9 @@ export const displayTroopSelector = (event, dialog, handleSelection) => {
 
     dialog.close();
   };
+};
+
+export const removeSkipButton = () => {
+  const skipButtonElement = document.querySelector("#skip-button");
+  skipButtonElement.remove();
 };

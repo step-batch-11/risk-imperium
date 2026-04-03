@@ -4,6 +4,7 @@ import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { NOTIFICATION_MESSAGES } from "../configs/notification_config.js";
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import { removeSkipButton } from "../utilities.js";
 
 const highlightTerritories = (territories) => {
   territories.forEach((territoryId) => {
@@ -76,7 +77,6 @@ const selectDefender = async (gameState, selectedTerritoryId) => {
 
   deleteInvadeDetails(gameState);
   removeHighlights("selected");
-
   setUpNextPhase(gameState, newState);
 };
 
@@ -95,8 +95,7 @@ export const handleInvasion = async (territory, gameState) => {
   }
 
   if (isNeighbouringOpponent(gameState, selectedTerritoryId)) {
-    const skipButtonElement = document.querySelector("#skip-button");
-    skipButtonElement.remove();
+    removeSkipButton();
     return await selectDefender(gameState, selectedTerritoryId);
   }
 

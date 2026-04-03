@@ -10,21 +10,22 @@ export class Game {
   #randomFunction;
   #stateDetails;
   #cards;
+  #fortificationHandler;
 
   constructor(
-    continentsHandler,
-    cards,
-    randomFunction = Math.random,
     players = mockPlayers(),
     territories = CONFIG.TERRITORIES,
+    handlers = {},
+    utilities = {},
   ) {
-    this.#randomFunction = randomFunction;
+    this.#randomFunction = utilities.random;
     this.#activePlayerId = players[0].id;
     this.#territories = territories;
     this.#players = players;
-    this.#cards = cards;
-    this.#continentsHandler = continentsHandler;
+    this.#cards = handlers.cardsHandler;
+    this.#continentsHandler = handlers.continentsHandler;
     this.#state = STATES.SETUP;
+    this.#fortificationHandler = handlers.fortificationHandler;
 
     this.#stateDetails = {
       initialTroopLimit: 2,
@@ -35,6 +36,7 @@ export class Game {
       defenderTroops: 1,
       hasCaptured: false,
       hasEliminated: false,
+      hasWon: false,
     };
   }
 
@@ -332,16 +334,24 @@ export class Game {
     return collection.findIndex((element) => element === target);
   }
 
+  #eliminatePlayer(defender) {
+    if (this.#isEliminated(defender)) {
+      const index = this.#getIndexOf(this.#players, defender);
+      this.#players.splice(index, 1);
+      this.#stateDetails.hasEliminated = true;
+      if (this.#players.length === 1) {
+        console.log("entire world is your's now");
+        this.#stateDetails.hasWon = true;
+      }
+    }
+  }
+
   #updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId) {
     const defender = this.#getPlayerById(defenderTerritoryId);
     const attacker = this.#getPlayerById(attackerTerritoryId);
     const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
     attacker.territories.push(...defender.territories.splice(index, 1));
-    if (this.#isEliminated(defender)) {
-      const index = this.#getIndexOf(this.#players, defender);
-      this.#players.splice(index, 1);
-      this.#stateDetails.hasEliminated = true;
-    }
+    this.#eliminatePlayer(defender);
   }
 
   #isEliminated(defender) {
@@ -371,7 +381,12 @@ export class Game {
       this.#stateDetails.hasCaptured = true;
       updatedTerritories = this.captureTerritory(attackerDice.length);
     }
-    this.#state = STATES.INVASION;
+    if (this.#stateDetails.hasWon) {
+      this.#state = STATES.WON;
+    } else {
+      this.#state = STATES.INVASION;
+    }
+
     return updatedTerritories;
   }
 
@@ -402,6 +417,7 @@ export class Game {
         updatedTerritories,
         hasCaptured: this.#stateDetails.hasCaptured,
         hasEliminated: this.#stateDetails.hasEliminated,
+        hasWon: this.#stateDetails.hasWon,
       },
     };
   }
@@ -432,26 +448,35 @@ export class Game {
     return player.territories.includes(territoryId);
   }
 
+  #getCurrentPlayer() {
+    return this.#players.find(({ id }) => id === this.#activePlayerId);
+  }
+
+  #getTerritoryAndTroopsCount(...territoryIds) {
+    const territoriesDetails = [];
+    for (const territoryId of territoryIds) {
+      const territory = this.#territories[territoryId];
+      const troopCount = territory.troopCount;
+      territoriesDetails.push({ territoryId, troopCount });
+    }
+    return territoriesDetails;
+  }
+
   fortification(from, to, count) {
-    if (this.#territories[from].troopCount < count + 1) {
+    const currentPlayer = this.#getCurrentPlayer();
+    try {
+      this.#fortificationHandler.moveTroops(
+        from,
+        to,
+        count,
+        currentPlayer.territories,
+      );
+      this.#updateState(STATES.GET_CARD);
+      const updatedTerritories = this.#getTerritoryAndTroopsCount(from, to);
+      return updatedTerritories;
+    } catch {
       return [];
     }
-
-    const fromTerritory = this.#territories[from];
-    fromTerritory.troopCount -= count;
-
-    const toTerritory = this.#territories[to];
-    toTerritory.troopCount += count;
-
-    this.#updateState(STATES.GET_CARD);
-
-    return [{
-      territoryId: from,
-      troopCount: fromTerritory.troopCount,
-    }, {
-      territoryId: to,
-      troopCount: toTerritory.troopCount,
-    }];
   }
 
   getSavableGameState() {
@@ -465,15 +490,15 @@ export class Game {
     };
   }
 
-  loadGameState(gameState) {
+  loadGameState(gameState, handlers = {}) {
     const { activePlayerId, territories, players, state, stateDetails } =
       gameState;
-
     this.#activePlayerId = activePlayerId;
     this.#territories = territories;
     this.#players = players;
     this.#initCards();
     this.#state = state;
     this.#stateDetails = stateDetails;
+    this.#fortificationHandler = handlers.fortificationHandler;
   }
 }
