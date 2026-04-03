@@ -6,6 +6,9 @@ import invasionState from "../data/states/invasion.json" with { type: "json" };
 import defendState from "../data/states/defend.json" with { type: "json" };
 import getCardState from "../data/states/getCard.json" with { type: "json" };
 
+import playerWon from "../data/states/won.json" with {
+  type: "json",
+};
 import fortification from "../data/states/fortification.json" with {
   type: "json",
 };
@@ -387,17 +390,34 @@ describe("Game", () => {
       ];
       assertEquals(expected, result);
     });
+
+    it("should eliminate the player if he doesn't have a territories ", () => {
+      game.loadGameState(playerElimination);
+      const result = game.captureTerritory(3);
+      const expected = [
+        { territoryId: 1, troopCount: 27 },
+        { territoryId: 2, troopCount: 3 },
+      ];
+      const currentState = game.getSavableGameState();
+      assertEquals(expected, result);
+      assertEquals(currentState.players.length, 5);
+    });
   });
-  it("should eliminate the player if he doesn't have a territories ", () => {
-    game.loadGameState(playerElimination);
-    const result = game.captureTerritory(3);
-    const expected = [
-      { territoryId: 1, troopCount: 27 },
-      { territoryId: 2, troopCount: 3 },
-    ];
-    const currentState = game.getSavableGameState();
-    assertEquals(expected, result);
-    assertEquals(currentState.players.length, 5);
+
+  describe("WIN CONDITION", () => {
+    let game;
+    beforeEach(() => {
+      const continentsHandler = new ContinentsHandler();
+      game = new Game(continentsHandler, () => 0.3);
+    });
+
+    it("game state should change to won", () => {
+      game.loadGameState(playerWon);
+      game.captureTerritory(3);
+      const currentGameState = game.getSavableGameState();
+      assertEquals(currentGameState.stateDetails.hasCaptured, true);
+      assertEquals(currentGameState.stateDetails.hasWon, true);
+    });
   });
 
   describe("skipInvasion", () => {

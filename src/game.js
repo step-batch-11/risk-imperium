@@ -35,6 +35,7 @@ export class Game {
       defenderTroops: 1,
       hasCaptured: false,
       hasEliminated: false,
+      hasWon: false,
     };
   }
 
@@ -331,16 +332,24 @@ export class Game {
     return collection.findIndex((element) => element === target);
   }
 
+  #eliminatePlayer(defender) {
+    if (this.#isEliminated(defender)) {
+      const index = this.#getIndexOf(this.#players, defender);
+      this.#players.splice(index, 1);
+      this.#stateDetails.hasEliminated = true;
+      if (this.#players.length === 1) {
+        console.log("entire world is your's now");
+        this.#stateDetails.hasWon = true;
+      }
+    }
+  }
+
   #updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId) {
     const defender = this.#getPlayerById(defenderTerritoryId);
     const attacker = this.#getPlayerById(attackerTerritoryId);
     const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
     attacker.territories.push(...defender.territories.splice(index, 1));
-    if (this.#isEliminated(defender)) {
-      const index = this.#getIndexOf(this.#players, defender);
-      this.#players.splice(index, 1);
-      this.#stateDetails.hasEliminated = true;
-    }
+    this.#eliminatePlayer(defender);
   }
 
   #isEliminated(defender) {
@@ -370,7 +379,12 @@ export class Game {
       this.#stateDetails.hasCaptured = true;
       updatedTerritories = this.captureTerritory(attackerDice.length);
     }
-    this.#state = STATES.INVASION;
+    if (this.#stateDetails.hasWon) {
+      this.#state = STATES.WON;
+    } else {
+      this.#state = STATES.INVASION;
+    }
+
     return updatedTerritories;
   }
 
@@ -401,6 +415,7 @@ export class Game {
         updatedTerritories,
         hasCaptured: this.#stateDetails.hasCaptured,
         hasEliminated: this.#stateDetails.hasEliminated,
+        hasWon: this.#stateDetails.hasWon,
       },
     };
   }
