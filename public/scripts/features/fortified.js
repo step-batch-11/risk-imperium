@@ -1,7 +1,13 @@
+import { STATES } from "../configs/game_states.js";
 import { getFortifiableTerritory } from "../handlers/fortified_handler.js";
 import { fortifyRequest } from "../server_calls.js";
-import { setUpNextPhase } from "../transition_handlers.js";
-import { removeSkipButton, updateTroopsInTerritories } from "../utilities.js";
+import { SETUP_TRANSITION, setUpNextPhase } from "../transition_handlers.js";
+import {
+  displayTroopSelector,
+  removeSkipButton,
+  setTroopLimit,
+  updateTroopsInTerritories,
+} from "../utilities.js";
 import {
   highlightTerritories,
   removeHighlights,
@@ -16,19 +22,14 @@ const handleFortifyTerritoryFromSelection = (gameState, territory) => {
     return;
   }
 
-  const territoryToMoveTo = connectedTerritories.filter((tid) => tid !== id);
+  const territoriesToMoveTo = connectedTerritories.filter((tid) => tid !== id);
+  highlightTerritories([id], "reinforce-from-selected");
   removeHighlights("selected");
-  highlightTerritories(territoryToMoveTo);
+  highlightTerritories(territoriesToMoveTo);
   gameState.fortifyFrom = id;
-  return;
 };
 
-const handleFortifyTo = async (gameState, territory) => {
-  const id = Number(territory.dataset.territoryId);
-
-  gameState.fortifyTo = id;
-  const fromId = gameState.fortifyFrom;
-  const count = gameState.territories[fromId].troopCount - 1;
+const handleFortification = async (_event, gameState, fromId, id, count) => {
   const { action: nextPhase, data: updatedTerritories } = await fortifyRequest({
     from: fromId,
     to: id,
@@ -40,10 +41,32 @@ const handleFortifyTo = async (gameState, territory) => {
   delete gameState.fortifyFrom;
   delete gameState.fortifyTo;
 
-  return nextPhase;
+  removeSkipButton();
+  setUpNextPhase(gameState, nextPhase);
 };
 
-export const handleFortified = async (territory, gameState) => {
+const selectFortifyingTroops = (event, gameState, fromId, handleSelection) => {
+  const troopCount = gameState.territories[fromId].troopCount;
+  const maxTroops = troopCount - 1;
+  const minTroops = 1;
+
+  setTroopLimit(maxTroops, minTroops, maxTroops);
+  displayTroopSelector(event, handleSelection);
+};
+
+const handleFortifyTo = (event, gameState, territory) => {
+  const id = Number(territory.dataset.territoryId);
+
+  gameState.fortifyTo = id;
+  const fromId = gameState.fortifyFrom;
+
+  const handleSelection = async (troopCount) =>
+    await handleFortification(event, gameState, fromId, id, troopCount);
+
+  selectFortifyingTroops(event, gameState, fromId, handleSelection);
+};
+
+export const handleFortified = (territory, gameState, event) => {
   const id = Number(territory.dataset.territoryId);
   const territoriesSets = getFortifiableTerritory(gameState);
   const connectedTerritories = territoriesSets.find((set) => set.includes(id));
@@ -57,10 +80,17 @@ export const handleFortified = async (territory, gameState) => {
     return;
   }
 
-  if (connectedTerritories.includes(gameState.fortifyFrom)) {
-    const nextPhase = await handleFortifyTo(gameState, territory);
-
+  if (id === gameState.fortifyFrom) {
+    delete gameState.fortifyFrom;
+    removeHighlights("reinforce-from-selected");
+    removeHighlights("selected");
     removeSkipButton();
-    setUpNextPhase(gameState, nextPhase);
+    SETUP_TRANSITION[STATES.FORTIFICATION](gameState);
+    return;
+  }
+
+  if (connectedTerritories.includes(gameState.fortifyFrom)) {
+    handleFortifyTo(event, gameState, territory);
+    removeHighlights("reinforce-from-selected");
   }
 };

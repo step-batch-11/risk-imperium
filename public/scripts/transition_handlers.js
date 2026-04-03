@@ -17,7 +17,7 @@ import {
 } from "./utilities/highlight.js";
 import { STATES } from "./configs/game_states.js";
 import { territoryToFortifyFrom } from "./handlers/fortified_handler.js";
-import { getCard } from "./features/cards.js";
+import { getCard, renderTradeIndicator } from "./features/cards.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -38,6 +38,7 @@ const setupReinforcePhase = async (gameState) => {
   setTroopLimit(data.troopsToReinforce);
   renderRemainingTroopsToDeploy(data.troopsToReinforce);
   highlightTerritories(territories);
+  renderTradeIndicator(gameState);
 };
 
 const addInvasionSkipButton = (gameState) => {
@@ -107,12 +108,17 @@ export const setupFortification = (gameState) => {
   });
 };
 
+const handleGetCard = async (gameState) => {
+  const action = await getCard(gameState);
+  setUpNextPhase(gameState, action);
+};
+
 export const SETUP_TRANSITION = {
   [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
   [STATES.REINFORCE]: setupReinforcePhase,
   [STATES.INVASION]: setupInvasionPhase,
   [STATES.FORTIFICATION]: setupFortification,
-  [STATES.GET_CARD]: getCard,
+  [STATES.GET_CARD]: handleGetCard,
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

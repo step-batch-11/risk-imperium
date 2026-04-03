@@ -27,6 +27,14 @@ body {
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 
+.reinforce-from-selected > .territory-outline {
+  stroke: green;
+  stroke-opacity: 1;
+  fill: darkgreen;
+  fill-opacity: 0.5;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
 .highlight > .territory-outline {
   stroke: rgb(136, 0, 0);
   stroke-width: 4px;

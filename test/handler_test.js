@@ -9,6 +9,8 @@ import { fortificationHandler } from "../src/handlers/fortification_handler.js";
 import fortification from "../data/states/fortification.json" with {
   type: "json",
 };
+import invasionState from "../data/states/invasion.json" with { type: "json" };
+import defendState from "../data/states/defend.json" with { type: "json" };
 import { mockPlayers } from "../src/mock_data.js";
 import { FortificationHandler } from "../src/models/fortification_handler.js";
 
@@ -86,6 +88,59 @@ describe("Api Handler", () => {
 
       assertEquals(action, "REINFORCE");
       assertEquals(data.troopsToReinforce, 3);
+    });
+  });
+
+  describe("INVADE", () => {
+    it("should change the game state to defend after attacking", async () => {
+      game.loadGameState(invasionState);
+      const mockData = {
+        attackerTerritoryId: 36,
+        defenderTerritoryId: 37,
+        attackerTroops: 3,
+      };
+
+      const context = {
+        get: () => game,
+        req: {
+          json: () => ({ userActions: "INVADE", data: mockData }),
+        },
+        json: (data) => data,
+      };
+
+      const { newState, data } = await handleUserActions(context);
+
+      assertEquals(newState, STATES.DEFEND);
+      assertEquals(data, {});
+    });
+  });
+
+  describe("DEFEND", () => {
+    it("should change the game state to RESOLVE_COMBAT after defending", async () => {
+      game.loadGameState(defendState);
+      const mockData = {
+        territoryId: 21,
+        troopCount: 1,
+      };
+
+      const expectedData = {
+        attackerTerritoryId: 21,
+        defenderTerritoryId: 22,
+        attackerTroops: 3,
+        defenderTroops: 1,
+      };
+
+      const context = {
+        get: () => game,
+        req: {
+          json: () => ({ userActions: "DEFEND", data: mockData }),
+        },
+        json: (data) => data,
+      };
+
+      const { action, data } = await handleUserActions(context);
+      assertEquals(action, STATES.RESOLVE_COMBAT);
+      assertEquals(data, expectedData);
     });
   });
 

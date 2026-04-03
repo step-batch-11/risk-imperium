@@ -47,6 +47,7 @@ export class Game {
   skipFortification() {
     this.#updateState(STATES.GET_CARD);
   }
+
   skipInvasion() {
     this.#updateState(STATES.FORTIFICATION);
   }

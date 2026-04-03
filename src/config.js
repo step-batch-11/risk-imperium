@@ -75,7 +75,7 @@ export const CONFIG = {
     25: { name: "Congo", neighbours: [21, 24, 26], troopCount: 0 },
     26: { name: "South Africa", neighbours: [24, 25, 27], troopCount: 0 },
     27: { name: "Madagascar", neighbours: [26, 24], troopCount: 0 },
-    28: { name: "Ural", neighbours: [16, 23, 29, 37, 36], troopCount: 0 },
+    28: { name: "Ural", neighbours: [16, 29, 37, 35, 36], troopCount: 0 },
     29: {
       name: "Siberia",
       neighbours: [28, 30, 31, 33, 36],

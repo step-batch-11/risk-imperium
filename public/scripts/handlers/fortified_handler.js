@@ -31,6 +31,7 @@ export const getFortifiableTerritory = (gameState) => {
   const owned = gameState.player.territories;
   return findTerritory(territories, owned);
 };
+
 export const territoryToFortifyFrom = (gameState) => {
   const fortifiableTerritorySet = getFortifiableTerritory(gameState);
   const fortifiableTerritories = fortifiableTerritorySet.flat();

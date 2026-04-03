@@ -1,3 +1,5 @@
+import { setupDeployControls } from "./listeners.js";
+
 export const getOwnedContinents = (player, continents) => {
   return Object.values(continents).filter((continent) => {
     return continent.territories.every((territory) =>
@@ -12,10 +14,11 @@ export const getAllPlayersDetail = (player, opponents) => {
   return { ...opponents, [currentPlayerId]: player };
 };
 
-export const setTroopLimit = (maxTroops, min = 1) => {
+export const setTroopLimit = (maxTroops, min = 1, defaultValue = 1) => {
   const input = document.querySelector("#troop-count-input");
   input.max = maxTroops;
   input.min = min;
+  input.value = defaultValue;
 };
 
 const getTerritoryElementIdByTerritoryId = (territories, territoryId) => {
@@ -57,7 +60,32 @@ export const delay = (duration) => {
   });
 };
 
+const setLocation = (dialog, x, y) => {
+  dialog.style.left = `${x}px`;
+  dialog.style.top = `${y}px`;
+};
+
+export const displayTroopSelector = (event, handleSelection) => {
+  const dialog = document.querySelector("#deploy-troops-container");
+  const form = dialog.querySelector("#deploy-troops-form");
+  const input = form.querySelector("input");
+
+  dialog.showModal();
+
+  setLocation(dialog, event.x, event.y);
+  setupDeployControls(dialog);
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const troopCount = Number(input.value);
+    await handleSelection(troopCount);
+
+    dialog.close();
+  };
+};
+
 export const removeSkipButton = () => {
   const skipButtonElement = document.querySelector("#skip-button");
-  skipButtonElement.remove();
+  if (skipButtonElement) skipButtonElement.remove();
 };
