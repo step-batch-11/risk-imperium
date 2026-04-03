@@ -1,5 +1,9 @@
 import { sendReinforceRequest } from "../server_calls.js";
-import { setTroopLimit, updateTroopsInTerritories } from "../utilities.js";
+import {
+  displayTroopSelector,
+  setTroopLimit,
+  updateTroopsInTerritories,
+} from "../utilities.js";
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
@@ -28,12 +32,15 @@ const isOwned = (gameState, id) => gameState.player.territories.includes(id);
 const updateRemainingTroops = (remainingTroops) => {
   if (remainingTroops !== undefined) {
     renderRemainingTroopsToDeploy(remainingTroops);
+    setTroopLimit(remainingTroops);
   }
 };
 
 const updateAfterDeploy = (gameState, response, troopCount) => {
-  const { action: nextState, data: { updatedTerritory, remainingTroops } } =
-    response;
+  const {
+    action: nextState,
+    data: { updatedTerritory, remainingTroops },
+  } = response;
 
   updateTroopsInTerritories(gameState, updatedTerritory);
   const updatedTerritoryId = updatedTerritory[0].territoryId;
@@ -43,52 +50,35 @@ const updateAfterDeploy = (gameState, response, troopCount) => {
   setUpNextPhase(gameState, nextState);
 };
 
-const handleCustomDeployment = (gameState, territoryId) => {
+const handleCustomDeployment = (event, gameState, territoryId) => {
+  const handleSelection = (troopCount) =>
+    deployTroops(event, gameState, territoryId, troopCount);
+
   const dialog = document.querySelector("#deploy-troops-container");
-  const form = dialog.querySelector("#deploy-troops-form");
-  const input = form.querySelector("input");
-
-  dialog.showModal();
-
-  form.onsubmit = async (e) => {
-    e.preventDefault();
-
-    const troopCount = Number(input.value);
-    await deployTroops(gameState, territoryId, troopCount);
-
-    const remainingTroops = Number(input.max) - troopCount;
-    setTroopLimit(remainingTroops);
-
-    form.reset();
-    dialog.close();
-  };
+  displayTroopSelector(event, dialog, handleSelection);
 };
 
-const deployTroops = async (
-  gameState,
-  territoryId,
-  troopCount = 1,
-) => {
-  try {
-    const res = await sendReinforceRequest({ territoryId, troopCount });
-    updateAfterDeploy(gameState, res, troopCount);
-  } catch {
-    showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
-  }
+const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
+  return sendReinforceRequest({ territoryId, troopCount })
+    .then((res) => updateAfterDeploy(gameState, res, troopCount))
+    .catch(() => {
+      showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
+    });
 };
 
-const handleReinforcement = (territory, gameState, handleDeployment) => {
+const handleReinforcement = (territory, gameState, handleDeployment, event) => {
   const territoryId = getTerritoryId(territory);
   if (!isOwned(gameState, territoryId)) {
     return notifyNotOwned(gameState, territoryId);
   }
-  handleDeployment(gameState, territoryId);
+
+  handleDeployment(event, gameState, territoryId);
 };
 
 export const initialReinforcement = (territory, gameState) => {
   handleReinforcement(territory, gameState, deployTroops);
 };
 
-export const reinforce = (territory, gameState) => {
-  handleReinforcement(territory, gameState, handleCustomDeployment);
+export const reinforce = (territory, gameState, event) => {
+  handleReinforcement(territory, gameState, handleCustomDeployment, event);
 };

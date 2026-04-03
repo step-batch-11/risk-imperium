@@ -37,3 +37,28 @@ export const addListenerToCardIcon = (player) => {
     cardArea.classList.toggle("hidden");
   });
 };
+
+const isValidTroopCount = (value, max) => value > 0 && value <= max;
+
+const updateTroopCount = (input, offset) => {
+  const currentTroopsCount = Number(input.value);
+  const maxLimit = Number(input.max);
+
+  const updatedTroopsCount = currentTroopsCount + offset;
+
+  if (isValidTroopCount(updatedTroopsCount, maxLimit)) {
+    input.value = updatedTroopsCount;
+  }
+};
+
+export const setupDeployControls = (dialog) => {
+  const input = dialog.querySelector("#troop-count-input");
+
+  dialog.querySelector("#increase-troops-btn").onclick = () =>
+    updateTroopCount(input, +1);
+
+  dialog.querySelector("#decrease-troops-btn").onclick = () =>
+    updateTroopCount(input, -1);
+
+  dialog.querySelector("#cancel-deploy-btn").onclick = () => dialog.close();
+};

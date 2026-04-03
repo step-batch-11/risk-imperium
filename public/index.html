@@ -1107,7 +1107,9 @@
           </button>
         </div>
         <!-- Notifications -->
-        <div id="notification-container" class="notification"></div>
+        <div id="notification-container" class="notification">
+          <p id="notification-text"></p>
+        </div>
         <!-- Remaining Troops To Deploy -->
         <div id="remaining-troops-to-deploy"></div>
       </div>
@@ -1115,14 +1117,21 @@
 
     <dialog id="deploy-troops-container">
       <form method="post" id="deploy-troops-form">
-        <input
-          type="number"
-          name="troop-count"
-          id="troop-count-input"
-          placeholder="Give number of troops"
-          required
-        />
-        <button type="submit" id="deploy-troops-btn">Deploy</button>
+        <div id="deploy-troops-selector">
+          <button id="decrease-troops-btn" type="button">-</button>
+          <input
+            type="number"
+            name="troop-count"
+            id="troop-count-input"
+            required
+          />
+          <button id="increase-troops-btn" type="button">+</button>
+        </div>
+
+        <div id="deploy-actions">
+          <button type="button" id="cancel-deploy-btn">⤫</button>
+          <button type="submit" id="deploy-troops-btn">✓</button>
+        </div>
       </form>
     </dialog>
 

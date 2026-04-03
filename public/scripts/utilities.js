@@ -1,3 +1,5 @@
+import { setupDeployControls } from "./listeners.js";
+
 export const getOwnedContinents = (player, continents) => {
   return Object.values(continents).filter((continent) => {
     continent.territories.every((territory) =>
@@ -16,6 +18,7 @@ export const setTroopLimit = (maxTroops, min = 1) => {
   const input = document.querySelector("#troop-count-input");
   input.max = maxTroops;
   input.min = min;
+  input.value = min;
 };
 
 const getTerritoryElementIdByTerritoryId = (territories, territoryId) => {
@@ -55,4 +58,28 @@ export const delay = (duration) => {
       resolve(1);
     }, duration);
   });
+};
+
+const setLocation = (dialog, x, y) => {
+  dialog.style.left = `${x}px`;
+  dialog.style.top = `${y}px`;
+};
+
+export const displayTroopSelector = (event, dialog, handleSelection) => {
+  const form = dialog.querySelector("#deploy-troops-form");
+  const input = form.querySelector("input");
+
+  dialog.showModal();
+
+  setLocation(dialog, event.x, event.y);
+  setupDeployControls(dialog);
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const troopCount = Number(input.value);
+    await handleSelection(troopCount);
+
+    dialog.close();
+  };
 };

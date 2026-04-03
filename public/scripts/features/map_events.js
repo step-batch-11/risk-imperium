@@ -18,6 +18,6 @@ export const onMapAction = (event, gameState) => {
 
   if (gameState.state in GAME_STATES) {
     const stateToPerform = GAME_STATES[gameState.state];
-    stateToPerform(territory, gameState);
+    stateToPerform(territory, gameState, event);
   }
 };

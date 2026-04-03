@@ -586,8 +586,8 @@
   "stateDetails": {
     "initialTroopLimit": 13,
     "remainingTroopsToDeploy": 0,
-    "attackerTerritoryId": "21",
-    "defenderTerritoryId": "22",
+    "attackerTerritoryId": 21,
+    "defenderTerritoryId": 22,
     "attackerTroops": 3,
     "defenderTroops": 1
   }

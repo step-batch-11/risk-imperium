@@ -238,70 +238,46 @@
 
 .notification {
   position: fixed;
-  color: var(--color-surface);
-  padding: 7px 20px;
-  border-radius: 6px;
-  min-width: 200px;
-  top: 20px;
-  left: 40%;
+  display: none;
+  width: 100%;
+  top: 80%;
+  left: 0px;
+  height: 4em;
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+.notification.success,
+.notification.fail,
+.notification.info,
+.notification.warning {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+}
+
 .notification.success {
   background: var(--color-success);
-  opacity: 1;
 }
 
 .notification.fail {
   background: var(--color-fail);
-  opacity: 1;
 }
 
-#deploy-troops-container {
-  position: fixed;
-  background-color: rgb(255, 255, 255);
-  top: 20px;
-  left: 40%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border: 1px solid black;
-  border-radius: 5px;
+#notification-text {
+  color: var(--color-surface);
+  font-family: var(--text-secondary);
+  text-align: center;
+  font-size: 2.5em;
 }
 
 .notification.info {
   background: var(--color-info);
-  opacity: 1;
 }
 
 .notification.warning {
   background: var(--color-warning);
-  opacity: 1;
-  padding: 5px 6px;
-  border-radius: 6px;
-  min-width: 270px;
-}
-
-#deploy-troops-form {
-  display: flex;
-  gap: 0.6em;
-  width: 260px;
-  padding: 6px;
-}
-
-#troop-count-input {
-  width: 70%;
-  padding: 5px 8px;
-  border-style: none;
-  outline: none;
-}
-
-#deploy-troops-btn {
-  border-style: none;
-  outline: none;
-  padding: 8px;
-  border-radius: 5px;
 }
 
 #skip-button {
@@ -318,4 +294,111 @@
 
 #skip-button:hover {
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#deploy-troops-container {
+  position: absolute;
+  transform: translateX(-50%) translateY(-100%);
+  border: none;
+  border-radius: 14px;
+  top: 20px;
+  left: 40%;
+  background: transparent;
+}
+
+#deploy-troops-form {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  color: white;
+  font-family: sans-serif;
+}
+
+#deploy-troops-selector {
+  width: 8em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a40;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#deploy-troops-selector button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: #3a3a55;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#deploy-troops-selector button:hover {
+  background: #50507a;
+}
+
+#troop-count-input {
+  height: 42px;
+  border: none;
+  outline: none;
+  text-align: center;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+}
+
+#deploy-actions {
+  width: 8em;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#deploy-troops-btn {
+  padding: 0.4em 0;
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4caf50, #6be675);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#deploy-troops-btn:hover,
+#cancel-deploy-btn:hover {
+  transform: scale(1.05);
+}
+
+#cancel-deploy-btn {
+  padding: 0.4em 0;
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: #ddd;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#cancel-deploy-btn:hover {
+  background: #666;
+}
+
+#cancel-deploy-btn:active {
+  transform: scale(0.9);
 }
