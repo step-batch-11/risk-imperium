@@ -1,16 +1,52 @@
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
-import { getTerritoryElementById } from "../utilities.js";
+import {
+  getIndexOf,
+  getPlayerById,
+  getTerritoryElementById,
+} from "../utilities.js";
 import { showNotification } from "../utilities/notifications.js";
 import { addCardAlert } from "./cards.js";
 import { renderPlayersDetails, updateCards } from "./setup.js";
 
-const getPlayerById = (players, territoryId) =>
-  Object.values(players).find((player) =>
-    player.territories.includes(territoryId)
-  );
+const updatePlayerTerritories = (defender, defenderTerritoryId, gameState) => {
+  const index = getIndexOf(defender.territories, defenderTerritoryId);
+  gameState.player.territories.push(...defender.territories.splice(index, 1));
+};
 
-const getIndexOf = (collection, target) =>
-  collection.findIndex((element) => element === target);
+const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
+  const territoryElement = getTerritoryElementById(
+    gameState.territories,
+    defenderTerritoryId,
+  );
+  territoryElement.setAttribute("data-player", gameState.player.id);
+};
+
+const showCapturedMsg = (gameState, defenderTerritoryId) => {
+  const msg = `${gameState.player.name} captured ${
+    gameState.territories[defenderTerritoryId].name
+  }`;
+
+  showNotification(msg);
+};
+
+const handleElimination = (defender, gameState, combatResult) => {
+  gameState.player.cards = combatResult.newCards;
+  updateCards(gameState.player.cards);
+  addCardAlert();
+  delete gameState.opponents[defender.id];
+
+  const msg = `${defender.name} has eliminated`;
+  showNotification(msg, NOTIFICATION_TYPES.WARNING);
+};
+
+const showWinner = (player) => {
+  const glassBox = document.querySelector("#glass-box");
+  glassBox.classList.remove("d-none");
+  const actionMenu = document.querySelector(".action-menu");
+  actionMenu.classList.add("remove-events");
+  const playerElement = document.querySelector("#winner-name");
+  playerElement.textContent = `${player},the greate`;
+};
 
 export const captureTerritory = (
   gameState,
@@ -23,36 +59,18 @@ export const captureTerritory = (
 
   const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
 
-  const index = getIndexOf(defender.territories, defenderTerritoryId);
-  const territoryElement = getTerritoryElementById(
-    gameState.territories,
-    defenderTerritoryId,
-  );
-  territoryElement.setAttribute("data-player", gameState.player.id);
-  gameState.player.territories.push(...defender.territories.splice(index, 1));
-
-  const msg = `${gameState.player.name} captured ${
-    gameState.territories[defenderTerritoryId].name
-  }`;
-
-  showNotification(msg);
+  updatePlayerTerritories(defender, defenderTerritoryId, gameState);
+  addPlayerIdToTerritory(gameState, defenderTerritoryId);
+  showCapturedMsg(gameState, defenderTerritoryId);
 
   if (combatResult.hasEliminated) {
-    const msg = `${defender.name} has eliminated`;
-    gameState.player.cards = combatResult.newCards;
-    updateCards(gameState.player.cards);
-    addCardAlert();
-    delete gameState.opponents[defender.id];
-    showNotification(msg, NOTIFICATION_TYPES.WARNING);
+    handleElimination(defender, gameState, combatResult);
   }
-
   renderPlayersDetails(gameState);
-
   if (combatResult.hasWon) {
-    const glassBox = document.querySelector("#glass-box");
-    glassBox.classList.remove("d-none");
     // setTimeout(() => {
     //   redirect
     // })
+    showWinner(gameState.player.name);
   }
 };

@@ -513,3 +513,6 @@ input[type="number"]::-webkit-inner-spin-button {
 .d-none {
   transform: translateY(-60em);
 }
+.remove-events {
+  pointer-events: none;
+}

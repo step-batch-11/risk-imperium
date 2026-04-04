@@ -1,25 +1,18 @@
 import { invade } from "../server_calls.js";
-import { removeHighlights } from "../utilities/highlight.js";
+import {
+  highlightTerritories,
+  removeHighlights,
+} from "../utilities/highlight.js";
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { NOTIFICATION_MESSAGES } from "../configs/notification_config.js";
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import {
+  addListenerTroopSelector,
   displayTroopSelector,
   removeSkipButton,
   setTroopLimit,
 } from "../utilities.js";
-
-const highlightTerritories = (territories) => {
-  territories.forEach((territoryId) => {
-    const territoryElement = document.querySelector(
-      `[data-territory-id="${territoryId}"]`,
-    );
-
-    territoryElement.parentElement.append(territoryElement);
-    territoryElement.classList.add("highlight");
-  });
-};
 
 const opponentNeighbours = (player, territories, selectedTerritoryId) => {
   const neighbours = territories[selectedTerritoryId].neighbours;
@@ -28,8 +21,8 @@ const opponentNeighbours = (player, territories, selectedTerritoryId) => {
   );
 };
 
-const isMyTerritory = (gameState, attacker) => {
-  return gameState.player.territories.includes(attacker);
+const isMyTerritory = (gameState, territoryId) => {
+  return gameState.player.territories.includes(territoryId);
 };
 
 const selectAttackingTroops = (event, gameState, attacker, handleSelection) => {
@@ -38,16 +31,13 @@ const selectAttackingTroops = (event, gameState, attacker, handleSelection) => {
   const minTroops = 1;
 
   setTroopLimit(maxTroops, minTroops, maxTroops);
-  displayTroopSelector(event, handleSelection);
+  addListenerTroopSelector(handleSelection);
+  displayTroopSelector(event);
 };
 
 const isNeighbouringOpponent = (gameState, selectedTerritoryId) => {
   if (!gameState.invadeDetials) return false;
   return gameState.invadeDetials.neighbours.includes(selectedTerritoryId);
-};
-
-const deleteInvadeDetails = (gameState) => {
-  delete gameState.invadeDetials;
 };
 
 const handleAttack = async (
@@ -69,7 +59,6 @@ const handleAttack = async (
   );
 
   removeSkipButton();
-  deleteInvadeDetails(gameState);
   removeHighlights("selected");
   setUpNextPhase(gameState, newState);
 };
@@ -84,11 +73,15 @@ const selectAttacker = (gameState, selectedTerritoryId) => {
 
   gameState.invadeDetials = { attacker: selectedTerritoryId, neighbours };
 
-  highlightTerritories(neighbours);
+  highlightTerritories(neighbours, "highlight");
 };
 
 const selectDefender = (event, gameState, selectedTerritoryId) => {
   removeHighlights("highlight", ".territory");
+  const attackerTerritoryId = gameState.invadeDetials.attacker;
+  const defenderTerritoryId = selectedTerritoryId;
+  gameState.invadeDetials.defender = defenderTerritoryId;
+
   const handleSelection = async (troopCount) =>
     await handleAttack(
       gameState,
@@ -96,18 +89,25 @@ const selectDefender = (event, gameState, selectedTerritoryId) => {
       defenderTerritoryId,
       troopCount,
     );
-
-  const attackerTerritoryId = gameState.invadeDetials.attacker;
-  const defenderTerritoryId = selectedTerritoryId;
+  highlightTerritories([defenderTerritoryId], "higlight");
   selectAttackingTroops(event, gameState, attackerTerritoryId, handleSelection);
 };
 
-const canAttack = (gameState, selectedTerritoryId) => {
-  return gameState.territories[selectedTerritoryId].troopCount > 1;
-};
+const hasEnemyNeighbour = (gameState, territoryId) =>
+  gameState.territories[territoryId].neighbours.some(
+    (neighbour) => !isMyTerritory(gameState, neighbour),
+  );
+
+const hasEnoughTroops = (gameState, territoryId) =>
+  gameState.territories[territoryId].troopCount > 1;
+
+const canAttackFrom = (gameState, territoryId) =>
+  hasEnoughTroops(gameState, territoryId) &&
+  hasEnemyNeighbour(gameState, territoryId);
 
 const isAttackableTerritory = (gameState, territoryId) =>
-  isMyTerritory(gameState, territoryId) && canAttack(gameState, territoryId);
+  isMyTerritory(gameState, territoryId) &&
+  canAttackFrom(gameState, territoryId);
 
 export const handleInvasion = (territory, gameState, event) => {
   const selectedTerritoryId = Number(territory.dataset.territoryId);

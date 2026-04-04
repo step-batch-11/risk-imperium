@@ -344,14 +344,16 @@ export class Game {
   }
 
   #eliminatePlayer(defender) {
-    if (this.#isEliminated(defender)) {
-      const index = this.#getIndexOf(this.#players, defender);
-      const attacker = this.#activePlayer;
-      this.#getDefenderCards(attacker, defender);
-      this.#players.splice(index, 1);
-      this.#stateDetails.hasEliminated = true;
-      this.#hasWinner();
-    }
+    const index = this.#getIndexOf(this.#players, defender);
+    const attacker = this.#activePlayer;
+    this.#getDefenderCards(attacker, defender);
+    this.#players.splice(index, 1);
+    this.#stateDetails.hasEliminated = true;
+    this.#hasWinner();
+  }
+
+  #isEliminated(defender) {
+    return defender.territories.length <= 0;
   }
 
   #updatePlayerTerritories(defenderTerritoryId, attackerTerritoryId) {
@@ -359,11 +361,9 @@ export class Game {
     const attacker = this.#getPlayerById(attackerTerritoryId);
     const index = this.#getIndexOf(defender.territories, defenderTerritoryId);
     attacker.territories.push(...defender.territories.splice(index, 1));
-    this.#eliminatePlayer(defender);
-  }
-
-  #isEliminated(defender) {
-    return defender.territories.length <= 0;
+    if (this.#isEliminated(defender)) {
+      this.#eliminatePlayer(defender);
+    }
   }
 
   captureTerritory(attackerTroops) {
@@ -415,6 +415,8 @@ export class Game {
       updatedTerritories,
       attackerDice,
     );
+
+    //if cannot attack any more change the state
 
     return {
       action: this.#state,

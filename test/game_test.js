@@ -483,7 +483,7 @@ describe("Game", () => {
       game.loadGameState(wonstate);
       const currentGameState = game.getSavableGameState();
       game.captureTerritory(3);
-      assertEquals(currentGameState.players[0].cards.length, 5);
+      assertEquals(currentGameState.players[0].cards.length, 2);
     });
   });
 

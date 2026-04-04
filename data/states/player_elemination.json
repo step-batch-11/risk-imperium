@@ -263,7 +263,8 @@
     {
       "id": 6,
       "name": "Bran",
-      "territories": [35, 25, 34, 24, 14, 39, 23]
+      "territories": [35, 25, 34, 24, 14, 39, 23],
+      "cards": []
     }
   ],
   "continents": {

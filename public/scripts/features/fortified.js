@@ -3,6 +3,7 @@ import { getFortifiableTerritory } from "../handlers/fortified_handler.js";
 import { fortifyRequest } from "../server_calls.js";
 import { SETUP_TRANSITION, setUpNextPhase } from "../transition_handlers.js";
 import {
+  addListenerTroopSelector,
   displayTroopSelector,
   removeSkipButton,
   setTroopLimit,
@@ -51,7 +52,8 @@ const selectFortifyingTroops = (event, gameState, fromId, handleSelection) => {
   const minTroops = 1;
 
   setTroopLimit(maxTroops, minTroops, maxTroops);
-  displayTroopSelector(event, handleSelection);
+  addListenerTroopSelector(handleSelection);
+  displayTroopSelector(event);
 };
 
 const handleFortifyTo = (event, gameState, territory) => {

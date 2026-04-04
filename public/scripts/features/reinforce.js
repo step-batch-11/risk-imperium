@@ -1,5 +1,6 @@
 import { sendReinforceRequest } from "../server_calls.js";
 import {
+  addListenerTroopSelector,
   displayTroopSelector,
   setTroopLimit,
   updateTroopsInTerritories,
@@ -55,16 +56,15 @@ const handleCustomDeployment = (event, gameState, territoryId) => {
   const handleSelection = (troopCount) =>
     deployTroops(event, gameState, territoryId, troopCount);
 
-  displayTroopSelector(event, handleSelection);
+  addListenerTroopSelector(handleSelection);
+  displayTroopSelector(event);
 };
 
 const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
   removeCardAreaListener(gameState);
   return sendReinforceRequest({ territoryId, troopCount })
     .then((res) => updateAfterDeploy(gameState, res, troopCount))
-    .catch((e) => {
-      console.log(e);
-
+    .catch(() => {
       showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
     });
 };

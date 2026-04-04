@@ -18,6 +18,7 @@ import {
 import { STATES } from "./configs/game_states.js";
 import { territoryToFortifyFrom } from "./handlers/fortified_handler.js";
 import { getCard, renderTradeIndicator } from "./features/cards.js";
+import { handleDefense } from "./features/defend.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -44,9 +45,7 @@ const setupReinforcePhase = async (gameState) => {
 };
 
 const addInvasionSkipButton = (gameState) => {
-  const skipButtonTemplate = document.querySelector(
-    "#skip-button-template",
-  );
+  const skipButtonTemplate = document.querySelector("#skip-button-template");
 
   const cloneNode = skipButtonTemplate.content.cloneNode(true);
   const body = document.querySelector("body");
@@ -67,7 +66,7 @@ const sourceTerritoryForAttacks = (territoryIds, gameState) => {
     const territory = gameState.territories[territoryId];
     const isValidTroopCount = territory.troopCount > 1;
     const canAttackNeighbour = territory.neighbours.some(
-      (neighbourId) => (!territoryIds.includes(neighbourId)),
+      (neighbourId) => !territoryIds.includes(neighbourId),
     );
     return isValidTroopCount && canAttackNeighbour;
   });
@@ -86,9 +85,7 @@ const setupInvasionPhase = (gameState) => {
 };
 
 const createSkipButtonElement = () => {
-  const skipButtonTemplate = document.querySelector(
-    "#skip-button-template",
-  );
+  const skipButtonTemplate = document.querySelector("#skip-button-template");
 
   const cloneNode = skipButtonTemplate.content.cloneNode(true);
   const body = document.querySelector("body");
@@ -115,10 +112,15 @@ const handleGetCard = async (gameState) => {
   setUpNextPhase(gameState, action);
 };
 
+const setupDefendPhase = (gameState) => {
+  handleDefense(gameState);
+};
+
 export const SETUP_TRANSITION = {
   [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
   [STATES.REINFORCE]: setupReinforcePhase,
   [STATES.INVASION]: setupInvasionPhase,
+  [STATES.DEFEND]: setupDefendPhase,
   [STATES.FORTIFICATION]: setupFortification,
   [STATES.GET_CARD]: handleGetCard,
 };

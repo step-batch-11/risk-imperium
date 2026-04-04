@@ -65,16 +65,15 @@ const setLocation = (dialog, x, y) => {
   dialog.style.top = `${y}px`;
 };
 
-export const displayTroopSelector = (event, handleSelection) => {
+export const removeSkipButton = () => {
+  const skipButtonElement = document.querySelector("#skip-button");
+  if (skipButtonElement) skipButtonElement.remove();
+};
+
+export const addListenerTroopSelector = (handleSelection) => {
   const dialog = document.querySelector("#deploy-troops-container");
   const form = dialog.querySelector("#deploy-troops-form");
   const input = form.querySelector("input");
-
-  dialog.showModal();
-
-  setLocation(dialog, event.x, event.y);
-  setupDeployControls(dialog);
-
   form.onsubmit = async (e) => {
     e.preventDefault();
     dialog.close();
@@ -84,7 +83,21 @@ export const displayTroopSelector = (event, handleSelection) => {
   };
 };
 
-export const removeSkipButton = () => {
-  const skipButtonElement = document.querySelector("#skip-button");
-  if (skipButtonElement) skipButtonElement.remove();
+export const displayTroopSelector = (event, cancelDisabled = false) => {
+  const dialog = document.querySelector("#deploy-troops-container");
+  const cancelBtn = dialog.querySelector("#cancel-deploy-btn");
+  cancelBtn.disabled = cancelDisabled;
+  dialog.showModal();
+
+  setLocation(dialog, event.x, event.y);
+  setupDeployControls(dialog);
+  return dialog;
 };
+
+export const getPlayerById = (players, territoryId) =>
+  Object.values(players).find((player) =>
+    player.territories.includes(territoryId)
+  );
+
+export const getIndexOf = (collection, target) =>
+  collection.findIndex((element) => element === target);
