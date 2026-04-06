@@ -7,7 +7,6 @@ package-lock.json
 /test-results
 /tests
 /node_modules
-/data
 /playwright.config.js
 /temp.md
 /player_elemination.json
