@@ -55,6 +55,7 @@ const tradeSelectedCards = async (gameState, cards, closeDialoge) => {
   const selectedCards = Object.values(gameState.selectedCards);
   const selected = [...selectedCards];
   const { action, data } = await tradeCard(selected);
+  gameState.cavalryPositions = data.positions;
   updateCavalry(data.positions);
   renderRemainingTroopsToDeploy(data.troops);
   setTroopLimit(data.troops);

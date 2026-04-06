@@ -9,8 +9,8 @@ import { fortificationHandler } from "../src/models/fortification_handler.js";
 import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
-import invasionState from "../data/states/invasion.json" with { type: "json" };
-import defendState from "../data/states/defend.json" with { type: "json" };
+// import invasionState from "../data/states/invasion.json" with { type: "json" };
+// import defendState from "../data/states/defend.json" with { type: "json" };
 import { mockPlayers } from "../src/mock_data.js";
 import { FortificationController } from "../src/handlers/fortification_controller.js";
 

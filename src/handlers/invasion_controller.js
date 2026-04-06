@@ -115,7 +115,6 @@ export class InvasionController {
   setNewInvasion(attackerId, from, to, count) {
     this.#isCaptured = false;
     if (!this.#isValidAttacker(from, attackerId)) {
-      console.log(from, attackerId, this.#territoriesHandler.get(from));
       throw new Error("Invalid Attacker");
     }
 

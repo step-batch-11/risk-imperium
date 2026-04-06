@@ -1,5 +1,5 @@
 import { STATES } from "../config.js";
-import { tradeCardHandler } from "./cardHandler.js";
+import { getCardHandler, tradeCardHandler } from "./cardHandler.js";
 import { fortificationHandler } from "../models/fortification_handler.js";
 
 const USER_ACTIONS = {
@@ -21,7 +21,7 @@ const USER_ACTIONS = {
 
     return { action: newState, data: [] };
   },
-  GET_CARD: (game, data) => game.getCard(data),
+  GET_CARD: getCardHandler,
 
   SKIP_INVASION: (game) => {
     const state = game.getGameState();
@@ -44,7 +44,6 @@ export const handleUserActions = async (context) => {
     const game = context.get("game");
     const { userActions, data } = await context.req.json();
     const actionToPerform = USER_ACTIONS[userActions];
-    console.log(userActions);
 
     const result = actionToPerform(game, data);
 

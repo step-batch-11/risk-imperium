@@ -17,6 +17,8 @@ export const getCard = async (gameState) => {
   const reqData = { userActions: USER_ACTIONS.GET_CARD, data: {} };
 
   const { action, data } = await sendPostRequest(APIs.USER_ACTIONS, reqData);
+  console.log(data, action);
+
   if (data.card) {
     const player = gameState.player;
     player.cards.push(data.card);
@@ -37,24 +39,6 @@ export const tradeCard = async (cards) => {
   return response;
 };
 
-const getCombinations = (arr, k = 3) => {
-  const result = [];
-  function backtrack(start, combo) {
-    if (combo.length === k) {
-      result.push([...combo]);
-      return;
-    }
-    for (let i = start; i < arr.length; i++) {
-      combo.push(arr[i]);
-      backtrack(i + 1, combo);
-      combo.pop();
-    }
-  }
-
-  backtrack(0, []);
-  return result;
-};
-
 const isValidCombination = (combination = []) => {
   const set = new Set();
   combination.sort((a, b) => a - b);
@@ -67,6 +51,21 @@ const isValidCombination = (combination = []) => {
   const allDifferent = set.size === 3;
 
   return allDifferent || allSame;
+};
+
+const canTradeCards = (arr, k = 3) => {
+  const backtrack = (start, combo) => {
+    if (combo.length === k) {
+      return isValidCombination(combo);
+    }
+    for (let i = start; i < arr.length; i++) {
+      combo.push(arr[i]);
+      if (backtrack(i + 1, combo)) return true;
+      combo.pop();
+    }
+    return false;
+  };
+  return backtrack(0, []);
 };
 
 export const canBeTraded = (selectedCard, cardContainer) => {
@@ -85,11 +84,6 @@ export const canBeTraded = (selectedCard, cardContainer) => {
   }
 
   button.setAttribute("disabled", true);
-};
-
-export const canTradeCards = (cards) => {
-  const validCombo = getCombinations(cards).filter(isValidCombination);
-  return validCombo.length > 0;
 };
 
 export const renderTradeIndicator = (gameState) => {

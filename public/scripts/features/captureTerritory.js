@@ -58,19 +58,15 @@ const showWinner = (player) => {
 const handlePostCapture = async (gameState, defender, troopCount) => {
   const { action, data } = await sendCaptureRequest(troopCount);
   updateTroopsInTerritories(gameState, data.updatedTerritories);
+  setUpNextPhase(gameState, action);
 
   if (data.hasEliminated) {
-    handleElimination(defender, gameState, data);
+    return handleElimination(defender, gameState, data);
   }
   renderPlayersDetails(gameState);
   if (data.hasWon) {
-    // setTimeout(() => {
-    //   redirect
-    // })
-    showWinner(gameState.player.name);
+    return showWinner(gameState.player.name);
   }
-
-  setUpNextPhase(gameState, action);
 };
 
 export const captureTerritory = (
