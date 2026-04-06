@@ -1,24 +1,5 @@
 @import url(root.css);
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
-}
-
-#game {
-  width: 100vw;
-  height: 100vh;
-  background: var(--texture);
-  background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 1);
-}
-
 .continent > g {
   cursor: pointer;
   transform-box: fill-box;
@@ -27,23 +8,15 @@ body {
 }
 
 .selected > .territory-outline {
-  stroke: green;
-  stroke-opacity: 1;
+  stroke: var(--color-selected-territory);
+  stroke-width: 3;
   fill: var(--color-selection);
   fill-opacity: 0.5;
   filter: var(--selection-shadow);
 }
 
-.reinforce-from-selected > .territory-outline {
-  stroke: green;
-  stroke-opacity: 1;
-  fill: darkgreen;
-  fill-opacity: 0.5;
-  filter: var(--selection-shadow);
-}
-
 .highlight > .territory-outline {
-  stroke: rgb(136, 0, 0);
+  stroke: var(--color-highlight);
   stroke-width: 4px;
   stroke-opacity: 0.5;
   fill: var(--color-target);
@@ -67,73 +40,11 @@ body {
     roll 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
 }
 
-@keyframes dice-faces {
-  0% {
-    content: "\2680";
-  }
-
-  16% {
-    content: "\2681";
-  }
-
-  32% {
-    content: "\2682";
-  }
-
-  48% {
-    content: "\2683";
-  }
-
-  64% {
-    content: "\2684";
-  }
-
-  80% {
-    content: "\2685";
-  }
-}
-
-@keyframes roll {
-  0% {
-    transform: scale(0) rotate;
-    opacity: 0;
-  }
-
-  15% {
-    transform: scale(2);
-    opacity: 1;
-  }
-
-  30% {
-    transform: scale(1);
-  }
-
-  45% {
-    transform: scale(1.1);
-  }
-
-  60% {
-    transform: scale(1);
-  }
-
-  75% {
-    transform: scale(1.05);
-  }
-
-  90% {
-    transform: scale(1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
 .captured {
   transition: all 10s ease-in;
-  stroke: green;
+  stroke: var(--color-selected-territory);
   stroke-opacity: 1;
-  fill: rgb(8, 204, 8);
+  fill: var(--color-captured);
   fill-opacity: 0.5;
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }

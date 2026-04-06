@@ -44,7 +44,7 @@ export const updateTroopsInTerritories = (gameState, territories) => {
       territoryId,
     );
     const territoryTroopCountElement = territoryElement.querySelector(
-      ".troop-count",
+      ".troop-count tspan",
     );
 
     territoryTroopCountElement.textContent = troopCount;

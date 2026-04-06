@@ -13,7 +13,7 @@ const renderPlayerDetails = (player, continents) => {
     "#single-player-detail-template",
   );
   const clone = playerDetailsTemplate.content.cloneNode(true);
-  const playerDetailsContainer = clone.querySelector(".player-deatils");
+  const playerDetailsContainer = clone.querySelector(".player-details");
 
   playerDetailsContainer.dataset.playerId = player.id;
 
@@ -81,7 +81,7 @@ export const addListenerToCard = (gameState, cardContainer) => {
     }
 
     gameState.selectedCards[id] = cards[cardId];
-    card.className = STYLES.GLOW;
+    card.classList.add(STYLES.GLOW);
     canBeTraded(gameState.selectedCards, cardContainer);
   };
 };

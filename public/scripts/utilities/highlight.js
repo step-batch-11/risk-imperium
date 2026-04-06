@@ -5,7 +5,6 @@ export const highlightTerritories = (territories, className = "selected") => {
     );
 
     territoryElement.classList.add(className);
-    territoryElement.parentElement.append(territoryElement);
   });
 };
 

@@ -1,18 +1,25 @@
+import { STYLES } from "../configs/styles.js";
 import { updateCavalry } from "../features/cavalryUpdate.js";
 import { getAllPlayersDetail } from "../utilities.js";
 
 export const renderUpdatedTroopCount = (territory, newTroopCount) => {
-  const troopCount = territory.querySelector(".troop-count");
+  const troopCount = territory.querySelector(".troop-count tspan");
   troopCount.textContent = newTroopCount;
 };
 
 export const renderRemainingTroopsToDeploy = (remainingTroops) => {
-  const display = document.querySelector("#remaining-troops-to-deploy");
+  const container = document.querySelector("#remaining-troops-to-deploy");
+  const display = container.querySelector("#remaining-troops");
 
-  display.textContent = remainingTroops
-    ? `Remaining Troops To Deploy: ${remainingTroops}`
-    : "";
+  if (remainingTroops) {
+    container.classList.remove(STYLES.HIDDEN);
+    display.textContent = remainingTroops;
+    return;
+  }
+
+  container.classList.add(STYLES.HIDDEN);
 };
+
 const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayerNameHolder = document.querySelector(
     "#current-player-name",

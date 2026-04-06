@@ -4,139 +4,83 @@
   box-sizing: border-box;
 }
 
-@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=MedievalSharp&display=swap");
-
 body {
   font-family: var(--primary-font);
-  background: var(--texture);
+  background: var(--color-bg-main);
+  overflow: hidden;
+}
+
+#map-svg {
+  width: 100vw;
+  height: 100vh;
+  background: var(--map-background);
+  overflow: hidden;
 }
 
 .continent-outline {
   fill: none;
-  stroke-width: 5px;
+  stroke-width: 3px;
   opacity: 1;
 }
 
 #australia-continent-outline {
-  stroke: var(--cont-australia);
+  stroke: var(--australia-outline);
 }
 
 #europe-continent-outline {
-  stroke: var(--cont-europe);
+  stroke: var(--europe-outline);
 }
 
 #south-america-continent-outline {
-  stroke: var(--cont-south-america);
+  stroke: var(--south-america-outline);
 }
 
 #north-america-continent-outline {
-  stroke: var(--cont-north-america);
+  stroke: var(--north-america-outline);
 }
 
 #africa-continent-outline {
-  stroke: var(--cont-africa);
+  stroke: var(--africa-outline);
 }
 
 #asia-continent-outline {
-  stroke: var(--cont-asia);
+  stroke: var(--asia-outline);
 }
 
 #sea-routes {
   fill: none;
-  stroke: #000;
-  stroke-width: 1;
-  stroke-dasharray: 4, 1;
+  stroke: var(--sea-route);
+  stroke-width: 1.3;
+  stroke-dasharray: 5, 1;
 }
 
 .territory-outline {
   fill: var(--color-surface);
   stroke: var(--color-map-stroke);
-  stroke-width: 1.5px;
+  stroke-width: 1.2;
   vector-effect: non-scaling-stroke;
   transition: all 0.3s ease;
 }
 
-.territory-name {
-  font-size: 8px;
+.territory-name,
+.troop-count {
   font-weight: 600;
   text-transform: uppercase;
-  text-anchor: middle;
-  fill: var(--text-primary);
+  text-anchor: var(--text-centered);
   pointer-events: none;
-  /* stroke: #ffffff;
-  stroke-width: 2px;
-  stroke-linejoin: round;
-  paint-order: stroke;
-  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.2)); */
 }
 
-text {
-  font-size: 8px;
-}
-
-/* #northwest-territory text {
-  letter-spacing: 0.2px;
-  font-size: 7.5px;
-} */
-
-circle {
-  fill: transparent;
+.territory-name {
+  fill: var(--text-primary);
+  font-size: var(--territory-name-size);
 }
 
 .troop-count {
-  font-size: 1em;
-  fill: rgba(222, 222, 222, 0.3);
-}
-
-#continent-asia .troop-count-container,
-#continent-asia .troop-count,
-#continent-south-america .troop-count-container,
-#continent-south-america .troop-count,
-#iceland .troop-count-container,
-#iceland .troop-count,
-#indonesia .troop-count-container,
-#indonesia .troop-count,
-#ukraine .troop-count-container,
-#ukraine .troop-count {
-  transform: translate(0px, -15px);
-}
-
-#continent-africa .troop-count-container,
-#continent-africa .troop-count,
-#continent-north-america .troop-count-container,
-#continent-north-america .troop-count {
-  transform: translate(4px, 10px);
-}
-
-#western-australia .troop-count-container,
-#western-australia .troop-count {
-  transform: translate(-4px, 10px);
-}
-
-#eastern-australia .troop-count-container,
-#eastern-australia .troop-count,
-#southern-europe .troop-count-container,
-#southern-europe .troop-count {
-  transform: translate(10px, 12px);
-}
-
-#northern-europe .troop-count-container,
-#northern-europe .troop-count {
-  transform: translate(-20px, 8px);
-}
-
-#western-europe .troop-count-container,
-#western-europe .troop-count {
-  transform: translate(12px, -30px);
-}
-
-#scandinavia .troop-count-container,
-#scandinavia .troop-count {
-  transform: translate(-9px, 30px);
-}
-
-#new-guinea .troop-count-container,
-#new-guinea .troop-count {
-  transform: translate(-18px, -20px);
+  fill: var(--color-troop-count);
+  font-size: var(--troop-count-size);
+  text-shadow:
+    0 0 3px rgba(255, 255, 255, 0.6),
+    0 0 6px rgba(255, 255, 255, 0.6),
+    0 0 10px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(255, 255, 255, 0.6);
 }

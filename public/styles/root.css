@@ -11,6 +11,7 @@
 
   --text-primary: #3e3326;
   --text-secondary: #6f5e49;
+  --text-tertiary: #ffffff;
 
   --glass-bg: rgba(255, 252, 245, 0.55);
   --glass-bg-strong: rgba(255, 252, 245, 0.75);
@@ -42,32 +43,66 @@
   --player-5: #8c6f9c;
   --player-6: #a4876a;
 
-  --cont-north-america: #e3d8c6;
-  --cont-north-america-light: #f1eadf;
-  --cont-north-america-dark: #b9a78f;
-
-  --cont-south-america: #e6d3c2;
-  --cont-south-america-light: #f2e4d8;
-  --cont-south-america-dark: #bfa08a;
-
-  --cont-europe: #d8dbe2;
-  --cont-europe-light: #e9ecf1;
-  --cont-europe-dark: #a8adb8;
-
-  --cont-africa: #e7d6b8;
-  --cont-africa-light: #f3e7d3;
-  --cont-africa-dark: #c2a983;
-
-  --cont-asia: #dbe4cf;
-  --cont-asia-light: #edf3e5;
-  --cont-asia-dark: #aebc9c;
-
-  --cont-australia: #e4d6dc;
-  --cont-australia-light: #f1e6eb;
-  --cont-australia-dark: #bba3ad;
-
   --shadow-soft: 0 3px 10px rgba(60, 50, 35, 0.25);
   --shadow-strong: 0 6px 18px rgba(60, 50, 35, 0.35);
 
-  /* --texture: url("../assets/981.jpg"); */
+  --texture-parchment: url("path/to/aged-paper.jpg");
+
+  --north-america-outline: #eeee04;
+  --south-america-outline: #ffa500;
+  --africa-outline: #d48383;
+  --europe-outline: #8e8ee7;
+  --asia-outline: #43d943;
+  --australia-outline: #f1a4b1;
+
+  --sea-route: #4b4b4b;
+
+  --territory-name-size: 7px;
+  --text-centered: middle;
+  --troop-count-size: 12px;
+  --color-troop-count: rgba(0, 0, 0, 0.7);
+
+  --color-bg-player-details: rgba(255, 255, 255, 0.62);
+  --color-border-player-details: #8b7d6a;
+  --player-details-border: 1px solid var(--color-border-player-details);
+  --color-bottom-border-player-details: rgba(139, 125, 106, 0.3);
+  --player-details-bottom-border: 1px solid var(
+    --color-bottom-border-player-details
+  );
+  --color-player-info: #635432;
+  --color-player-name: #c99000;
+
+  --color-border-avatar: #c4a75c;
+  --avatar-border: 2px solid var(--color-border-avatar);
+  --color-bg-avatar: #1a1a1a;
+
+  --color-close-button: #f1f5f9;
+  --color-bg-close-button: #8b2626;
+  --color-border-close-button: #5a1a1a;
+  --close-button-border: 1px solid var(--color-border-close-button);
+  --close-button-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --color-close-button-hover: #a52a2a;
+
+  --color-selected-territory: green;
+  --color-captured: rgb(8, 204, 8);
+  --color-highlight: rgb(136, 0, 0);
+
+  --remaining-troops-size: 3em;
+
+  --color-bg-deploy-troop-selection: #2a2a40;
+  --color-bg-deploy-form: rgba(0, 0, 0, 0.3);
+  --color-bg-deploy-selector-button: #3a3a55;
+  --color-bg-deploy-selector-button-hover: #50507a;
+  --color-bg-deploy-button: linear-gradient(135deg, #4caf50, #6be675);
+  --color-bg-cancel-deploy: #444;
+  --color-cancel-deploy: #444;
+  --color-bg-cancel-deploy-hover: #666;
+
+  --color-bg-glass-box: linear-gradient(
+    45deg,
+    white,
+    rgba(240, 248, 255, 0.437),
+    white
+  );
+  --color-glass-box: rgba(94, 123, 220, 0.936);
 }

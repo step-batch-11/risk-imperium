@@ -12,7 +12,7 @@ const allocateTroops = (territories) => {
   territoryElements.forEach((territory) => {
     const territoryId = territory.dataset.territoryId;
     const { troopCount } = territories[territoryId];
-    const troopCountElement = territory.querySelector(".troop-count");
+    const troopCountElement = territory.querySelector(".troop-count tspan");
     troopCountElement.textContent = troopCount;
   });
 };

@@ -104,8 +104,7 @@ describe("INITIAL REINFORCEMENT", () => {
       () => game.reinforce({ territoryId: 28, troopCount: 1 }),
     );
 
-    const { action, data } = game.reinforce({ territoryId: 28, troopCount: 1 });
-    console.log(action, data);
+    const { action } = game.reinforce({ territoryId: 28, troopCount: 1 });
 
     assertEquals(action, STATES.REINFORCE);
   });

@@ -19,21 +19,13 @@ export const addListenersToPlayerIcon = () => {
     "#player-details-container",
   );
 
-  const closeButton = document.querySelector(
-    "#player-details-container > button",
-  );
-
   playerIcon.addEventListener("click", () => {
-    playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
-  });
-
-  closeButton.addEventListener("click", () => {
     playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
   });
 };
 
 export const setupListeners = (gameState) => {
-  const map = document.querySelector("#game");
+  const map = document.querySelector("#map-svg");
   map.addEventListener("click", (e) => onMapAction(e, gameState));
 };
 
