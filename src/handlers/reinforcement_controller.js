@@ -51,4 +51,13 @@ export class ReinforcementController {
   get isNoTroopsAssigned() {
     return this.#remainingReinforce === 0;
   }
+
+  loadState({ remainingReinforce }) {
+    this.#remainingReinforce = remainingReinforce;
+  }
+  saveableState() {
+    return {
+      remainingReinforce: this.#remainingReinforce,
+    };
+  }
 }

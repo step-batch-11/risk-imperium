@@ -6,7 +6,7 @@ import { handleUserActions } from "../src/handlers/user_actions.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { CONFIG, STATES } from "../src/config.js";
 import { fortificationHandler } from "../src/models/fortification_handler.js";
-import fortification from "../data/states/fortification.json" with {
+import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
 import invasionState from "../data/states/invasion.json" with { type: "json" };
@@ -296,6 +296,7 @@ describe("Api Handler", () => {
           savedState.territories,
         ),
       };
+
       game.loadGameState(savedState, handler);
 
       const data = fortificationHandler(game, { from: 22, to: 16, count: 9 });
@@ -353,6 +354,7 @@ describe("Api Handler", () => {
       assertEquals(data, "2");
     });
   });
+
   describe("CAPTURE", () => {
     it("should return true", async () => {
       const game = {

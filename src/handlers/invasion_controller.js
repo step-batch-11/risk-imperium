@@ -200,4 +200,34 @@ export class InvasionController {
   get isAttackSuccessful() {
     return this.#isAttackSuccessful;
   }
+
+  loadState(state) {
+    this.#isDone = state.isDone;
+    this.#attackerId = state.attackerId;
+    this.#attackFrom = state.attackFrom;
+    this.#attackTo = state.attackTo;
+    this.#attackerTroopsCount = state.attackerTroopsCount;
+    this.#defenderTroopsCount = state.defenderTroopsCount;
+    this.#state = state.state;
+    this.#isCaptured = state.isCaptured;
+    this.#isAttackSuccessful = state.isAttackSuccessful;
+    this.#attackerDice = state.attackerDice;
+    this.#defenderDice = state.defenderDice;
+  }
+
+  saveableState() {
+    return {
+      isDone: this.#isDone,
+      attackerId: this.#attackerId,
+      attackFrom: this.#attackFrom,
+      attackTo: this.#attackTo,
+      attackerTroopsCount: this.#attackerTroopsCount,
+      defenderTroopsCount: this.#defenderTroopsCount,
+      state: this.#state,
+      isCaptured: this.#isCaptured,
+      isAttackSuccessful: this.#isAttackSuccessful,
+      attackerDice: this.#attackerDice,
+      defenderDice: this.#defenderDice,
+    };
+  }
 }

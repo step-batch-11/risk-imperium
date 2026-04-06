@@ -32,7 +32,7 @@ export const createApp = (
     return c.json({ action: STATES.REINFORCE, data: {} });
   });
   if (isDevMode) {
-    app.get("/:state", (c) => handleLoadGameState(c, readTextFile, game));
+    app.get("/load/:state", (c) => handleLoadGameState(c, readTextFile, game));
 
     app.get("/save/:name", (c) => handleSaveGameState(c, writeTextFile, game));
   }

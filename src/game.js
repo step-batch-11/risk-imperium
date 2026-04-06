@@ -386,7 +386,9 @@ export class Game {
       players: this.#players.map((player) => player.getSaveableData()),
       continents: this.#continentsHandler.getContinents(),
       state: this.#state,
-
+      initReinforce: this.#initialReinforcementController.saveableState(),
+      reinforce: this.#reinforcementController.saveableState(),
+      invasion: this.#invasionController.saveableState(),
       cavalry: this.#cavalry.lastPos,
     };
   }
@@ -401,12 +403,18 @@ export class Game {
     }
 
     this.#invasionController = controller.invasionController;
+    this.#invasionController.loadState(gameState.invasion);
+
     this.#reinforcementController = controller.reinforcementController;
+    this.#reinforcementController.loadState(gameState.reinforce);
+
     this.#initialReinforcementController =
       controller.initialReinforcementController;
+    this.#initialReinforcementController.loadGameState(gameState.initReinforce);
 
     this.#activePlayerId = activePlayerId;
     this.#territoriesHandler = handlers.territoriesHandler;
+
     this.#state = state;
     this.#cavalry = handlers.cavalry;
     this.#fortificationHandler = handlers.fortificationHandler;

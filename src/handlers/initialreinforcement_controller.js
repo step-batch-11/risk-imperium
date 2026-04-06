@@ -30,4 +30,20 @@ export class InitialReinforcementController {
     const deployedTroopsPerPlayer = this.#round / this.#playersCount;
     return this.#troops - Math.floor(deployedTroopsPerPlayer);
   }
+
+  saveableState() {
+    return {
+      round: this.#round,
+      troops: this.#troops,
+      isDone: this.#isDone,
+      playersCount: this.#playersCount,
+    };
+  }
+
+  loadGameState({ round, troops, isDone, playersCount }) {
+    this.#round = round;
+    this.#troops = troops;
+    this.#isDone = isDone;
+    this.#playersCount = playersCount;
+  }
 }

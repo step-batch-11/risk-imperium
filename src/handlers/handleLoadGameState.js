@@ -1,4 +1,5 @@
 import { Cavalry } from "../models/cavalry.js";
+import { ContinentsHandler } from "../models/continents_handler.js";
 import { TerritoriesHandler } from "../models/territoryHandler.js";
 import { FortificationController } from "./fortification_controller.js";
 import { InitialReinforcementController } from "./initialreinforcement_controller.js";
@@ -14,6 +15,7 @@ export const handleLoadGameState = async (c, readTextFile, game) => {
       cavalry: new Cavalry(savedState.cavalry),
       territoriesHandler: new TerritoriesHandler(savedState.territories),
       fortificationHandler: new FortificationController(savedState.territories),
+      continentsHandler: new ContinentsHandler(),
     };
 
     const controllers = {
@@ -28,7 +30,8 @@ export const handleLoadGameState = async (c, readTextFile, game) => {
       invasionController: new InvasionController(handlers.territoriesHandler),
     };
 
-    game.loadGameState({ ...savedState }, handlers, controllers);
+    game.loadGameState(savedState, handlers, controllers);
+
     return c.redirect("/");
   }).catch(() => {
     return c.body("Bad Request", 404);

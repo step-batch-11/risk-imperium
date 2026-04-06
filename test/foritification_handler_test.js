@@ -1,7 +1,7 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { FortificationController } from "../src/handlers/fortification_controller.js";
 
-import fortification from "../data/states/fortification.json" with {
+import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
 import { assertEquals } from "@std/assert/equals";

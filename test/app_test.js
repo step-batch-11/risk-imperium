@@ -198,7 +198,7 @@ describe("App Handler", () => {
           },
         };
         const app = createApp(game, true, { readTextFile: reader });
-        const res = await app.request(`/${configName}`);
+        const res = await app.request(`/load/${configName}`);
         assertEquals(res.status, 302);
         assertEquals(configToLoad, `./data/states/${configName}.json`);
       });
@@ -210,7 +210,7 @@ describe("App Handler", () => {
         };
 
         const app = createApp(game, true, { readTextFile: reader });
-        const res = await app.request("/non-existing-setup");
+        const res = await app.request("/load/non-existing-setup");
         assertEquals(res.status, 404);
         await res.text();
       });
