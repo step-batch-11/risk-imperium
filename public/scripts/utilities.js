@@ -82,7 +82,14 @@ export const addListenerTroopSelector = (handleSelection) => {
     await handleSelection(troopCount);
   };
 };
-
+export const addListenerTroopSectorCancle = (handleSelection) => {
+  const dialog = document.querySelector("#deploy-troops-container");
+  const cancelBtn = dialog.querySelector("#cancel-deploy-btn");
+  cancelBtn.onclick = async () => {
+    dialog.close();
+    await handleSelection(0);
+  };
+};
 export const displayTroopSelector = (event, cancelDisabled = false) => {
   const dialog = document.querySelector("#deploy-troops-container");
   const cancelBtn = dialog.querySelector("#cancel-deploy-btn");

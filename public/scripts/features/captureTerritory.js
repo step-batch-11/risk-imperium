@@ -3,6 +3,7 @@ import { STYLES } from "../configs/styles.js";
 import { sendCaptureRequest } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
+  addListenerTroopSectorCancle,
   addListenerTroopSelector,
   displayTroopSelector,
   getIndexOf,
@@ -14,6 +15,17 @@ import {
 import { showNotification } from "../utilities/notifications.js";
 import { addCardAlert, renderTradeIndicator } from "./cards.js";
 import { renderPlayersDetails, updateCards } from "./setup.js";
+
+const dialogpositions = (territoryElement) => {
+  const element = territoryElement.getBoundingClientRect();
+  console.log(element);
+
+  const x = element.left;
+  const y = element.bottom;
+  // if(y < 0)
+  //   y = element.bottom;
+  return { x, y };
+};
 
 const updatePlayerTerritories = (defender, defenderTerritoryId, gameState) => {
   const index = getIndexOf(defender.territories, defenderTerritoryId);
@@ -62,6 +74,7 @@ const handlePostCapture = async (gameState, defender, troopCount) => {
   if (data.hasEliminated) {
     handleElimination(defender, gameState, data);
   }
+
   renderPlayersDetails(gameState);
   if (data.hasWon) {
     // setTimeout(() => {
@@ -78,17 +91,14 @@ export const captureTerritory = (
   { defenderTerritoryId, attackerTerritoryId },
   combatResult,
 ) => {
-  updateTroopsInTerritories(gameState, combatResult.updatedTerritories);
+  updateTroopsInTerritories(gameState, combatResult.updatedTerritories); //see lt
 
   const territoryElement = getTerritoryElementById(
     gameState.territories,
-    attackerTerritoryId,
+    defenderTerritoryId,
   );
 
-  const element = territoryElement.getBoundingClientRect();
-
-  const x = element.left;
-  const y = element.top;
+  const event = dialogpositions(territoryElement);
 
   const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
 
@@ -97,12 +107,17 @@ export const captureTerritory = (
   showCapturedMsg(gameState, defenderTerritoryId);
   setTroopLimit(
     gameState.territories[attackerTerritoryId].troopCount - 1,
-    combatResult.attackerDice.length,
+    0,
+    0,
   );
 
-  displayTroopSelector({ x, y });
-
   addListenerTroopSelector((troopCount) =>
+    handlePostCapture(gameState, defender, troopCount)
+  );
+
+  displayTroopSelector(event);
+
+  addListenerTroopSectorCancle((troopCount) =>
     handlePostCapture(gameState, defender, troopCount)
   );
 };
