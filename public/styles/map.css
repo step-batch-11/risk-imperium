@@ -9,7 +9,7 @@
 
 body {
   font-family: var(--primary-font);
-  background: var(--color-bg-main);
+  background: var(--texture);
 }
 
 .continent-outline {

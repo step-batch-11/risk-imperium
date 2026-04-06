@@ -4,37 +4,30 @@ import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { delay, updateTroopsInTerritories } from "../utilities.js";
 import { captureTerritory } from "./captureTerritory.js";
-import { STYLES } from "../configs/styles.js";
-
-const updateDiceTray = (selector, diceValues) => {
-  const dieElements = document.querySelectorAll(`${selector} .die-slot`);
-  dieElements.forEach((dice, index) => {
-    const rollValue = diceValues[index];
-    dice.innerHTML = "";
-
-    if (rollValue) {
-      dice.innerHTML = `&#${9855 + rollValue};`;
-      dice.classList.add(STYLES.ROLL_DICE);
-      dice.addEventListener(
-        "animationend",
-        (e) => {
-          if (e.animationName === "roll") {
-            dice.classList.remove(STYLES.ROLL_DICE);
-            dice.innerHTML = `&#${9855 + rollValue};`;
-          }
-        },
-        { once: true },
-      );
-    }
-  });
-};
+import {
+  ATTACKER_DICE_CONFIGS,
+  DEFENDER_DICE_CONFIGS,
+  prepareOverlay,
+  showDiceAnimations,
+} from "../utilities/animate_dice.js";
 
 export const handleCombat = async (prevData, _action, gameState) => {
+  const overlay = prepareOverlay();
   const { action: newState, data } = await combat(prevData);
-  updateDiceTray("#attacker-dice", data.attackerDice);
-  updateDiceTray("#defender-dice", data.defenderDice);
+  showDiceAnimations(
+    overlay,
+    data.attackerDice,
+    ATTACKER_DICE_CONFIGS,
+    "attacker",
+  );
+  showDiceAnimations(
+    overlay,
+    data.defenderDice,
+    DEFENDER_DICE_CONFIGS,
+    "defender",
+  );
 
-  await delay(1100);
+  await delay(2000);
 
   updateTroopsInTerritories(gameState, data.updatedTerritories);
   showNotification(data.notifyMsg.msg, data.notifyMsg.status);

@@ -1,3 +1,14 @@
 coverage/
 .vscode
 mds/
+package-lock.json
+/package.json
+/rough.md
+/test-results
+/tests
+/node_modules
+/data
+/playwright.config.js
+/temp.md
+/player_elemination.json
+/init-reinforcement.json

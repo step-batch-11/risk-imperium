@@ -69,5 +69,5 @@
   --shadow-soft: 0 3px 10px rgba(60, 50, 35, 0.25);
   --shadow-strong: 0 6px 18px rgba(60, 50, 35, 0.35);
 
-  --texture-parchment: url("path/to/aged-paper.jpg");
+  /* --texture: url("../assets/981.jpg"); */
 }
