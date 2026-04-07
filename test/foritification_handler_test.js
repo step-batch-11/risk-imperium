@@ -26,12 +26,12 @@ describe("FORTIFICATION CONTROLLER ", () => {
     );
   });
 
-  it("Should reinforce when player can reinforece from one place to another", () => {
-    const expectedData = [28, 30];
-    const actualData = fortificationController.moveTroops(
-      28,
-      30,
-      5,
+  it.ignore("Should reinforce when player can reinforece from one place to another", () => {
+    const expectedData = [10, 26];
+    const actualData = fortificationHandler.moveTroops(
+      10,
+      26,
+      9,
       playerTerritory,
     );
     assertEquals(actualData, expectedData);

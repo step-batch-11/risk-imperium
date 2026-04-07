@@ -102,6 +102,7 @@ describe("Game", () => {
         "reinforce",
         "invasion",
         "cavalry",
+        "hasCaptured",
       ];
 
       const parameters = Object.keys(gameState);
@@ -123,6 +124,7 @@ describe("Game", () => {
         "reinforce",
         "invasion",
         "cavalry",
+        "hasCaptured",
       ];
       const setupDataProperties = Object.keys(gameState);
       assertEquals(expectedParameters.length, setupDataProperties.length);
@@ -137,7 +139,7 @@ describe("Game", () => {
     });
   });
 
-  describe("LOADGAMESTATE", () => {
+  describe("LOAD GAME STATE", () => {
     const handlers = {
       fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
       continentsHandler: new ContinentsHandler(),

@@ -1,0 +1,2610 @@
+File: public/scripts/features/cards.js
+import { APIs } from "../configs/APIS.js";
+import { STYLES } from "../configs/styles.js";
+import { USER_ACTIONS } from "../configs/user_action.js";
+import { sendPostRequest } from "../server_calls.js";
+import { addGlow } from "../utilities/highlight.js";
+import { showNotification } from "../utilities/notifications.js";
+import { forceTrade } from "./force_trade.js";
+import { addListenerToCard, updateCards } from "./setup.js";
+
+export const addCardAlert = () => {
+  const cardElement = document.querySelector("#cards");
+  const circle = cardElement.querySelector("circle");
+  circle.classList.add(STYLES.CARD_ALERT);
+};
+
+export const getCard = async (gameState) => {
+  const reqData = { userActions: USER_ACTIONS.GET_CARD, data: {} };
+
+  const { action, data } = await sendPostRequest(APIs.USER_ACTIONS, reqData);
+  if (data.card) {
+    const player = gameState.player;
+    player.cards.push(data.card);
+    addCardAlert();
+
+    updateCards(player.cards);
+    showNotification(`${player.name} received a card`);
+  }
+  return action;
+};
+
+export const tradeCard = async (cards) => {
+  const reqData = {
+    userActions: USER_ACTIONS.TRADE_CARD,
+    data: { cards },
+  };
+  const response = await sendPostRequest(APIs.USER_ACTIONS, reqData);
+  return response;
+};
+
+const getCombinations = (arr, k = 3) => {
+  const result = [];
+  function backtrack(start, combo) {
+    if (combo.length === k) {
+      result.push([...combo]);
+      return;
+    }
+    for (let i = start; i < arr.length; i++) {
+      combo.push(arr[i]);
+      backtrack(i + 1, combo);
+      combo.pop();
+    }
+  }
+
+  backtrack(0, []);
+  return result;
+};
+
+const isValidCombination = (combination = []) => {
+  const set = new Set();
+  combination.sort((a, b) => a - b);
+
+  const allSame = combination.every((x) => combination[0] === x || x === "4");
+
+  combination.forEach((x) => {
+    set.add(x);
+  });
+  const allDifferent = set.size === 3;
+
+  return allDifferent || allSame;
+};
+
+export const canBeTraded = (selectedCard, cardContainer) => {
+  const cards = Object.entries(selectedCard);
+  const button = cardContainer.querySelector("button");
+
+  if (cards.length === 3) {
+    const isValid = isValidCombination(cards.map(([_, card]) => card));
+
+    if (isValid) {
+      addGlow(cardContainer, selectedCard, "glow-correct");
+      button.removeAttribute("disabled");
+      return;
+    }
+    addGlow(cardContainer, selectedCard, "glow-wrong");
+  }
+
+  button.setAttribute("disabled", true);
+};
+
+export const canTradeCards = (cards) => {
+  const validCombo = getCombinations(cards).filter(isValidCombination);
+  return validCombo.length > 0;
+};
+
+export const renderTradeIndicator = (gameState) => {
+  const cardArea = document.querySelector("#card-area");
+  const cards = gameState.player.cards;
+  if (cards.length > 4) {
+    return forceTrade(gameState);
+  }
+  addListenerToCard(gameState, cardArea);
+  if (canTradeCards(cards)) {
+    const cardIcon = document.querySelector("#cards");
+    cardIcon.classList.add(STYLES.HIGHLIGHT_CARD_ICON);
+  }
+};
+
+export const removeCardAreaListener = (gameState, id = "#card-area") => {
+  const cardContainer = document.querySelector(`${id}`);
+  const cardArea = cardContainer.querySelector("div");
+  const button = cardContainer.querySelector("button");
+  const cardIcon = document.querySelector("#cards");
+  cardIcon.classList.remove(STYLES.HIGHLIGHT_CARD_ICON);
+  cardArea.onclick = () => { };
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((card) => card.className = STYLES.CARD);
+  button.setAttribute("disabled", true);
+
+  gameState.selectedCard = {};
+};
+
+File: public/scripts/features/force_trade.js
+import { addListenerToTrade } from "../listeners.js";
+import { showNotification } from "../utilities/notifications.js";
+import { removeCardAreaListener } from "./cards.js";
+import { addListenerToCard, updateCards } from "./setup.js";
+
+const closeTradeBox = (gameState, tradeBox) => () => {
+  removeCardAreaListener(gameState, "#force-trade");
+  tradeBox.close();
+};
+
+export const forceTrade = (gameState) => {
+  showNotification("YOU HAVE MORE THAN 5 CARDS TRADE TO CONITINUE");
+  const tradeBox = document.querySelector("#force-trade");
+  const trade = tradeBox.querySelector("button");
+  const playerCards = gameState.player.cards;
+  const close = closeTradeBox(gameState, tradeBox);
+  updateCards(playerCards, "#force-trade");
+  addListenerToTrade(gameState, trade, close);
+  addListenerToCard(gameState, tradeBox);
+  tradeBox.showModal();
+};
+
+File: public/scripts/features/reinforce.js
+import { sendReinforceRequest } from "../server_calls.js";
+import {
+  addListenerTroopSelector,
+  displayTroopSelector,
+  setTroopLimit,
+  updateTroopsInTerritories,
+} from "../utilities.js";
+import { showNotification } from "../utilities/notifications.js";
+import { setUpNextPhase } from "../transition_handlers.js";
+import {
+  NOTIFICATION_MESSAGES,
+  NOTIFICATION_TYPES,
+} from "../configs/notification_config.js";
+import { renderRemainingTroopsToDeploy } from "../utilities/render_UI.js";
+import { removeCardAreaListener } from "./cards.js";
+
+const notifyNotOwned = (gameState, id) => {
+  const territoryName = gameState.territories[id].name;
+  const message = `${territoryName} isn't under your control`;
+  showNotification(message, NOTIFICATION_TYPES.WARNING);
+};
+
+const notifyDeployment = (gameState, territoryId, troopCount) => {
+  const player = gameState.player.name;
+  const territoryName = gameState.territories[territoryId].name;
+  const message = `${player} deployed ${troopCount} troops in ${territoryName}`;
+  showNotification(message, NOTIFICATION_TYPES.SUCCESS);
+};
+
+const getTerritoryId = (territory) => Number(territory.dataset.territoryId);
+
+const isOwned = (gameState, id) => gameState.player.territories.includes(id);
+
+const updateRemainingTroops = (remainingTroops) => {
+  if (remainingTroops !== undefined) {
+    renderRemainingTroopsToDeploy(remainingTroops);
+    setTroopLimit(remainingTroops);
+  }
+};
+
+const updateAfterDeploy = (gameState, response, troopCount) => {
+  const {
+    action: nextState,
+    data: { updatedTerritory, remainingTroops },
+  } = response;
+
+  updateTroopsInTerritories(gameState, updatedTerritory);
+  const updatedTerritoryId = updatedTerritory[0].territoryId;
+
+  notifyDeployment(gameState, updatedTerritoryId, troopCount);
+  updateRemainingTroops(remainingTroops);
+  setUpNextPhase(gameState, nextState);
+};
+
+const handleCustomDeployment = (event, gameState, territoryId) => {
+  const handleSelection = (troopCount) =>
+    deployTroops(event, gameState, territoryId, troopCount);
+
+  addListenerTroopSelector(handleSelection);
+  displayTroopSelector(event);
+};
+
+const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
+  removeCardAreaListener(gameState);
+  return sendReinforceRequest({ territoryId, troopCount })
+    .then((res) => updateAfterDeploy(gameState, res, troopCount))
+    .catch(() => {
+      showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
+    });
+};
+
+const handleReinforcement = (territory, gameState, handleDeployment, event) => {
+  const territoryId = getTerritoryId(territory);
+  if (!isOwned(gameState, territoryId)) {
+    return notifyNotOwned(gameState, territoryId);
+  }
+
+  handleDeployment(event, gameState, territoryId);
+};
+
+export const initialReinforcement = (territory, gameState) => {
+  handleReinforcement(territory, gameState, deployTroops);
+};
+
+export const reinforce = (territory, gameState, event) => {
+  handleReinforcement(territory, gameState, handleCustomDeployment, event);
+};
+
+File: public/scripts/features/invasion.js
+import { invade } from "../server_calls.js";
+import {
+  highlightTerritories,
+  removeHighlights,
+} from "../utilities/highlight.js";
+import { showNotification } from "../utilities/notifications.js";
+import { setUpNextPhase } from "../transition_handlers.js";
+import { NOTIFICATION_MESSAGES } from "../configs/notification_config.js";
+import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import {
+  addListenerTroopSelector,
+  displayTroopSelector,
+  removeSkipButton,
+  setTroopLimit,
+} from "../utilities.js";
+
+const opponentNeighbours = (player, territories, selectedTerritoryId) => {
+  const neighbours = territories[selectedTerritoryId].neighbours;
+  return neighbours.filter(
+    (neighbour) => !player.territories.includes(neighbour),
+  );
+};
+
+const isMyTerritory = (gameState, territoryId) => {
+  return gameState.player.territories.includes(territoryId);
+};
+
+const selectAttackingTroops = (event, gameState, attacker, handleSelection) => {
+  const troopCount = gameState.territories[attacker].troopCount;
+  const maxTroops = Math.min(3, troopCount - 1);
+  const minTroops = 1;
+
+  setTroopLimit(maxTroops, minTroops, maxTroops);
+  addListenerTroopSelector(handleSelection);
+  displayTroopSelector(event);
+};
+
+const isNeighbouringOpponent = (gameState, selectedTerritoryId) => {
+  if (!gameState.invadeDetials) return false;
+  return gameState.invadeDetials.neighbours.includes(selectedTerritoryId);
+};
+
+const handleAttack = async (
+  gameState,
+  attackerTerritoryId,
+  defenderTerritoryId,
+  attackerTroops,
+) => {
+  const { newState } = await invade({
+    attackerTerritoryId,
+    defenderTerritoryId,
+    attackerTroops,
+  });
+
+  showNotification(
+    "Please click on the defender territory. Be human. Be kind.",
+    "warning",
+    5000,
+  );
+
+  removeSkipButton();
+  removeHighlights("selected");
+  setUpNextPhase(gameState, newState);
+};
+
+const selectAttacker = (gameState, selectedTerritoryId) => {
+  removeHighlights("highlight", ".territory");
+  const neighbours = opponentNeighbours(
+    gameState.player,
+    gameState.territories,
+    selectedTerritoryId,
+  );
+
+  gameState.invadeDetials = { attacker: selectedTerritoryId, neighbours };
+
+  highlightTerritories(neighbours, "highlight");
+};
+
+const selectDefender = (event, gameState, selectedTerritoryId) => {
+  removeHighlights("highlight", ".territory");
+  const attackerTerritoryId = gameState.invadeDetials.attacker;
+  const defenderTerritoryId = selectedTerritoryId;
+  gameState.invadeDetials.defender = defenderTerritoryId;
+
+  const handleSelection = async (troopCount) =>
+    await handleAttack(
+      gameState,
+      attackerTerritoryId,
+      defenderTerritoryId,
+      troopCount,
+    );
+  highlightTerritories([defenderTerritoryId], "higlight");
+  selectAttackingTroops(event, gameState, attackerTerritoryId, handleSelection);
+};
+
+const hasEnemyNeighbour = (gameState, territoryId) =>
+  gameState.territories[territoryId].neighbours.some(
+    (neighbour) => !isMyTerritory(gameState, neighbour),
+  );
+
+const hasEnoughTroops = (gameState, territoryId) =>
+  gameState.territories[territoryId].troopCount > 1;
+
+const canAttackFrom = (gameState, territoryId) =>
+  hasEnoughTroops(gameState, territoryId) &&
+  hasEnemyNeighbour(gameState, territoryId);
+
+const isAttackableTerritory = (gameState, territoryId) =>
+  isMyTerritory(gameState, territoryId) &&
+  canAttackFrom(gameState, territoryId);
+
+export const handleInvasion = (territory, gameState, event) => {
+  const selectedTerritoryId = Number(territory.dataset.territoryId);
+
+  if (isAttackableTerritory(gameState, selectedTerritoryId)) {
+    return selectAttacker(gameState, selectedTerritoryId);
+  }
+
+  if (isNeighbouringOpponent(gameState, selectedTerritoryId)) {
+    return selectDefender(event, gameState, selectedTerritoryId);
+  }
+
+  showNotification(
+    NOTIFICATION_MESSAGES.INVALID_TERRITORY,
+    NOTIFICATION_TYPES.WARNING,
+  );
+};
+
+File: public/scripts/features/defend.js
+import { defend } from "../server_calls.js";
+import {
+  addListenerTroopSelector,
+  displayTroopSelector,
+  setTroopLimit,
+} from "../utilities.js";
+import {
+  highlightTerritories,
+  removeHighlights,
+} from "../utilities/highlight.js";
+import { handleCombat } from "./resolve_combat.js";
+
+const defendTerritory = async (gameState, territoryId, troopCount) => {
+  const defendData = { territoryId, troopCount };
+  const { action, data } = await defend(defendData);
+  gameState.state = action;
+  await handleCombat(data, action, gameState);
+  delete gameState.invadeDetials;
+  removeHighlights("highlight");
+};
+
+const calculatePosition = (territory) => {
+  const { left, right, top, bottom } = territory.getBoundingClientRect();
+  const height = top + bottom;
+  return { x: (left + right) / 2, y: top + height * 0.1 };
+};
+
+const setLimit = (gameState, defenderTerritoryId) => {
+  const availableTroopCount =
+    gameState.territories[defenderTerritoryId].troopCount;
+
+  const maxTroops = Math.min(2, availableTroopCount);
+  const minTroops = 1;
+  setTroopLimit(maxTroops, minTroops, maxTroops);
+};
+
+export const handleDefense = (gameState) => {
+  const defenderTerritoryId = gameState.invadeDetials.defender;
+  const defendingTerritory = document.querySelector(
+    `[data-territory-id="${defenderTerritoryId}"]`,
+  );
+  const attackerTerritoryId = gameState.invadeDetials.attacker;
+  highlightTerritories([attackerTerritoryId], "selected");
+  highlightTerritories([defenderTerritoryId], "highlight");
+
+  const defendHandler = async (troopCount) =>
+    await defendTerritory(gameState, defenderTerritoryId, troopCount);
+
+  setLimit(gameState, defenderTerritoryId);
+
+  const position = calculatePosition(defendingTerritory);
+  const cancelDisabled = true;
+  displayTroopSelector(position, cancelDisabled);
+  addListenerTroopSelector(defendHandler);
+};
+
+File: public/scripts/features/initial_territory_allocate.js
+const colorTerritories = (playerTerritories, playerId, territories) => {
+  playerTerritories.forEach((tId) => {
+    const { name } = territories[tId];
+    const terrName = name.toLowerCase().replaceAll(" ", "-");
+    const territoryElement = document.querySelector(`#${terrName}`);
+    territoryElement.dataset.player = playerId;
+  });
+};
+
+const allocateTroops = (territories) => {
+  const territoryElements = document.querySelectorAll(".territory");
+  territoryElements.forEach((territory) => {
+    const territoryId = territory.dataset.territoryId;
+    const { troopCount } = territories[territoryId];
+    const troopCountElement = territory.querySelector(".troop-count");
+    troopCountElement.textContent = troopCount;
+  });
+};
+
+export const renderTerritoriesAndTroops = (
+  player,
+  territories,
+  opponents,
+) => {
+  for (const playerInfo of Object.values({ player, ...opponents })) {
+    colorTerritories(playerInfo.territories, playerInfo.id, territories);
+    allocateTroops(territories);
+  }
+};
+
+File: public/scripts/features/cavalryUpdate.js
+export const updateCavalry = (positions) => {
+  const cavalryPositions = document.querySelectorAll(".position");
+  cavalryPositions.forEach((position, i) =>
+    position.textContent = positions[i]
+  );
+};
+
+File: public/scripts/features/fortified.js
+import { STATES } from "../configs/game_states.js";
+import { getFortifiableTerritory } from "../handlers/fortified_handler.js";
+import { fortifyRequest } from "../server_calls.js";
+import { SETUP_TRANSITION, setUpNextPhase } from "../transition_handlers.js";
+import {
+  addListenerTroopSelector,
+  displayTroopSelector,
+  removeSkipButton,
+  setTroopLimit,
+  updateTroopsInTerritories,
+} from "../utilities.js";
+import {
+  highlightTerritories,
+  removeHighlights,
+} from "../utilities/highlight.js";
+
+const handleFortifyTerritoryFromSelection = (gameState, territory) => {
+  const id = Number(territory.dataset.territoryId);
+  const territoriesSets = getFortifiableTerritory(gameState);
+  const connectedTerritories = territoriesSets.find((set) => set.includes(id));
+
+  if (gameState.territories[id].troopCount < 2) {
+    return;
+  }
+
+  const territoriesToMoveTo = connectedTerritories.filter((tid) => tid !== id);
+  highlightTerritories([id], "reinforce-from-selected");
+  removeHighlights("selected");
+  highlightTerritories(territoriesToMoveTo);
+  gameState.fortifyFrom = id;
+};
+
+const handleFortification = async (_event, gameState, fromId, id, count) => {
+  const { action: nextPhase, data: updatedTerritories } = await fortifyRequest({
+    from: fromId,
+    to: id,
+    count,
+  });
+  updateTroopsInTerritories(gameState, updatedTerritories);
+
+  delete gameState.fortifyFrom;
+  delete gameState.fortifyTo;
+
+  removeSkipButton();
+  setUpNextPhase(gameState, nextPhase);
+};
+
+const selectFortifyingTroops = (event, gameState, fromId, handleSelection) => {
+  const troopCount = gameState.territories[fromId].troopCount;
+  const maxTroops = troopCount - 1;
+  const minTroops = 1;
+
+  setTroopLimit(maxTroops, minTroops, maxTroops);
+  addListenerTroopSelector(handleSelection);
+  displayTroopSelector(event);
+};
+
+const handleFortifyTo = (event, gameState, territory) => {
+  const id = Number(territory.dataset.territoryId);
+
+  gameState.fortifyTo = id;
+  const fromId = gameState.fortifyFrom;
+
+  const handleSelection = async (troopCount) =>
+    await handleFortification(event, gameState, fromId, id, troopCount);
+
+  selectFortifyingTroops(event, gameState, fromId, handleSelection);
+};
+
+export const handleFortified = (territory, gameState, event) => {
+  const id = Number(territory.dataset.territoryId);
+  const territoriesSets = getFortifiableTerritory(gameState);
+  const connectedTerritories = territoriesSets.find((set) => set.includes(id));
+
+  if (!connectedTerritories) {
+    return;
+  }
+
+  if (!gameState.fortifyFrom) {
+    handleFortifyTerritoryFromSelection(gameState, territory);
+    return;
+  }
+
+  if (id === gameState.fortifyFrom) {
+    delete gameState.fortifyFrom;
+    removeHighlights("reinforce-from-selected");
+    removeHighlights("selected");
+    removeSkipButton();
+    SETUP_TRANSITION[STATES.FORTIFICATION](gameState);
+    return;
+  }
+
+  if (connectedTerritories.includes(gameState.fortifyFrom)) {
+    handleFortifyTo(event, gameState, territory);
+    removeHighlights("reinforce-from-selected");
+  }
+};
+
+File: public/scripts/features/map_events.js
+// import { handleDefend } from "./defend.js";
+import { initialReinforcement, reinforce } from "./reinforce.js";
+import { handleInvasion } from "./invasion.js";
+import { STATES } from "../configs/game_states.js";
+import { handleFortified } from "./fortified.js";
+
+const GAME_STATES = {
+  [STATES.INITIAL_REINFORCEMENT]: initialReinforcement,
+  [STATES.REINFORCE]: reinforce,
+  [STATES.INVASION]: handleInvasion,
+  // [STATES.DEFEND]: handleDefend,
+  [STATES.FORTIFICATION]: handleFortified,
+};
+
+const hideCards = () => {
+  const cardArea = document.querySelector("#card-area");
+  if (!cardArea.classList.contains("hidden")) {
+    cardArea.classList.toggle("hidden");
+  }
+};
+
+export const onMapAction = (event, gameState) => {
+  const territory = event.target.closest(".territory");
+  hideCards();
+  if (!territory) return;
+
+  if (gameState.state in GAME_STATES) {
+    const stateToPerform = GAME_STATES[gameState.state];
+    stateToPerform(territory, gameState, event);
+  }
+};
+
+File: public/scripts/features/setup.js
+import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import { STYLES } from "../configs/styles.js";
+import { TERRITORY_CARD } from "../configs/territory_card.js";
+
+import { addListenersToPlayerIcon } from "../listeners.js";
+import { getAllPlayersDetail, getOwnedContinents } from "../utilities.js";
+import { addGlow } from "../utilities/highlight.js";
+import { showNotification } from "../utilities/notifications.js";
+import { canBeTraded } from "./cards.js";
+
+const renderPlayerDetails = (player, continents) => {
+  const playerDetailsTemplate = document.querySelector(
+    "#single-player-detail-template",
+  );
+  const clone = playerDetailsTemplate.content.cloneNode(true);
+  const playerDetailsContainer = clone.querySelector(".player-deatils");
+
+  playerDetailsContainer.dataset.playerId = player.id;
+
+  const nameElement = clone.querySelector(".name");
+
+  nameElement.textContent = player.name;
+
+  const territoryCountElement = clone.querySelector(".territory-count");
+  const territoryCount = player.territories.length;
+  territoryCountElement.textContent = `Territories : ${territoryCount}`;
+
+  const continentsCountElement = clone.querySelector(".continent-count");
+  const ownedContinents = getOwnedContinents(player, continents);
+
+  continentsCountElement.textContent = `Continents : ${ownedContinents.length}`;
+  return clone;
+};
+
+export const renderPlayersDetails = (gameState) => {
+  const playerDetailsDialog = document.querySelector("#players-info");
+
+  const players = getAllPlayersDetail(gameState.player, gameState.opponents);
+
+  const allPlayersDetails = Object.values(players).map((player) =>
+    renderPlayerDetails(player, gameState.continents)
+  );
+
+  playerDetailsDialog.replaceChildren();
+  playerDetailsDialog.append(...allPlayersDetails);
+  return players;
+};
+
+export const setup = (gameState) => {
+  const players = renderPlayersDetails(gameState);
+  addListenersToPlayerIcon(players, gameState.continents);
+};
+
+export const addListenerToCard = (gameState, cardContainer) => {
+  const cardArea = cardContainer.querySelector("div");
+  cardArea.onclick = (e) => {
+    const id = e.target.id;
+    const cardElement = e.target.closest(".card");
+
+    if (!cardElement) return;
+
+    const cardId = +id.split("-")[1];
+    const card = cardArea.querySelector(`#${id}`);
+    const cards = gameState.player.cards;
+    const selectedCards = gameState.selectedCards;
+
+    if (selectedCards[id]) {
+      delete selectedCards[id];
+      card.className = "";
+      card.className = STYLES.CARD;
+      addGlow(cardContainer, selectedCards, STYLES.GLOW);
+      return;
+    }
+
+    if (Object.entries(selectedCards).length === 3) {
+      showNotification(
+        "Deselect A Card To Select All Cards",
+        NOTIFICATION_TYPES.WARNING,
+      );
+      return;
+    }
+
+    gameState.selectedCards[id] = cards[cardId];
+    card.className = STYLES.GLOW;
+    canBeTraded(gameState.selectedCards, cardContainer);
+  };
+};
+
+const createCardElement = (card, i) => {
+  const cardElement = document.createElement("div");
+  cardElement.dataset.cardType = TERRITORY_CARD[card];
+  cardElement.textContent = TERRITORY_CARD[card];
+  cardElement.classList.add("card");
+  cardElement.id = `card-${i}`;
+  return cardElement;
+};
+
+export const updateCards = (
+  cards,
+  id = "#card-area",
+) => {
+  const cardsArea = document.querySelector(`${id} > div`);
+  cardsArea.textContent = "";
+  const cardElements = cards.map(createCardElement);
+  cardsArea.append(...cardElements);
+};
+
+File: public/scripts/features/captureTerritory.js
+import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
+import { STYLES } from "../configs/styles.js";
+import { sendCaptureRequest } from "../server_calls.js";
+import { setUpNextPhase } from "../transition_handlers.js";
+import {
+  addListenerTroopSelector,
+  displayTroopSelector,
+  getIndexOf,
+  getPlayerById,
+  getTerritoryElementById,
+  setTroopLimit,
+  updateTroopsInTerritories,
+} from "../utilities.js";
+import { showNotification } from "../utilities/notifications.js";
+import { addCardAlert, renderTradeIndicator } from "./cards.js";
+import { renderPlayersDetails, updateCards } from "./setup.js";
+
+const updatePlayerTerritories = (defender, defenderTerritoryId, gameState) => {
+  const index = getIndexOf(defender.territories, defenderTerritoryId);
+  gameState.player.territories.push(...defender.territories.splice(index, 1));
+};
+
+const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
+  const territoryElement = getTerritoryElementById(
+    gameState.territories,
+    defenderTerritoryId,
+  );
+  territoryElement.setAttribute("data-player", gameState.player.id);
+};
+
+const showCapturedMsg = (gameState, defenderTerritoryId) => {
+  const msg = `${gameState.player.name} captured ${gameState.territories[defenderTerritoryId].name
+    }`;
+  showNotification(msg);
+};
+
+const handleElimination = (defender, gameState, combatResult) => {
+  gameState.player.cards = combatResult.newCards;
+  updateCards(gameState.player.cards);
+  addCardAlert();
+  renderTradeIndicator(gameState);
+  delete gameState.opponents[defender.id];
+
+  const msg = `${defender.name} has eliminated`;
+  showNotification(msg, NOTIFICATION_TYPES.WARNING);
+};
+
+const showWinner = (player) => {
+  const glassBox = document.querySelector("#glass-box");
+  glassBox.classList.remove(STYLES.DISPLAY_NONE);
+  const actionMenu = document.querySelector(".action-menu");
+  actionMenu.classList.add(STYLES.REMOVE_EVENTS);
+  const playerElement = document.querySelector("#winner-name");
+  playerElement.textContent = `${player},the great`;
+};
+
+const handlePostCapture = async (gameState, defender, troopCount) => {
+  const { action, data } = await sendCaptureRequest(troopCount);
+  updateTroopsInTerritories(gameState, data.updatedTerritories);
+  setUpNextPhase(gameState, action);
+
+  if (data.hasEliminated) {
+    return handleElimination(defender, gameState, data);
+  }
+  renderPlayersDetails(gameState);
+  if (data.hasWon) {
+    return showWinner(gameState.player.name);
+  }
+
+};
+
+export const captureTerritory = (
+  gameState,
+  { defenderTerritoryId, attackerTerritoryId },
+  combatResult,
+) => {
+  updateTroopsInTerritories(gameState, combatResult.updatedTerritories);
+
+  const territoryElement = getTerritoryElementById(
+    gameState.territories,
+    attackerTerritoryId,
+  );
+
+  const element = territoryElement.getBoundingClientRect();
+
+  const x = element.left;
+  const y = element.top;
+
+  const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
+
+  updatePlayerTerritories(defender, defenderTerritoryId, gameState);
+  addPlayerIdToTerritory(gameState, defenderTerritoryId);
+  showCapturedMsg(gameState, defenderTerritoryId);
+  setTroopLimit(
+    gameState.territories[attackerTerritoryId].troopCount - 1,
+    combatResult.attackerDice.length,
+  );
+
+  displayTroopSelector({ x, y });
+
+  addListenerTroopSelector((troopCount) =>
+    handlePostCapture(gameState, defender, troopCount)
+  );
+};
+
+File: public/scripts/features/resolve_combat.js
+import { combat } from "../server_calls.js";
+
+import { showNotification } from "../utilities/notifications.js";
+import { setUpNextPhase } from "../transition_handlers.js";
+import { delay, updateTroopsInTerritories } from "../utilities.js";
+import { captureTerritory } from "./captureTerritory.js";
+import { STYLES } from "../configs/styles.js";
+
+const updateDiceTray = (selector, diceValues) => {
+  const dieElements = document.querySelectorAll(`${selector} .die-slot`);
+  dieElements.forEach((dice, index) => {
+    const rollValue = diceValues[index];
+    dice.innerHTML = "";
+
+    if (rollValue) {
+      dice.innerHTML = `&#${9855 + rollValue};`;
+      dice.classList.add(STYLES.ROLL_DICE);
+      dice.addEventListener(
+        "animationend",
+        (e) => {
+          if (e.animationName === "roll") {
+            dice.classList.remove(STYLES.ROLL_DICE);
+            dice.innerHTML = `&#${9855 + rollValue};`;
+          }
+        },
+        { once: true },
+      );
+    }
+  });
+};
+
+export const handleCombat = async (prevData, _action, gameState) => {
+  const { action: newState, data } = await combat(prevData);
+  updateDiceTray("#attacker-dice", data.attackerDice);
+  updateDiceTray("#defender-dice", data.defenderDice);
+
+  await delay(1100);
+
+  updateTroopsInTerritories(gameState, data.updatedTerritories);
+  showNotification(data.notifyMsg.msg, data.notifyMsg.status);
+
+  if (data.hasCaptured) {
+    captureTerritory(gameState, prevData, data);
+    return;
+  }
+
+  setUpNextPhase(gameState, newState);
+};
+
+File: public/scripts/listeners.js
+import { STATES } from "./configs/game_states.js";
+import { STYLES } from "./configs/styles.js";
+import {
+  removeCardAreaListener,
+  renderTradeIndicator,
+  tradeCard,
+} from "./features/cards.js";
+import { updateCavalry } from "./features/cavalryUpdate.js";
+import { onMapAction } from "./features/map_events.js";
+import { updateCards } from "./features/setup.js";
+import { setUpNextPhase } from "./transition_handlers.js";
+import { setTroopLimit } from "./utilities.js";
+import { showNotification } from "./utilities/notifications.js";
+import { renderRemainingTroopsToDeploy } from "./utilities/render_UI.js";
+
+export const addListenersToPlayerIcon = () => {
+  const playerIcon = document.querySelector("#player-details-button");
+  const playerDetailsDialog = document.querySelector(
+    "#player-details-container",
+  );
+
+  const closeButton = document.querySelector(
+    "#player-details-container > button",
+  );
+
+  playerIcon.addEventListener("click", () => {
+    playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
+  });
+
+  closeButton.addEventListener("click", () => {
+    playerDetailsDialog.classList.toggle(STYLES.HIDDEN);
+  });
+};
+
+export const setupListeners = (gameState) => {
+  const map = document.querySelector("#game");
+  map.addEventListener("click", (e) => onMapAction(e, gameState));
+};
+
+export const addListenerToCardIcon = (player) => {
+  const cardArea = document.querySelector("#card-area");
+  const cardIcon = document.querySelector("#cards");
+
+  updateCards(player.cards);
+
+  cardIcon.addEventListener("click", () => {
+    const alert = cardIcon.querySelector("circle");
+    alert.classList.remove(STYLES.CARD_ALERT);
+    cardArea.classList.toggle(STYLES.HIDDEN);
+  });
+};
+
+const tradeSelectedCards = async (gameState, cards, closeDialoge) => {
+  showNotification("Traded the card ");
+  const selectedCards = Object.values(gameState.selectedCards);
+  const selected = [...selectedCards];
+  const { action, data } = await tradeCard(selected);
+  gameState.cavalryPositions = data.positions
+  updateCavalry(data.positions);
+  renderRemainingTroopsToDeploy(data.troops);
+  setTroopLimit(data.troops);
+  for (const card of selected) {
+    const idx = cards.findIndex((c) => c === card);
+    cards.splice(idx, 1);
+  }
+
+  if (cards.length < 5) {
+    closeDialoge();
+  }
+
+  removeCardAreaListener(gameState);
+  if (gameState.state === STATES.REINFORCE) renderTradeIndicator(gameState);
+  setUpNextPhase(gameState, action);
+  updateCards(cards);
+  gameState.selectedCards = {};
+};
+
+export const addListenerToTrade = (
+  gameState,
+  trade = document.querySelector("#trade"),
+  close = () => { },
+) => {
+  const cards = gameState.player.cards;
+  trade.addEventListener(
+    "click",
+    (_) => tradeSelectedCards(gameState, cards, close),
+  );
+};
+const isValidTroopCount = (value, max) => value > 0 && value <= max;
+
+const updateTroopCount = (input, offset) => {
+  const currentTroopsCount = Number(input.value);
+  const maxLimit = Number(input.max);
+
+  const updatedTroopsCount = currentTroopsCount + offset;
+
+  if (isValidTroopCount(updatedTroopsCount, maxLimit)) {
+    input.value = updatedTroopsCount;
+  }
+};
+
+export const setupDeployControls = (dialog) => {
+  const input = dialog.querySelector("#troop-count-input");
+
+  dialog.querySelector("#increase-troops-btn").onclick = () =>
+    updateTroopCount(input, +1);
+
+  dialog.querySelector("#decrease-troops-btn").onclick = () =>
+    updateTroopCount(input, -1);
+
+  dialog.querySelector("#cancel-deploy-btn").onclick = () => dialog.close();
+};
+
+File: public/scripts/utilities/highlight.js
+export const highlightTerritories = (territories, className = "selected") => {
+  territories.forEach((territory) => {
+    const territoryElement = document.querySelector(
+      `[data-territory-id="${territory}"]`,
+    );
+    territoryElement.classList.add(className);
+  });
+};
+
+export const removeHighlights = (className) => {
+  const territories = document.querySelectorAll(".territory");
+  territories.forEach((territory) => {
+    territory.classList.remove(className);
+  });
+};
+
+export const addGlow = (cardContainer, selectedCards, glow) => {
+  for (const card in selectedCards) {
+    const cardElement = cardContainer.querySelector(`#${card}`);
+    cardElement.className = "card " + glow;
+  }
+};
+
+File: public/scripts/utilities/render_UI.js
+import { updateCavalry } from "../features/cavalryUpdate.js";
+import { getAllPlayersDetail } from "../utilities.js";
+
+export const renderUpdatedTroopCount = (territory, newTroopCount) => {
+  const troopCount = territory.querySelector(".troop-count");
+  troopCount.textContent = newTroopCount;
+};
+
+export const renderRemainingTroopsToDeploy = (remainingTroops) => {
+  const display = document.querySelector("#remaining-troops-to-deploy");
+
+  display.textContent = remainingTroops
+    ? `Remaining Troops To Deploy: ${remainingTroops}`
+    : "";
+};
+const renderCurrentUserTurn = (players, currentPlayerId) => {
+  const currentPlayerNameHolder = document.querySelector(
+    "#current-player-name",
+  );
+  const currentPlayer = players[currentPlayerId];
+  currentPlayerNameHolder.textContent = currentPlayer.name;
+};
+
+export const renderCurrentPlayerName = (gameState) => {
+  const players = getAllPlayersDetail(gameState.player, gameState.opponents);
+  renderCurrentUserTurn(players, gameState.currentPlayer);
+};
+
+export const renderGameState = (gameState) => {
+  updateCavalry(gameState.cavalryPositions);
+  const stateNameElement = document.querySelector("#game-state-name");
+  stateNameElement.textContent = `Phase: ${gameState.state}`;
+};
+
+File: public/scripts/utilities/notifications.js
+let notifyTimer;
+
+export const showNotification = (message, type = "info", duration = 2000) => {
+  const notification = document.querySelector("#notification-container");
+  notification.className = `notification ${type}`;
+  const paragraph = notification.querySelector("#notification-text");
+  paragraph.textContent = message;
+
+  clearTimeout(notifyTimer);
+
+  notifyTimer = setTimeout(() => {
+    notification.classList.remove(type);
+  }, duration);
+};
+
+File: public/scripts/utilities.js
+import { setupDeployControls } from "./listeners.js";
+
+export const getOwnedContinents = (player, continents) => {
+  return Object.values(continents).filter((continent) => {
+    return continent.territories.every((territory) =>
+      player.territories.includes(territory)
+    );
+  });
+};
+
+export const getAllPlayersDetail = (player, opponents) => {
+  const { id: currentPlayerId } = player;
+
+  return { ...opponents, [currentPlayerId]: player };
+};
+
+export const setTroopLimit = (maxTroops, min = 1, defaultValue = 1) => {
+  const input = document.querySelector("#troop-count-input");
+  input.max = maxTroops;
+  input.min = min;
+  input.value = defaultValue;
+};
+
+const getTerritoryElementIdByTerritoryId = (territories, territoryId) => {
+  const territoryName = territories[territoryId].name;
+  return territoryName.toLowerCase().replaceAll(" ", "-");
+};
+
+export const getTerritoryElementById = (territories, territoryId) => {
+  const territoryElementId = getTerritoryElementIdByTerritoryId(
+    territories,
+    territoryId,
+  );
+
+  const territoryElement = document.querySelector(`#${territoryElementId}`);
+
+  return territoryElement;
+};
+
+export const updateTroopsInTerritories = (gameState, territories) => {
+  territories.forEach(({ territoryId, troopCount }) => {
+    const territoryElement = getTerritoryElementById(
+      gameState.territories,
+      territoryId,
+    );
+    const territoryTroopCountElement = territoryElement.querySelector(
+      ".troop-count",
+    );
+
+    territoryTroopCountElement.textContent = troopCount;
+    gameState.territories[territoryId].troopCount = troopCount;
+  });
+};
+
+export const delay = (duration) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1);
+    }, duration);
+  });
+};
+
+const setLocation = (dialog, x, y) => {
+  dialog.style.left = `${x}px`;
+  dialog.style.top = `${y}px`;
+};
+
+export const removeSkipButton = () => {
+  const skipButtonElement = document.querySelector("#skip-button");
+  if (skipButtonElement) skipButtonElement.remove();
+};
+
+export const addListenerTroopSelector = (handleSelection) => {
+  const dialog = document.querySelector("#deploy-troops-container");
+  const form = dialog.querySelector("#deploy-troops-form");
+  const input = form.querySelector("input");
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    dialog.close();
+
+    const troopCount = Number(input.value);
+    await handleSelection(troopCount);
+  };
+};
+
+export const displayTroopSelector = (event, cancelDisabled = false) => {
+  const dialog = document.querySelector("#deploy-troops-container");
+  const cancelBtn = dialog.querySelector("#cancel-deploy-btn");
+  cancelBtn.disabled = cancelDisabled;
+  dialog.showModal();
+
+  setLocation(dialog, event.x, event.y);
+  setupDeployControls(dialog);
+  return dialog;
+};
+
+export const getPlayerById = (players, territoryId) =>
+  Object.values(players).find((player) =>
+    player.territories.includes(territoryId)
+  );
+
+export const getIndexOf = (collection, target) =>
+  collection.findIndex((element) => element === target);
+
+File: public/scripts/main.js
+import {
+  addListenerToCardIcon,
+  addListenerToTrade,
+  setupListeners,
+} from "./listeners.js";
+import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
+import { getSetup } from "./server_calls.js";
+import { SETUP_TRANSITION } from "./transition_handlers.js";
+import {
+  renderCurrentPlayerName,
+  renderGameState,
+} from "./utilities/render_UI.js";
+import { setup } from "./features/setup.js";
+
+globalThis.onload = async () => {
+  const gameState = await getSetup();
+  gameState.selectedCards = {};
+  setupListeners(gameState);
+  renderCurrentPlayerName(gameState);
+  renderGameState(gameState);
+  setup(gameState);
+  addListenerToTrade(gameState);
+  addListenerToCardIcon(gameState.player);
+
+  if (gameState.state in SETUP_TRANSITION) {
+    SETUP_TRANSITION[gameState.state](gameState);
+  }
+
+  renderTerritoriesAndTroops(
+    gameState.player,
+    gameState.territories,
+    gameState.opponents,
+  );
+};
+
+File: public/scripts/configs/notification_config.js
+export const NOTIFICATION_TYPES = {
+  WARNING: "warning",
+  SUCCESS: "success",
+  INFO: "info",
+};
+export const NOTIFICATION_MESSAGES = {
+  ERROR: "Something went wrong",
+  INVALID_TERRITORY: "Invalid Territory",
+};
+
+File: public/scripts/configs/game_states.js
+export const STATES = {
+  WAITING: "WAITING",
+  SETUP: "SETUP",
+  START: "START",
+  INITIAL_REINFORCEMENT: "INITIAL_REINFORCEMENT",
+  REINFORCE: "REINFORCE",
+  INITIAL_TERRITORY_ALLOCATION: "INITIAL_TERRITORY_ALLOCATION",
+  INVASION: "INVASION",
+  DEFEND: "DEFEND",
+  FORTIFICATION: "FORTIFICATION",
+  GET_CARD: "GET_CARD",
+};
+
+File: public/scripts/configs/territory_card.js
+export const TERRITORY_CARD = {
+  1: "soldier",
+  2: "canon",
+  3: "knight",
+  4: "wild",
+};
+
+File: public/scripts/configs/user_action.js
+export const USER_ACTIONS = {
+  REINFORCE: "REINFORCE",
+  SETUP: "SETUP",
+  INVADE: "INVADE",
+  DEFEND: "DEFEND",
+  RESOLVE_COMBAT: "RESOLVE_COMBAT",
+  SKIP_FORTIFICATION: "SKIP_FORTIFICATION",
+  GET_CARD: "GET_CARD",
+  SKIP_INVASION: "SKIP_INVASION",
+  FORTIFICATION: "FORTIFICATION",
+  TRADE_CARD: "TRADE_CARD",
+  CAPTURE: "CAPTURE",
+};
+
+File: public/scripts/configs/APIS.js
+export const APIs = {
+  SETUP: "/setup",
+  USER_ACTIONS: "/user-actions",
+  GET_GAME_STATE: "/get-game-state",
+};
+
+File: public/scripts/configs/styles.js
+export const STYLES = {
+  HIDDEN: "hidden",
+  CARD_ALERT: "card-alert",
+  DISPLAY_NONE: "d-none",
+  HIGHLIGHT_CARD_ICON: "highlight-card-icon",
+  ROLL_DICE: "dice-roll",
+  GLOW: "glow",
+  CARD: "card",
+  REMOVE_EVENTS: "remove-events",
+};
+
+File: public/scripts/server_calls.js
+import { APIs } from "./configs/APIS.js";
+import { STATES } from "./configs/game_states.js";
+import { USER_ACTIONS } from "./configs/user_action.js";
+
+export const getSetup = async () => {
+  try {
+    const res = await fetch(APIs.SETUP);
+    return res.json();
+  } catch (e) {
+    console.log(e);
+    return {};
+  }
+};
+
+export const sendPostRequest = (url, reqData = {}) =>
+  fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(reqData),
+  }).then((data) => data.json());
+
+export const updateGameState = (url) => fetch(url).then((data) => data.json());
+export const invade = async (invasionDetails) => {
+  const reqData = { userActions: USER_ACTIONS.INVADE, data: invasionDetails };
+  try {
+    return await sendPostRequest("/user-actions", reqData);
+  } catch (e) {
+    console.log(e);
+  }
+};
+export const sendReinforceRequest = async (data) => {
+  const reqData = {
+    userActions: USER_ACTIONS.REINFORCE,
+    data,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+export const defend = async (data) => {
+  const reqData = {
+    userActions: USER_ACTIONS.DEFEND,
+    data,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+export const combat = async (data) => {
+  const reqData = {
+    userActions: USER_ACTIONS.RESOLVE_COMBAT,
+    data,
+  };
+
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+
+export const skipFortificationRequest = async () => {
+  const reqData = {
+    userActions: USER_ACTIONS.SKIP_FORTIFICATION,
+    data: [],
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+
+export const skipInvasionRequest = async () => {
+  const reqData = {
+    userActions: USER_ACTIONS.SKIP_INVASION,
+    data: [],
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+
+export const fortifyRequest = async (data) => {
+  const reqData = {
+    userActions: USER_ACTIONS.FORTIFICATION,
+    data,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+
+export const sendCaptureRequest = async (troopsToMove) => {
+  const reqData = {
+    userActions: USER_ACTIONS.CAPTURE,
+    data: troopsToMove,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
+};
+
+export const getNewUpdates = async () => {
+  const res = await fetch("/get-data");
+  if (!res.ok) {
+    return { action: STATES.WAITING };
+  }
+  if (res.status === 204) {
+    return getNewUpdate();
+  }
+
+  return res.json();
+};
+
+File: public/scripts/transition_handlers.js
+import { APIs } from "./configs/APIS.js";
+import {
+  getNewUpdates,
+  sendPostRequest,
+  skipFortificationRequest,
+  skipInvasionRequest,
+} from "./server_calls.js";
+import { removeSkipButton, setTroopLimit } from "./utilities.js";
+import { USER_ACTIONS } from "./configs/user_action.js";
+
+import {
+  renderGameState,
+  renderRemainingTroopsToDeploy,
+} from "./utilities/render_UI.js";
+import {
+  highlightTerritories,
+  removeHighlights,
+} from "./utilities/highlight.js";
+import { STATES } from "./configs/game_states.js";
+import { territoryToFortifyFrom } from "./handlers/fortified_handler.js";
+import {
+  getCard,
+  removeCardAreaListener,
+  renderTradeIndicator,
+} from "./features/cards.js";
+import { handleDefense } from "./features/defend.js";
+
+const setupInitialReinforcementPhase = async (gameState) => {
+  const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
+    userActions: USER_ACTIONS.SETUP,
+  });
+
+  const territories = gameState.player.territories;
+  renderRemainingTroopsToDeploy(data.troopsToReinforce);
+  highlightTerritories(territories);
+};
+
+const setupReinforcePhase = async (gameState) => {
+  const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
+    userActions: USER_ACTIONS.SETUP,
+  });
+
+  const territories = gameState.player.territories;
+  setTroopLimit(data.troopsToReinforce);
+  renderRemainingTroopsToDeploy(data.troopsToReinforce);
+  highlightTerritories(territories);
+
+  renderTradeIndicator(gameState);
+};
+
+const addInvasionSkipButton = (gameState) => {
+  const skipButtonTemplate = document.querySelector("#skip-button-template");
+
+  const cloneNode = skipButtonTemplate.content.cloneNode(true);
+  const body = document.querySelector("body");
+  const skipButtonElement = cloneNode.querySelector("#skip-button");
+
+  skipButtonElement.addEventListener("click", async () => {
+    const { action: newState } = await skipInvasionRequest();
+    removeHighlights("selected");
+    removeHighlights("highlight");
+    removeSkipButton();
+    setUpNextPhase(gameState, newState);
+  });
+  body.append(cloneNode);
+};
+
+const sourceTerritoryForAttacks = (territoryIds, gameState) => {
+  return territoryIds.filter((territoryId) => {
+    const territory = gameState.territories[territoryId];
+    const isValidTroopCount = territory.troopCount > 1;
+    const canAttackNeighbour = territory.neighbours.some(
+      (neighbourId) => !territoryIds.includes(neighbourId),
+    );
+    return isValidTroopCount && canAttackNeighbour;
+  });
+};
+
+const setupInvasionPhase = (gameState) => {
+  const territoryIds = gameState.player.territories;
+  const attackableTerritories = sourceTerritoryForAttacks(
+    territoryIds,
+    gameState,
+  );
+
+  addInvasionSkipButton(gameState);
+  removeHighlights("selected");
+
+  removeCardAreaListener(gameState);
+  highlightTerritories(attackableTerritories);
+};
+
+const createSkipButtonElement = () => {
+  const skipButtonTemplate = document.querySelector("#skip-button-template");
+
+  const cloneNode = skipButtonTemplate.content.cloneNode(true);
+  const body = document.querySelector("body");
+  const skipButtonElement = cloneNode.querySelector("#skip-button");
+  body.append(cloneNode);
+  return skipButtonElement;
+};
+
+export const setupFortification = (gameState) => {
+  const skipButtonElement = createSkipButtonElement();
+  const fortifiableTerritory = territoryToFortifyFrom(gameState);
+
+  highlightTerritories(fortifiableTerritory.flat());
+
+  skipButtonElement.addEventListener("click", async () => {
+    const { action: newState } = await skipFortificationRequest();
+    setUpNextPhase(gameState, newState);
+    removeSkipButton();
+  });
+};
+
+const handleGetCard = async (gameState) => {
+  const action = await getCard(gameState);
+  setUpNextPhase(gameState, action);
+};
+
+const setupDefendPhase = (gameState) => {
+  handleDefense(gameState);
+};
+
+const handleWaiting = async (gameState) => {
+  let newState = gameState.state;
+  while (newState === STATES.WAITING) {
+    const { action } = await getNewUpdates();
+    newState = action;
+  }
+  setUpNextPhase(gameState, newState);
+};
+
+export const SETUP_TRANSITION = {
+  [STATES.INITIAL_REINFORCEMENT]: setupInitialReinforcementPhase,
+  [STATES.REINFORCE]: setupReinforcePhase,
+  [STATES.INVASION]: setupInvasionPhase,
+  [STATES.DEFEND]: setupDefendPhase,
+  [STATES.FORTIFICATION]: setupFortification,
+  [STATES.GET_CARD]: handleGetCard,
+  [STATES.WAITING]: handleWaiting,
+};
+
+export const setUpNextPhase = (gameState, nextState) => {
+  if (gameState.state === nextState) {
+    return;
+  }
+  gameState.state = nextState;
+  renderGameState(gameState);
+
+  if (nextState in SETUP_TRANSITION) {
+    return SETUP_TRANSITION[nextState](gameState);
+  }
+};
+
+File: public/scripts/handlers/fortified_handler.js
+const continuousNeighbour = (territories, ter, owned, covered) => {
+  const set = [];
+  for (const t of ter.neighbours) {
+    if (owned.includes(t) && !covered.includes(t)) {
+      covered.push(t);
+      set.push(t);
+      const newTer = territories[t];
+      set.push(...continuousNeighbour(territories, newTer, owned, covered));
+    }
+  }
+  return set;
+};
+const findTerritory = (territories, owned) => {
+  const sets = [];
+  const covered = [];
+  for (const singleId of owned) {
+    if (!covered.includes(singleId) && owned.includes(singleId)) {
+      covered.push(singleId);
+      const ter = territories[singleId];
+      const set = continuousNeighbour(territories, ter, owned, covered);
+      sets.push([singleId, ...set]);
+    }
+  }
+
+  return (sets.filter((each) =>
+    each.length > 1 && each.some((t) => territories[t].troopCount)
+  ));
+};
+export const getFortifiableTerritory = (gameState) => {
+  const territories = gameState.territories;
+  const owned = gameState.player.territories;
+  return findTerritory(territories, owned);
+};
+
+export const territoryToFortifyFrom = (gameState) => {
+  const fortifiableTerritorySet = getFortifiableTerritory(gameState);
+  const fortifiableTerritories = fortifiableTerritorySet.flat();
+  return fortifiableTerritories.filter((tid) => {
+    const territory = gameState.territories[tid];
+    return territory.troopCount > 1;
+  });
+};
+
+File: public/styles/players.css
+[data-player="1"] > path {
+  fill: var(--player-1);
+}
+
+[data-player="2"] > path {
+  fill: var(--player-2);
+}
+
+[data-player="3"] > path {
+  fill: var(--player-3);
+}
+
+[data-player="4"] > path {
+  fill: var(--player-4);
+}
+
+[data-player="5"] > path {
+  fill: var(--player-5);
+}
+
+[data-player="6"] > path {
+  fill: var(--player-6);
+}
+
+[data-player-id="1"] {
+  border: 2px var(--player-1);
+}
+
+[data-player-id="2"] {
+  border: 2px var(--player-2);
+}
+
+[data-player-id="3"] {
+  border: 2px var(--player-3);
+}
+
+[data-player-id="4"] {
+  border: 2px var(--player-4);
+}
+
+[data-player-id="5"] {
+  border: 2px var(--player-5);
+}
+
+[data-player-id="6"] {
+  border: 2px var(--player-6);
+}
+
+#player-details-container {
+  position: absolute;
+  inset: 12% 3% 12% auto;
+  width: 18em;
+  padding: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+#player-details-container {
+  background-color: rgba(255, 255, 255, 0.62);
+  border: 1px solid #8b7d6a;
+  border-radius: 6px;
+  transition: transform 0.4s ease-out;
+}
+
+.avatar {
+  border: 2px solid #c4a75c;
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 50%;
+  background-color: #1a1a1a;
+}
+
+#close-player-details-button {
+  width: 100%;
+  padding: 0.6em;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-family: var(--secondary-font);
+}
+
+#close-player-details-button {
+  color: #f1f5f9;
+  background-color: #8b2626;
+  border: 1px solid #5a1a1a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#close-player-details-button:hover {
+  background-color: #a52a2a;
+  transform: translateY(-1px);
+}
+
+.player-deatils {
+  gap: 14px;
+  height: auto;
+  display: flex;
+  padding: 10px 0;
+  align-items: center;
+  border-bottom: 1px solid rgba(139, 125, 106, 0.3);
+}
+
+.player-deatils:last-of-type {
+  border-bottom: none;
+}
+
+.player-info {
+  font-family:
+    var(--secondary-font), serif;
+  color: #635432;
+  line-height: 1.4em;
+  font-size: 1.1em;
+}
+
+.player-info .name {
+  font-size: 1.1em;
+  color: #c99000;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+File: public/styles/map.css
+@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=MedievalSharp&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--primary-font);
+  background: var(--color-bg-main);
+}
+
+.continent-outline {
+  fill: none;
+  stroke-width: 5px;
+  opacity: 1;
+}
+
+#australia-continent-outline {
+  stroke: var(--cont-australia);
+}
+
+#europe-continent-outline {
+  stroke: var(--cont-europe);
+}
+
+#south-america-continent-outline {
+  stroke: var(--cont-south-america);
+}
+
+#north-america-continent-outline {
+  stroke: var(--cont-north-america);
+}
+
+#africa-continent-outline {
+  stroke: var(--cont-africa);
+}
+
+#asia-continent-outline {
+  stroke: var(--cont-asia);
+}
+
+#sea-routes {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1;
+  stroke-dasharray: 4, 1;
+}
+
+.territory-outline {
+  fill: var(--color-surface);
+  stroke: var(--color-map-stroke);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+  transition: all 0.3s ease;
+}
+
+.territory-name {
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--text-primary);
+  pointer-events: none;
+  /* stroke: #ffffff;
+  stroke-width: 2px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.2)); */
+}
+
+text {
+  font-size: 8px;
+}
+
+/* #northwest-territory text {
+  letter-spacing: 0.2px;
+  font-size: 7.5px;
+} */
+
+circle {
+  fill: transparent;
+}
+
+.troop-count {
+  font-size: 1em;
+  fill: rgba(222, 222, 222, 0.3);
+}
+
+#continent-asia .troop-count-container,
+#continent-asia .troop-count,
+#continent-south-america .troop-count-container,
+#continent-south-america .troop-count,
+#iceland .troop-count-container,
+#iceland .troop-count,
+#indonesia .troop-count-container,
+#indonesia .troop-count,
+#ukraine .troop-count-container,
+#ukraine .troop-count {
+  transform: translate(0px, -15px);
+}
+
+#continent-africa .troop-count-container,
+#continent-africa .troop-count,
+#continent-north-america .troop-count-container,
+#continent-north-america .troop-count {
+  transform: translate(4px, 10px);
+}
+
+#western-australia .troop-count-container,
+#western-australia .troop-count {
+  transform: translate(-4px, 10px);
+}
+
+#eastern-australia .troop-count-container,
+#eastern-australia .troop-count,
+#southern-europe .troop-count-container,
+#southern-europe .troop-count {
+  transform: translate(10px, 12px);
+}
+
+#northern-europe .troop-count-container,
+#northern-europe .troop-count {
+  transform: translate(-20px, 8px);
+}
+
+#western-europe .troop-count-container,
+#western-europe .troop-count {
+  transform: translate(12px, -30px);
+}
+
+#scandinavia .troop-count-container,
+#scandinavia .troop-count {
+  transform: translate(-9px, 30px);
+}
+
+#new-guinea .troop-count-container,
+#new-guinea .troop-count {
+  transform: translate(-18px, -20px);
+}
+
+File: public/styles/effects.css
+@import url(root.css);
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#game {
+  width: 100vw;
+  height: 100vh;
+  background: var(--map-background);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 1);
+}
+
+.continent > g {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.selected > .territory-outline {
+  stroke: green;
+  stroke-opacity: 1;
+  fill: var(--color-selection);
+  fill-opacity: 0.5;
+  filter: var(--selection-shadow);
+}
+
+.reinforce-from-selected > .territory-outline {
+  stroke: green;
+  stroke-opacity: 1;
+  fill: darkgreen;
+  fill-opacity: 0.5;
+  filter: var(--selection-shadow);
+}
+
+.highlight > .territory-outline {
+  stroke: rgb(136, 0, 0);
+  stroke-width: 4px;
+  stroke-opacity: 0.5;
+  fill: var(--color-target);
+  transition: fill 0.3s ease-in-out;
+}
+
+.dice-roll {
+  color: transparent !important;
+}
+
+.dice-roll::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  inset: 0;
+  color: var(--text-primary);
+  justify-content: center;
+  align-items: center;
+  animation:
+    dice-faces 0.2s step-end infinite,
+    roll 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
+
+@keyframes dice-faces {
+  0% {
+    content: "\2680";
+  }
+
+  16% {
+    content: "\2681";
+  }
+
+  32% {
+    content: "\2682";
+  }
+
+  48% {
+    content: "\2683";
+  }
+
+  64% {
+    content: "\2684";
+  }
+
+  80% {
+    content: "\2685";
+  }
+}
+
+@keyframes roll {
+  0% {
+    transform: scale(0) rotate;
+    opacity: 0;
+  }
+
+  15% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.1);
+  }
+
+  60% {
+    transform: scale(1);
+  }
+
+  75% {
+    transform: scale(1.05);
+  }
+
+  90% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.captured {
+  transition: all 10s ease-in;
+  stroke: green;
+  stroke-opacity: 1;
+  fill: rgb(8, 204, 8);
+  fill-opacity: 0.5;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+File: public/styles/game_ui.css
+.game-viewport {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.map-layer > div {
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.ui-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  padding: 30px;
+  pointer-events: none;
+}
+
+.ui-layer > * {
+  pointer-events: auto;
+}
+
+.username-display {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-weight: 800;
+  color: var(--text-secondary);
+}
+
+#remaining-troops-to-deploy {
+  position: fixed;
+  top: 80px;
+  z-index: 999;
+  color: black;
+  font-family: "Arial", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+File: public/styles/components_style.css
+.sidebar-left {
+  position: absolute;
+  top: 60%;
+  left: 40px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+}
+
+.golden-cavalry-circle {
+  position: relative;
+  top: 20px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.army-stats {
+  font-family: sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.stat-box {
+  border: var(--ui-border);
+  padding: 8px 14px;
+  background: var(--color-surface);
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.stat-box.large {
+  font-size: 1.2em;
+  z-index: 2;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box.side {
+  margin: 0 -1px;
+  color: var(--text-secondary);
+}
+
+.continent-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.continent-pill {
+  border: var(--ui-border);
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  color: white;
+}
+
+.pill-na {
+  background: var(--cont-north-america-dark);
+}
+
+.pill-sa {
+  background: var(--cont-south-america-dark);
+}
+
+.pill-eu {
+  background: var(--cont-europe-dark);
+}
+
+.pill-af {
+  background: var(--cont-africa-dark);
+}
+
+.pill-as {
+  background: var(--cont-asia-dark);
+}
+
+.pill-au {
+  background: var(--cont-australia-dark);
+}
+
+.dice-group-label {
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.dice-group-label::after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 2px;
+  background: var(--accent-gold);
+  margin-top: 4px;
+}
+
+.dice-controls {
+  position: absolute;
+  bottom: 6em;
+  left: 51%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 22em;
+}
+
+.dice-tray {
+  display: flex;
+  gap: 0.1em;
+}
+
+.die-slot {
+  position: relative;
+  display: flex;
+  width: 3rem;
+  line-height: 1;
+  font-size: 4em;
+  aspect-ratio: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.action-menu {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  display: flex;
+  gap: 15px;
+}
+
+.action-btn {
+  width: 65px;
+  height: 65px;
+  border: var(--ui-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.action-btn svg {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+  margin-bottom: 4px;
+}
+
+.action-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.card-alert {
+  fill: red;
+  cx: 38;
+  cy: 10;
+  r: 10;
+}
+
+.highlight-card-icon {
+  background-color: var(--color-highlight-icon);
+  /* animation: infinite jump 1s ease; */
+}
+
+.icon {
+  display: inline-block;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+@keyframes jump {
+  0% {
+    transform: translateY(0);
+  }
+
+  30% {
+    transform: translateY(-10px);
+  }
+
+  50% {
+    transform: translateY(0);
+  }
+
+  70% {
+    transform: translateY(-5px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.icon-jump {
+  animation: infinite jump 1s ease;
+}
+
+.glow {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 0 20px rgb(200, 238, 12),
+    0 0 16px rgba(255, 215, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.glow-correct {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 0 20px rgb(61, 242, 6),
+    0 0 16px rgba(101, 220, 16, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.glow-wrong {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 0 20px rgb(255, 7, 7),
+    0 0 16px rgba(255, 98, 14, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+#card-area,
+#force-trade {
+  position: absolute;
+  inset: 30% 40%;
+  height: 20em;
+  width: 40em;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(7px);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(255, 255, 255, 0.1);
+
+  border-radius: 12px;
+  z-index: 10;
+  transition: all 0.6s ease-in;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateX(800px);
+}
+
+#card-area button,
+#force-trade button {
+  position: absolute;
+  top: 88%;
+  left: calc(50% - 3em);
+  height: 2em;
+  width: 3em;
+}
+
+#card-area > div,
+#force-trade div {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 10em;
+  gap: 0.5em;
+  padding: 1em;
+  width: 100%;
+  height: 17em;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 14em;
+  width: 9em;
+  justify-content: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  border: 1px solid black;
+  transition: all 0.4s ease;
+  width: 100%;
+}
+
+/* [data-card-type="canon"] {
+  background-image: url(../assets/canon.svg);
+  background-position: center;
+}
+
+[data-card-type="soldier"] {
+  background-image: url(../assets/soldier.svg);
+  background-position: center;
+}
+
+[data-card-type="knight"] {
+  background-image: url(../assets/knight.svg);
+  background-position: center;
+}
+
+[data-card-type="wild"] {
+  background-image: url(../assets/wild.svg);
+  background-position: center;
+} */
+
+#game-state-container {
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+  padding: 0.6em;
+  position: fixed;
+  font-size: 1.3em;
+  font-weight: 600;
+  font-family: sans-serif;
+  text-transform: uppercase;
+}
+
+.notification {
+  position: fixed;
+  display: none;
+  width: 100%;
+  top: 80%;
+  left: 0px;
+  height: 4em;
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.notification.success,
+.notification.fail,
+.notification.info,
+.notification.warning {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+}
+
+.notification.success {
+  background: var(--color-success);
+}
+
+.notification.fail {
+  background: var(--color-fail);
+}
+
+#notification-text {
+  color: var(--color-surface);
+  font-family: var(--text-secondary);
+  text-align: center;
+  font-size: 2.5em;
+}
+
+.notification.info {
+  background: var(--color-info);
+}
+
+.notification.warning {
+  background: var(--color-warning);
+}
+
+#skip-button {
+  z-index: 10;
+  position: fixed;
+  right: 3%;
+  bottom: 20%;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background: white;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 20px;
+}
+
+#skip-button:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#deploy-troops-container {
+  position: absolute;
+  transform: translateX(-50%) translateY(-100%);
+  border: none;
+  border-radius: 14px;
+  top: 20px;
+  left: 40%;
+  background: transparent;
+}
+
+#deploy-troops-form {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  color: white;
+  font-family: sans-serif;
+}
+
+#deploy-troops-selector {
+  width: 8em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a40;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#deploy-troops-selector button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  background: #3a3a55;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#deploy-troops-selector button:hover {
+  background: #50507a;
+}
+
+#troop-count-input {
+  height: 42px;
+  border: none;
+  outline: none;
+  text-align: center;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+}
+
+#deploy-actions {
+  width: 8em;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#deploy-troops-btn {
+  padding: 0.4em 0;
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4caf50, #6be675);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#deploy-troops-btn:hover,
+#cancel-deploy-btn:hover {
+  transform: scale(1.05);
+}
+
+#cancel-deploy-btn {
+  padding: 0.4em 0;
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  background: #444;
+  color: #ddd;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#cancel-deploy-btn:hover {
+  background: #666;
+}
+
+#cancel-deploy-btn:active {
+  transform: scale(0.9);
+}
+
+#glass-box {
+  position: absolute;
+  background-image: linear-gradient(
+    45deg,
+    white,
+    rgba(240, 248, 255, 0.437),
+    white
+  );
+  margin: 0 auto;
+  z-index: 10;
+  height: 20em;
+  width: 40em;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+  color: rgba(94, 123, 220, 0.936);
+  inset: 30%;
+  transition: all 0.6s ease-in;
+  box-shadow: 0 0 5px 4px rgba(15, 110, 194, 0.437);
+}
+
+.d-none {
+  transform: translateY(-60em);
+}
+
+.remove-events {
+  pointer-events: none;
+}
+
+File: public/styles/root.css
+:root {
+  --secondary-font: "MedievalSharp", serif;
+  --primary-font: sans-serif;
+  --transition-speed: 0.3s;
+
+  --color-bg-main: #ede6d6;
+  --color-surface: rgba(255, 252, 245, 0.75);
+
+  --color-border-ui: rgba(92, 75, 55, 0.25);
+  --ui-border: 1px solid var(--color-border-ui);
+
+  --text-primary: #3e3326;
+  --text-secondary: #6f5e49;
+
+  --glass-bg: rgba(255, 252, 245, 0.55);
+  --glass-bg-strong: rgba(255, 252, 245, 0.75);
+  --glass-border: rgba(92, 75, 55, 0.25);
+  --glass-blur: blur(10px);
+
+  --map-background: linear-gradient(to bottom, #f4efe3, #e8decc);
+  --color-map-stroke: #5c4b37;
+
+  --color-selection: #6c7a89;
+  --color-selection-glow: rgba(108, 122, 137, 0.25);
+  --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
+
+  --color-target: #a05a4a;
+  --target-filter: opacity(0.85) saturate(1.1);
+
+  --color-highlight: #c2a96a;
+  --color-highlight-icon: rgba(194, 169, 106, 0.7);
+
+  --color-success: #8f9f7a;
+  --color-warning: #c2a96a;
+  --color-info: #6c7a89;
+  --color-fail: #a05a4a;
+
+  --player-1: #b07a6a;
+  --player-2: #6f8fa6;
+  --player-3: #c1a45a;
+  --player-4: #7f9c8b;
+  --player-5: #8c6f9c;
+  --player-6: #a4876a;
+
+  --cont-north-america: #e3d8c6;
+  --cont-north-america-light: #f1eadf;
+  --cont-north-america-dark: #b9a78f;
+
+  --cont-south-america: #e6d3c2;
+  --cont-south-america-light: #f2e4d8;
+  --cont-south-america-dark: #bfa08a;
+
+  --cont-europe: #d8dbe2;
+  --cont-europe-light: #e9ecf1;
+  --cont-europe-dark: #a8adb8;
+
+  --cont-africa: #e7d6b8;
+  --cont-africa-light: #f3e7d3;
+  --cont-africa-dark: #c2a983;
+
+  --cont-asia: #dbe4cf;
+  --cont-asia-light: #edf3e5;
+  --cont-asia-dark: #aebc9c;
+
+  --cont-australia: #e4d6dc;
+  --cont-australia-light: #f1e6eb;
+  --cont-australia-dark: #bba3ad;
+
+  --shadow-soft: 0 3px 10px rgba(60, 50, 35, 0.25);
+  --shadow-strong: 0 6px 18px rgba(60, 50, 35, 0.35);
+
+  --texture-parchment: url("path/to/aged-paper.jpg");
+}

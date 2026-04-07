@@ -5,7 +5,7 @@ import {
   renderTradeIndicator,
   tradeCard,
 } from "./features/cards.js";
-import { updateCavalry } from "./features/cavalryUpdate.js";
+import { updateCavalry } from "./features/cavalry_update.js";
 import { onMapAction } from "./features/map_events.js";
 import { updateCards } from "./features/setup.js";
 import { setUpNextPhase } from "./transition_handlers.js";
@@ -55,6 +55,7 @@ const tradeSelectedCards = async (gameState, cards, closeDialoge) => {
   const selectedCards = Object.values(gameState.selectedCards);
   const selected = [...selectedCards];
   const { action, data } = await tradeCard(selected);
+  gameState.cavalryPositions = data.positions;
   updateCavalry(data.positions);
   renderRemainingTroopsToDeploy(data.troops);
   setTroopLimit(data.troops);

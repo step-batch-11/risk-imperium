@@ -1,5 +1,5 @@
 import { STATES } from "../config.js";
-import { tradeCardHandler } from "./cardHandler.js";
+import { getCardHandler, tradeCardHandler } from "./card_handler.js";
 import { fortificationHandler } from "../models/fortification_handler.js";
 import { sendDataToPlayer, sendUpdatesToPlayers } from "../utilities.js";
 
@@ -68,7 +68,6 @@ const USER_ACTIONS = {
   RESOLVE_COMBAT: (game, data, _currentPlayerId = 0, opponents = []) => {
     const result = game.resolveCombat(data);
     const lastUpdate = game.lastUpdate;
-    console.log({ result });
 
     sendUpdatesToPlayers(STATES.WAITING, lastUpdate, opponents);
 
@@ -93,22 +92,9 @@ const USER_ACTIONS = {
     return { action: newState, data: [] };
   },
 
-  GET_CARD: (game, data) => {
-    const result = game.getCard(data);
-    const lastUpdate = game.lastUpdate;
+  GET_CARD: getCardHandler,
 
-    const passivePlayers = opponents.filter((player) =>
-      game.isTurnOf(player.id)
-    );
-    sendUpdatesToPlayers(STATES.WAITING, lastUpdate, passivePlayers);
-
-    const activePlayer = opponents.find((player) => game.isTurnOf(player.id));
-    sendDataToPlayer(activePlayer, STATES.REINFORCE, lastUpdate);
-
-    return result;
-  },
-
-  SKIP_INVASION: (game) => {
+  SKIP_INVASION: (game, _data, _currentPlayerId, opponents) => {
     const state = game.getGameState();
 
     if (state !== STATES.INVASION) {
@@ -138,15 +124,12 @@ export const handleUserActions = async (context) => {
   try {
     const game = context.get("game");
     const { userActions, data } = await context.req.json();
-    // console.log("\n\n\nUSER ACTION :", userActions);
 
     const actionToPerform = USER_ACTIONS[userActions];
 
     const players = game.players;
     const activePlayerId = game.activePlayerId;
     const opponents = players.filter((player) => player.id !== activePlayerId);
-
-    console.log({ opponents, activePlayerId });
 
     const result = actionToPerform(game, data, activePlayerId, opponents);
 

@@ -252,7 +252,7 @@
 }
 
 [data-card-type="canon"] {
-  background-image: url(../assets/infanttary.png);
+  background-image: url(../assets/canon.svg);
   background-position: center;
   background-size: cover;
 }

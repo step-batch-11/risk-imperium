@@ -100,7 +100,7 @@ export const updateCards = (
   id = "#card-area",
 ) => {
   const cardsArea = document.querySelector(`${id} > div`);
-  cardsArea.textContent = "";
-  const cardElements = cards.map(createCardElement);
-  cardsArea.append(...cardElements);
+  const fragment = document.createDocumentFragment();
+  cards.forEach((card) => fragment.appendChild(createCardElement(card)));
+  cardsArea.replaceChildren(fragment);
 };
