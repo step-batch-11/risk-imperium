@@ -4,7 +4,7 @@ import { ContinentsHandler } from "../../src/models/continents_handler.js";
 import { Cards } from "../../src/models/cards.js";
 import { Cavalry } from "../../src/models/cavalry.js";
 import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
-import { InitialReinforcementController } from "../../src/handlers/initialreinforcement_controller.js";
+import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../../src/handlers/invasion_controller.js";
 import { mockPlayers } from "../../src/mock_data.js";

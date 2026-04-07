@@ -1,7 +1,7 @@
 import { CONFIG } from "./config.js";
 import { Game } from "./game.js";
 import { FortificationController } from "./handlers/fortification_controller.js";
-import { InitialReinforcementController } from "./handlers/initialreinforcement_controller.js";
+import { InitialReinforcementController } from "./handlers/initial_reinforcement_controller.js";
 import { InvasionController } from "./handlers/invasion_controller.js";
 import { ReinforcementController } from "./handlers/reinforcement_controller.js";
 import { mockPlayers } from "./mock_data.js";

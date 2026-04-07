@@ -17,7 +17,6 @@ export const getCard = async (gameState) => {
   const reqData = { userActions: USER_ACTIONS.GET_CARD, data: {} };
 
   const { action, data } = await sendPostRequest(APIs.USER_ACTIONS, reqData);
-  console.log(data, action);
 
   if (data.card) {
     const player = gameState.player;

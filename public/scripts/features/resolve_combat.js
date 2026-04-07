@@ -2,7 +2,7 @@ import { combat } from "../server_calls.js";
 import { showNotification } from "../utilities/notifications.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import { delay, updateTroopsInTerritories } from "../utilities.js";
-import { captureTerritory } from "./captureTerritory.js";
+import { captureTerritory } from "./capture_territory.js";
 import {
   ATTACKER_DICE_CONFIGS,
   DEFENDER_DICE_CONFIGS,

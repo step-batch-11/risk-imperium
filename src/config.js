@@ -171,4 +171,5 @@ export const STATES = {
   SKIP_INVASION: "SKIP_INVASION",
   WON: "WON",
   TRADE_CARD: "TRADE_CARD",
+  MOVE_IN: "MOVE_IN",
 };

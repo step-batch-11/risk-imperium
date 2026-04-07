@@ -63,17 +63,19 @@ describe("FORTIFICATION CONTROLLER ", () => {
 
     it("Should return the new phase and updated territory when data is valid", () => {
       const expectedData = [
-        {
-          territoryId: 28,
-          troopCount: 5,
-        },
-        {
-          territoryId: 30,
-          troopCount: 5,
-        },
+        { territoryId: 28, troopCount: 5 },
+        { territoryId: 30, troopCount: 5 },
       ];
+
       loadGameStateForTest(game, fortification);
-      const data = fortificationHandler(game, { from: 28, to: 30, count: 4 });
+
+      const data = fortificationHandler(
+        game,
+        { from: 28, to: 30, count: 4 },
+        1,
+        game.players.slice(1),
+      );
+
       assertEquals(data, { action: STATES.GET_CARD, data: expectedData });
     });
 

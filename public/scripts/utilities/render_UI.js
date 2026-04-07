@@ -1,5 +1,6 @@
+import { updateCavalry } from "../features/cavalry_update.js";
 import { STYLES } from "../configs/styles.js";
-import { updateCavalry } from "../features/cavalryUpdate.js";
+
 import { getAllPlayersDetail } from "../utilities.js";
 
 export const renderUpdatedTroopCount = (territory, newTroopCount) => {
@@ -25,6 +26,7 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
     "#current-player-name",
   );
   const currentPlayer = players[currentPlayerId];
+
   currentPlayerNameHolder.textContent = currentPlayer.name;
 };
 

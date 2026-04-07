@@ -18,7 +18,6 @@ import { renderPlayersDetails, updateCards } from "./setup.js";
 
 const dialogpositions = (territoryElement) => {
   const element = territoryElement.getBoundingClientRect();
-  console.log(element);
 
   const x = element.left;
   const y = element.bottom;

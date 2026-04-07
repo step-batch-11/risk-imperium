@@ -2,7 +2,7 @@ import { Cavalry } from "../models/cavalry.js";
 import { ContinentsHandler } from "../models/continents_handler.js";
 import { TerritoriesHandler } from "../models/territoryHandler.js";
 import { FortificationController } from "./fortification_controller.js";
-import { InitialReinforcementController } from "./initialreinforcement_controller.js";
+import { InitialReinforcementController } from "./initial_reinforcement_controller.js";
 import { InvasionController } from "./invasion_controller.js";
 import { ReinforcementController } from "./reinforcement_controller.js";
 
@@ -34,7 +34,9 @@ export const handleLoadGameState = async (c, readTextFile) => {
     game.loadGameState(savedState, handlers, controllers);
 
     return c.redirect("/");
-  }).catch(() => {
+  }).catch((e) => {
+    console.log(e);
+
     return c.body("Bad Request", 404);
   });
 };

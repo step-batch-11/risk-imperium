@@ -14,6 +14,7 @@ import { setup } from "./features/setup.js";
 
 globalThis.onload = async () => {
   const gameState = await getSetup();
+
   gameState.selectedCards = {};
   setupListeners(gameState);
   renderCurrentPlayerName(gameState);

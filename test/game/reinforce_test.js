@@ -4,7 +4,7 @@ import { Game } from "../../src/game.js";
 import { mockPlayers } from "../../src/mock_data.js";
 import { ContinentsHandler } from "../../src/models/continents_handler.js";
 import { TerritoriesHandler } from "../../src/models/territoryHandler.js";
-import { InitialReinforcementController } from "../../src/handlers/initialreinforcement_controller.js";
+import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { CONFIG, STATES } from "../../src/config.js";
 import { Cards } from "../../src/models/cards.js";

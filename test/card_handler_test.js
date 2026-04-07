@@ -3,15 +3,18 @@ import { assertEquals } from "@std/assert";
 import {
   getCardHandler,
   tradeCardHandler,
-} from "../src/handlers/cardHandler.js";
+} from "../src/handlers/card_handler.js";
+import { Player } from "../src/models/player_handler.js";
 
 describe("card handler tests", () => {
   it("should return action and data", () => {
     const game = {
       tradeCard: () => 1,
       getGameState: () => 2,
+      lastUpdate: {},
+      isTurnOf: () => false,
     };
-    const result = tradeCardHandler(game, "");
+    const result = tradeCardHandler(game, "", 1, [new Player()]);
     const expected = { action: 2, data: 1 };
     assertEquals(result, expected);
   });
@@ -20,8 +23,9 @@ describe("card handler tests", () => {
       getCard: () => 1,
       getGameState: () => 2,
       canGetCard: true,
+      isTurnOf: () => false,
     };
-    const result = getCardHandler(game);
+    const result = getCardHandler(game, "", 1, [new Player()]);
     const expected = { action: 2, data: { card: 1 } };
     assertEquals(result, expected);
   });

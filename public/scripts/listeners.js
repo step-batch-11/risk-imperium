@@ -5,7 +5,7 @@ import {
   renderTradeIndicator,
   tradeCard,
 } from "./features/cards.js";
-import { updateCavalry } from "./features/cavalryUpdate.js";
+import { updateCavalry } from "./features/cavalry_update.js";
 import { onMapAction } from "./features/map_events.js";
 import { updateCards } from "./features/setup.js";
 import { setUpNextPhase } from "./transition_handlers.js";

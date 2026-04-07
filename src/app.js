@@ -2,12 +2,11 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
 import { handleUserActions } from "./handlers/user_actions.js";
 import { handleGameSetup } from "./handler.js";
-import { handleLoadGameState } from "./handlers/handleLoadGameState.js";
-import { handleSaveGameState } from "./handlers/handleSaveGameState.js";
-import { STATES } from "./config.js";
-import { loginHandler } from "./handlers/loginHandler.js";
-import { moveToLobby, sendLobbyData } from "./handlers/lobbyHandler.js";
-import { setGame } from "./middleWare.js";
+import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
+import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
+import { loginHandler } from "./handlers/login_handler.js";
+import { moveToLobby, sendLobbyData } from "./handlers/lobby_handler.js";
+import { setGame } from "./middle_ware.js";
 
 export const createApp = (
   gamesRepo,
@@ -33,12 +32,6 @@ export const createApp = (
 
   app.post("/user-actions", setGame, handleUserActions);
 
-  app.get("/get-data", async (c) => {
-    await delay(2000);
-    game.updateSTATE(STATES.REINFORCE);
-    return c.json({ action: STATES.REINFORCE, data: {} });
-  });
-
   app.post("/login", loginHandler);
   app.post("/start-game", moveToLobby);
   app.get("/get-lobby-data", sendLobbyData);
@@ -57,12 +50,4 @@ export const createApp = (
   }
   app.get("*", serveStatic({ root: "./public" }));
   return app;
-};
-
-const delay = (time) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(1);
-    }, time);
-  });
 };

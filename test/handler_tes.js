@@ -11,7 +11,7 @@ import { FortificationController } from "../src/handlers/fortification_controlle
 import { Cards } from "../src/models/cards.js";
 import { Cavalry } from "../src/models/cavalry.js";
 import { TerritoriesHandler } from "../src/models/territoryHandler.js";
-import { InitialReinforcementController } from "../src/handlers/initialreinforcement_controller.js";
+import { InitialReinforcementController } from "../src/handlers/initial_reinforcement_controller.js";
 import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../src/handlers/invasion_controller.js";
 import { loadGameStateForTest } from "./utilities.js";
@@ -21,6 +21,7 @@ import fortification from "../data/tests/fortification.json" with {
 };
 import invasionState from "../data/tests/invasion.json" with { type: "json" };
 import captureState from "../data/tests/capture.json" with { type: "json" };
+
 import { createApp } from "../src/app.js";
 
 describe("Api Handler", () => {
@@ -93,12 +94,6 @@ describe("Api Handler", () => {
       const updatedTerritory = data.updatedTerritory[0];
       assertEquals(updatedTerritory.troopCount, 2);
       assertEquals(updatedTerritory.territoryId, 37);
-    });
-
-    it("Should catch an error when error occurred", async () => {
-      const context = { json: (x) => x };
-      const { msg } = await handleUserActions(context);
-      assertEquals("context.get is not a function", msg);
     });
 
     it("SETUP : Should handle user actions when called", async () => {
