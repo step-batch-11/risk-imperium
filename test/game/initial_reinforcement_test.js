@@ -3,10 +3,10 @@ import { Game } from "../../src/game.js";
 import { assertEquals } from "@std/assert/equals";
 import { STATES } from "../../src/config.js";
 
-import initialReinforcementState from "../../data/states/init_reinforce.json" with {
+import initialReinforcementState from "../../data/tests/init_reinforce.json" with {
   type: "json",
 };
-import initialReinforcementLastTroopState from "../../data/states/lastTroop.json" with {
+import initialReinforcementLastTroopState from "../../data/tests/lastTroop.json" with {
   type: "json",
 };
 import { loadGameStateForTest } from "../utilities.js";

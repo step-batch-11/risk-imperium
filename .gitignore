@@ -9,5 +9,3 @@ package-lock.json
 /node_modules
 /playwright.config.js
 /temp.md
-/player_elemination.json
-/init-reinforcement.json

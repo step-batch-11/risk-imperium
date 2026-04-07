@@ -19,8 +19,8 @@ import { loadGameStateForTest } from "./utilities.js";
 import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
-import invasionState from "../data/states/invasion.json" with { type: "json" };
-import captureState from "../data/states/capture.json" with { type: "json" };
+import invasionState from "../data/tests/invasion.json" with { type: "json" };
+import captureState from "../data/tests/capture.json" with { type: "json" };
 import { createApp } from "../src/app.js";
 
 describe("Api Handler", () => {

@@ -1,10 +1,10 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Game } from "../../src/game.js";
 import { assertEquals } from "@std/assert/equals";
-import get_card from "../../data/states/get_card.json" with {
+import get_card from "../../data/tests/get_card.json" with {
   type: "json",
 };
-import trade from "../../data/states/trade.json" with {
+import trade from "../../data/tests/trade.json" with {
   type: "json",
 };
 import { loadGameStateForTest } from "../utilities.js";
