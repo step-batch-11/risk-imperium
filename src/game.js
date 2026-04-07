@@ -164,9 +164,7 @@ export class Game {
 
   skipFortification() {
     this.#updateState(STATES.GET_CARD);
-    this.updateGame(STATES.SKIP_FORTIFICATION, {
-      playerId: this.#activePlayerId,
-    });
+    this.updateGame(STATES.SKIP_FORTIFICATION, {}, this.#activePlayerId);
   }
 
   fortification(from, to, count) {
@@ -188,11 +186,10 @@ export class Game {
         count,
       );
       this.updateGame(STATES.FORTIFICATION, {
-        playerId: this.#activePlayerId,
         from,
         to,
         troopCount: count,
-      });
+      }, this.#activePlayerId);
       this.#updateState(STATES.GET_CARD);
 
       return updatedTerritories;
@@ -204,7 +201,7 @@ export class Game {
   skipInvasion() {
     this.#updateState(STATES.FORTIFICATION);
 
-    this.updateGame(STATES.SKIP_INVASION, { playerId: this.#activePlayerId });
+    this.updateGame(STATES.SKIP_INVASION, {}, this.#activePlayerId);
   }
 
   #getOpponentsDetail(playerId) {
@@ -305,10 +302,9 @@ export class Game {
       );
 
       this.updateGame(STATES.REINFORCE, {
-        playerId: this.#activePlayerId,
         territoryId,
         troopCount,
-      });
+      }, this.#activePlayerId);
 
       if (this.#reinforcementController.isDone) {
         this.#state = STATES.INVASION;
@@ -391,7 +387,7 @@ export class Game {
         attackerId: this.#activePlayerId,
         defenderId,
         defenderTroopCount: troopCount,
-      });
+      }, this.#activePlayerId);
 
       this.#state = STATES.RESOLVE_COMBAT;
       return {
@@ -446,7 +442,7 @@ export class Game {
       hasCaptured: isCurrentCaptured,
       hasEliminated: isEliminated,
       invadeDetails: this.#invasionController.invadeDetails,
-    });
+    }, this.#activePlayerId);
 
     return {
       action: this.#state,
@@ -484,7 +480,7 @@ export class Game {
       from: attackerTerritoryId,
       to: defenderTerritoryId,
       troopCount,
-    });
+    }, this.#activePlayerId);
 
     this.#state = STATES.INVASION;
 
@@ -512,7 +508,11 @@ export class Game {
     this.#hasCaptured = false;
     this.#setReinforcements();
 
-    this.updateGame(STATES.GET_CARD, { playerId: this.#activePlayerId });
+    this.updateGame(
+      STATES.GET_CARD,
+      { playerId: this.#activePlayerId },
+      this.#activePlayerId,
+    );
 
     return card;
   }
@@ -547,7 +547,7 @@ export class Game {
       playerId: this.#activePlayerId,
       cavalryPositions: positions,
       troopsLeft: remainingTroopsToDeploy,
-    });
+    }, this.#activePlayerId);
 
     return { troops: remainingTroopsToDeploy, positions };
   }

@@ -161,23 +161,31 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
   const isDefending = game.isPlayerDefending(playerId);
 
   if (isActive && isReinforce) {
-    return { action: STATES.REINFORCE, data };
+    return { action: STATES.REINFORCE, data, lastAction: game.lastUpdate };
   }
 
   if (isActive && isInitialReinforcement) {
-    return { action: STATES.INITIAL_REINFORCEMENT, data };
+    return {
+      action: STATES.INITIAL_REINFORCEMENT,
+      data,
+      lastAction: game.lastUpdate,
+    };
   }
 
   if (isActive) {
-    return { action: STATES.RESOLVE_COMBAT, data };
+    return { action: STATES.RESOLVE_COMBAT, data, lastAction: game.lastUpdate };
   }
 
   if (isDefending) {
     const invadeDetails = game.invadeDetail;
-    return { action: STATES.DEFEND, data: { ...data, invadeDetails } };
+    return {
+      action: STATES.DEFEND,
+      data: { ...data, invadeDetails },
+      lastAction: game.lastUpdate,
+    };
   }
 
-  return { action: STATES.WAITING, data };
+  return { action: STATES.WAITING, data, lastAction: game.lastUpdate };
 };
 
 export const handleWaiting = async (c) => {

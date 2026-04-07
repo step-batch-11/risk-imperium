@@ -29,6 +29,8 @@ import { handleDefense } from "./features/defend.js";
 import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
 import { handleCombat } from "./features/resolve_combat.js";
 import { captureTerritory } from "./features/capture_territory.js";
+import { showNotification } from "./utilities/notifications.js";
+import { NOTIFICATION_TYPES } from "./configs/notification_config.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -133,13 +135,28 @@ const updateGameState = (gameState, newState) => {
   }
 };
 
+const showLastUpdates = (gameState, lastAction) => {
+  const { action, _data, playerId } = lastAction;
+
+  const player = gameState.opponents[playerId];
+  if (!player) {
+    return;
+  }
+  showNotification(
+    `Player: ${player.name} | Action: ${action}`,
+    NOTIFICATION_TYPES.INFO,
+    1000,
+  );
+};
+
 const handleWaiting = async (gameState) => {
   let newState = gameState.state;
   while (newState === STATES.WAITING) {
-    const { action, data } = await getNewUpdates();
+    const { action, data, lastAction } = await getNewUpdates();
     newState = action;
 
     updateGameState(gameState, data);
+    showLastUpdates(gameState, lastAction);
 
     renderCurrentPlayerName(gameState);
     renderGameState(gameState);
