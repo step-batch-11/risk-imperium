@@ -33,9 +33,10 @@ export class FortificationController {
       }
     }
 
-    return (sets.filter((each) =>
-      each.length > 1 && each.some((t) => this.#territories[t].troopCount)
-    ));
+    return sets.filter(
+      (each) =>
+        each.length > 1 && each.some((t) => this.#territories[t].troopCount),
+    );
   }
 
   #getFortifiableTerritory(playerTerritories) {

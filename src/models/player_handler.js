@@ -3,7 +3,7 @@ export class Player {
   #name;
   #cards;
 
-  constructor(id, name, cards) {
+  constructor(id, name, cards = []) {
     this.#id = id;
     this.#name = name;
     this.#cards = cards;

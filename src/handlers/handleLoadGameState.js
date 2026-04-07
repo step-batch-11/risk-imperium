@@ -6,7 +6,8 @@ import { InitialReinforcementController } from "./initialreinforcement_controlle
 import { InvasionController } from "./invasion_controller.js";
 import { ReinforcementController } from "./reinforcement_controller.js";
 
-export const handleLoadGameState = async (c, readTextFile, game) => {
+export const handleLoadGameState = async (c, readTextFile) => {
+  const game = c.loadGameState("game");
   const { state } = c.req.param();
   return await readTextFile(`./data/states/${state}.json`).then((data) => {
     const savedState = JSON.parse(data);

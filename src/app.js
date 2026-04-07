@@ -5,10 +5,15 @@ import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handleLoadGameState.js";
 import { handleSaveGameState } from "./handlers/handleSaveGameState.js";
 import { STATES } from "./config.js";
+import { loginHandler } from "./handlers/loginHandler.js";
+import { moveToLobby, sendLobbyData } from "./handlers/lobbyHandler.js";
+import { setGame } from "./middleWare.js";
 
 export const createApp = (
-  game,
+  gamesRepo,
   isDevMode,
+  players,
+  lobby,
   { logger, readTextFile, writeTextFile } = {},
 ) => {
   const app = new Hono();
@@ -18,23 +23,37 @@ export const createApp = (
   }
 
   app.use(async (context, next) => {
-    context.set("game", game);
+    context.set("gamesRepo", gamesRepo);
+    context.set("players", players);
+    context.set("lobbies", lobby);
     await next();
   });
 
-  app.get("/setup", handleGameSetup);
+  app.get("/setup", setGame, handleGameSetup);
 
-  app.post("/user-actions", handleUserActions);
+  app.post("/user-actions", setGame, handleUserActions);
 
   app.get("/get-data", async (c) => {
     await delay(2000);
     game.updateSTATE(STATES.REINFORCE);
     return c.json({ action: STATES.REINFORCE, data: {} });
   });
-  if (isDevMode) {
-    app.get("/load/:state", (c) => handleLoadGameState(c, readTextFile, game));
 
-    app.get("/save/:name", (c) => handleSaveGameState(c, writeTextFile, game));
+  app.post("/login", loginHandler);
+  app.post("/start-game", moveToLobby);
+  app.get("/get-lobby-data", sendLobbyData);
+  if (isDevMode) {
+    app.get(
+      "/load/:state",
+      setGame,
+      (c) => handleLoadGameState(c, readTextFile),
+    );
+
+    app.get(
+      "/save/:name",
+      setGame,
+      (c) => handleSaveGameState(c, writeTextFile, game),
+    );
   }
   app.get("*", serveStatic({ root: "./public" }));
   return app;

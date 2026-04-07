@@ -41,6 +41,7 @@ export class TerritoriesHandler {
   decreaseTroops(id, count) {
     return this.#territories[id].troopCount -= count;
   }
+
   setTroops(id, count) {
     return this.#territories[id].troopCount = count;
   }

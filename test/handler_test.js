@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { handleGameSetup } from "../src/handler.js";
 import { Game } from "../src/game.js";
@@ -6,13 +6,22 @@ import { handleUserActions } from "../src/handlers/user_actions.js";
 import { ContinentsHandler } from "../src/models/continents_handler.js";
 import { CONFIG, STATES } from "../src/config.js";
 import { fortificationHandler } from "../src/models/fortification_handler.js";
+import { mockPlayers } from "../src/mock_data.js";
+import { FortificationController } from "../src/handlers/fortification_controller.js";
+import { Cards } from "../src/models/cards.js";
+import { Cavalry } from "../src/models/cavalry.js";
+import { TerritoriesHandler } from "../src/models/territoryHandler.js";
+import { InitialReinforcementController } from "../src/handlers/initialreinforcement_controller.js";
+import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
+import { InvasionController } from "../src/handlers/invasion_controller.js";
+import { loadGameStateForTest } from "./utilities.js";
+
 import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
-// import invasionState from "../data/states/invasion.json" with { type: "json" };
-// import defendState from "../data/states/defend.json" with { type: "json" };
-import { mockPlayers } from "../src/mock_data.js";
-import { FortificationController } from "../src/handlers/fortification_controller.js";
+import invasionState from "../data/states/invasion.json" with { type: "json" };
+import captureState from "../data/states/capture.json" with { type: "json" };
+import { createApp } from "../src/app.js";
 
 describe("Api Handler", () => {
   let game;
@@ -115,10 +124,10 @@ describe("Api Handler", () => {
 
   describe("INVADE", () => {
     it("should change the game state to defend after attacking", async () => {
-      game.loadGameState(invasionState);
+      loadGameStateForTest(game, invasionState);
       const mockData = {
-        attackerTerritoryId: 36,
-        defenderTerritoryId: 37,
+        attackerTerritoryId: 16,
+        defenderTerritoryId: 28,
         attackerTroops: 3,
       };
 
@@ -139,20 +148,19 @@ describe("Api Handler", () => {
 
   describe("DEFEND", () => {
     it("should change the game state to RESOLVE_COMBAT after defending", async () => {
-      game.loadGameState(defendState);
+      loadGameStateForTest(game, invasionState);
       const mockData = {
-        territoryId: 21,
+        territoryId: 28,
         troopCount: 1,
       };
 
-      const expectedData = {
-        attackerTerritoryId: 21,
-        defenderTerritoryId: 22,
+      const attackData = {
+        attackerTerritoryId: 16,
+        defenderTerritoryId: 28,
         attackerTroops: 3,
-        defenderTroops: 1,
       };
 
-      const context = {
+      const defendContext = {
         get: () => game,
         req: {
           json: () => ({ userActions: "DEFEND", data: mockData }),
@@ -160,7 +168,26 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
 
-      const { action, data } = await handleUserActions(context);
+      const attackContext = {
+        get: () => game,
+        req: {
+          json: () => ({ userActions: "INVADE", data: attackData }),
+        },
+        json: (data) => data,
+      };
+
+      handleUserActions(attackContext);
+
+      const expectedData = {
+        attackerTerritoryId: 16,
+        defenderTerritoryId: 28,
+        attackerTroops: 3,
+        defenderTroops: 1,
+        attackerDice: null,
+        defenderDice: null,
+      };
+
+      const { action, data } = await handleUserActions(defendContext);
       assertEquals(action, STATES.RESOLVE_COMBAT);
       assertEquals(data, expectedData);
     });
@@ -281,52 +308,46 @@ describe("Api Handler", () => {
     it("Should return the new phase and updated territory when data is valid", () => {
       const expectedData = [
         {
-          territoryId: 22,
-          troopCount: 1,
+          territoryId: 28,
+          troopCount: 5,
         },
         {
-          territoryId: 16,
-          troopCount: 10,
+          territoryId: 30,
+          troopCount: 5,
         },
       ];
 
-      const savedState = fortification;
-      const handler = {
-        fortificationHandler: new FortificationController(
-          savedState.territories,
-        ),
-      };
+      loadGameStateForTest(game, fortification);
 
-      game.loadGameState(savedState, handler);
-
-      const data = fortificationHandler(game, { from: 22, to: 16, count: 9 });
+      const data = fortificationHandler(game, { from: 28, to: 30, count: 4 });
       assertEquals(data, { action: STATES.GET_CARD, data: expectedData });
     });
 
     it("Should not return the new phase and shouldn't updated territory when from territory is invalid", () => {
       const expectedData = [];
-      game.loadGameState(fortification);
-      const data = fortificationHandler(game, { from: 1, to: 16, count: 9 });
+      loadGameStateForTest(game, fortification);
+      const data = fortificationHandler(game, { from: 28, to: 16, count: 9 });
       assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
     });
 
     it("Should not return the new phase and shouldn't updated territory when to territory is invalid", () => {
       const expectedData = [];
-      game.loadGameState(fortification);
+      loadGameStateForTest(game, fortification);
+
       const data = fortificationHandler(game, { from: 22, to: 1, count: 9 });
       assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
     });
 
     it("Should not return the new phase and shouldn't updated territory when both territory id are same", () => {
       const expectedData = [];
-      game.loadGameState(fortification);
+      loadGameStateForTest(game, fortification);
+
       const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
       assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
     });
 
     it("Should return the previous phase when called without fortification phase", () => {
       const expectedData = [];
-      game;
       const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
       assertEquals(data, { action: STATES.SETUP, data: expectedData });
     });
@@ -338,6 +359,8 @@ describe("Api Handler", () => {
         getCard: () => {
           return "2";
         },
+        getGameState: () => "1",
+        canGetCard: true,
       };
       const context = {
         get: (name) => {
@@ -351,28 +374,136 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
       const data = await handleUserActions(context);
-      assertEquals(data, "2");
+      assertEquals(data, { action: "1", data: { card: "2" } });
     });
   });
 
   describe("CAPTURE", () => {
     it("should return true", async () => {
-      const game = {
-        captureTerritory: () => true,
-      };
+      loadGameStateForTest(game, captureState);
       const context = {
         get: (name) => {
           if (name === "game") {
             return game;
           }
         },
+
         req: {
-          json: () => ({ userActions: STATES.CAPTURE, data: 3 }),
+          json: () => ({
+            userActions: STATES.CAPTURE,
+            data: 3,
+          }),
         },
         json: (data) => data,
       };
+
+      const expectedData = {
+        hasEliminated: false,
+        hasWon: false,
+        newCards: [],
+        updatedTerritories: [
+          {
+            territoryId: 16,
+            troopCount: 4,
+          },
+          {
+            territoryId: 35,
+            troopCount: 6,
+          },
+        ],
+      };
       const data = await handleUserActions(context);
-      assertEquals(data, true);
+      assertEquals(data, { action: STATES.INVASION, data: expectedData });
+    });
+  });
+
+  describe("auth", () => {
+    it("post /login should set cookie amd redirect to home", async () => {
+      const fd = new FormData();
+      fd.set("username", "himu");
+      const app = createApp({}, false, {}, []);
+      const res = await app.request("/login", {
+        method: "POST",
+        body: fd,
+      });
+      assertEquals(res.status, 302);
+      const headers = res.headers;
+      assertEquals(headers.get("location"), "/home.html");
+      assertStringIncludes(headers.get("set-cookie"), "playerId=1");
+    });
+
+    it("post  /start game should redirect to lobby and add the player to waiting list", async () => {
+      const players = { "1": "alex" };
+      const lobbies = new Map();
+      const app = createApp({}, false, players, lobbies);
+      const res = await app.request("/start-game", {
+        method: "POST",
+        headers: {
+          cookie: "playerId=1",
+        },
+      });
+      assertEquals(res.status, 302);
+      assertEquals(res.headers.get("location"), "/lobby.html");
+    });
+    it("post  /start game should create game if  waiting list is equal 3", async () => {
+      const players = { "1": "alex", "2": "lisa" };
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ id: 3 }, { id: 2 }],
+        status: "waiting",
+      });
+      const gamesRepo = new Map();
+      const app = createApp(gamesRepo, false, players, lobbies);
+      const res = await app.request("/start-game", {
+        method: "POST",
+        headers: {
+          cookie: "playerId=1",
+        },
+      });
+      assertEquals(res.status, 302);
+      assertEquals(res.headers.get("location"), "/lobby.html");
+      assertEquals(lobbies.get(1).status, "in-game");
+    });
+
+    it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ name: "alex" }, { name: "alice" }],
+        status: "waiting",
+      });
+      const app = createApp({}, false, [], lobbies);
+      const res = await app.request("/get-lobby-data", {
+        headers: {
+          cookie: "lobbyId=1",
+        },
+      });
+      assertEquals(res.status, 200);
+      const data = await res.json();
+      assertEquals(data, {
+        playerList: ["alex", "alice"],
+        start: false,
+      });
+    });
+    it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
+      const lobbies = new Map();
+      lobbies.set(1, {
+        id: 1,
+        players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
+        status: "in-game",
+      });
+      const app = createApp({}, false, [], lobbies);
+      const res = await app.request("/get-lobby-data", {
+        headers: { cookie: "lobbyId=1" },
+      });
+
+      assertEquals(res.status, 200);
+      const data = await res.json();
+      assertEquals(data, {
+        playerList: ["alex", "alice", "resso"],
+        start: true,
+      });
     });
   });
 });

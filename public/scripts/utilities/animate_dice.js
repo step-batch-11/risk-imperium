@@ -168,7 +168,6 @@ const createDiceCube = (overlay, config, playerType) => {
 
   wrapper.appendChild(cube);
   overlay.appendChild(wrapper);
-  console.log(wrapper);
   return { wrapper, cube };
 };
 
