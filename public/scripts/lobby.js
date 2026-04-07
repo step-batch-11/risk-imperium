@@ -1,6 +1,8 @@
 export const renderAvatar = (name) => {
   const avatar = document.createElement("playful-avatar");
   avatar.setAttribute("name", name);
+  avatar.setAttribute("variant", "bauhaus");
+  avatar.setAttribute("color", "#e8d5b7,#0e2430,#fc3a51,#f5b349,#e8d5b9");
   return avatar;
 };
 
