@@ -74,20 +74,39 @@ export class Game {
     return this.#players;
   }
 
-  getUpdates(id, playerId) {
-    if (this.#versionId - id > 1) {
-      return this.getSetup(playerId);
+  get #activePlayer() {
+    return this.#players.find((player) => player.id === this.#activePlayerId);
+  }
+
+  get version() {
+    return this.#versionId;
+  }
+
+  get invadeDetail() {
+    return this.#invasionController.invadeDetails;
+  }
+
+  isPlayerDefending(playerId) {
+    if (this.#state !== STATES.DEFEND) {
+      return false;
     }
-    return structuredClone(this.#lastUpdate);
+    const defenderTerritoryId =
+      this.#invasionController.invadeDetails.defenderTerritoryId;
+    const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
+
+    return defenderId === playerId;
+  }
+
+  getUpdates(_id, playerId) {
+    // if (this.#versionId - id > 1) {
+    return this.getSetup(playerId);
+    // }
+    // return structuredClone(this.#lastUpdate);
   }
 
   updateGame(action, data, playerId) {
     this.#lastUpdate = { action, data, playerId };
     this.#updateId();
-  }
-
-  get #activePlayer() {
-    return this.#players.find((player) => player.id === this.#activePlayerId);
   }
 
   #changeTurn() {
@@ -215,7 +234,7 @@ export class Game {
 
     const territories = this.#territoriesHandler.getTerritoriesOf(playerId);
     const currentPlayerDetails = { ...basicDetails, territories, cards };
-
+    const playerState = this.isTurnOf(playerId) ? this.#state : STATES.WAITING;
     return {
       continents: this.#continentsHandler.getContinents(),
       territories: this.#territoriesHandler.getTerritories(),
@@ -223,7 +242,7 @@ export class Game {
       opponents: opponents,
       currentPlayer: this.#activePlayerId,
       cavalryPositions: this.#cavalry.getPositions(),
-      state: this.#state,
+      state: playerState,
     };
   }
 
@@ -354,7 +373,7 @@ export class Game {
       }, this.#activePlayerId);
 
       this.#state = STATES.DEFEND;
-      return { newState: this.#state, data: {} };
+      return { newState: STATES.WAITING, data: {} };
     } catch (e) {
       console.log(e);
       throw new Error("Invalid Attack");
@@ -375,12 +394,12 @@ export class Game {
 
       this.#state = STATES.RESOLVE_COMBAT;
       return {
-        action: this.#state,
+        action: STATES.WAITING,
         data: this.#invasionController.invadeDetails,
       };
     } catch {
       return {
-        action: this.#state,
+        action: STATES.DEFEND,
         data: this.#invasionController.invadeDetails,
       };
     }
@@ -397,6 +416,7 @@ export class Game {
       this.#invasionController.invadeDetails;
     const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
 
+    const isCurrentCaptured = this.#invasionController.isCaptured;
     const isEliminated = this.#isEliminated(defenderId);
 
     if (isEliminated) {
@@ -404,13 +424,14 @@ export class Game {
     }
 
     const isWon = this.#hasPlayerWon();
-    this.#state = isWon ? STATES.WON : STATES.INVASION;
+
+    this.#state = isWon
+      ? STATES.WON
+      : (isCurrentCaptured ? STATES.MOVE_IN : STATES.INVASION);
 
     const notifyMsg = this.#invasionController.isAttackSuccessful
       ? { status: "success", msg: "Attack Successful" }
       : { status: "fail", msg: "Attack Unsuccessful" };
-
-    const isCurrentCaptured = this.#invasionController.isCaptured;
 
     this.#hasCaptured = this.#hasCaptured || isCurrentCaptured;
 
@@ -423,6 +444,7 @@ export class Game {
       updatedTerritories,
       hasCaptured: isCurrentCaptured,
       hasEliminated: isEliminated,
+      invadeDetails: this.#invasionController.invadeDetails,
     });
 
     return {
@@ -436,6 +458,7 @@ export class Game {
         hasEliminated: isEliminated,
         hasWon: isWon,
         newCards: this.#activePlayer.cards,
+        invadeDetails: this.#invasionController.invadeDetails,
       },
     };
   }
@@ -461,6 +484,8 @@ export class Game {
       to: defenderTerritoryId,
       troopCount,
     });
+
+    this.#state = STATES.INVASION;
 
     return {
       action: this.#state,

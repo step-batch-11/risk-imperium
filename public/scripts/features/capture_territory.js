@@ -16,7 +16,7 @@ import { showNotification } from "../utilities/notifications.js";
 import { addCardAlert, renderTradeIndicator } from "./cards.js";
 import { renderPlayersDetails, updateCards } from "./setup.js";
 
-const dialogpositions = (territoryElement) => {
+const dialogPositions = (territoryElement) => {
   const element = territoryElement.getBoundingClientRect();
 
   const x = element.left;
@@ -84,16 +84,16 @@ const handlePostCapture = async (gameState, defender, troopCount) => {
 export const captureTerritory = (
   gameState,
   { defenderTerritoryId, attackerTerritoryId },
-  combatResult,
+  updatedTerritories,
 ) => {
-  updateTroopsInTerritories(gameState, combatResult.updatedTerritories); //see lt
+  updateTroopsInTerritories(gameState, updatedTerritories); //see lt
 
   const territoryElement = getTerritoryElementById(
     gameState.territories,
     defenderTerritoryId,
   );
 
-  const event = dialogpositions(territoryElement);
+  const event = dialogPositions(territoryElement);
 
   const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
 

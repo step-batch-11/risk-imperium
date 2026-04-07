@@ -1,5 +1,6 @@
 import { APIs } from "./configs/APIS.js";
 import {
+  getMoveInData,
   getNewUpdates,
   sendPostRequest,
   skipFortificationRequest,
@@ -9,6 +10,7 @@ import { removeSkipButton, setTroopLimit } from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
 import {
+  renderCurrentPlayerName,
   renderGameState,
   renderRemainingTroopsToDeploy,
 } from "./utilities/render_UI.js";
@@ -24,6 +26,9 @@ import {
   renderTradeIndicator,
 } from "./features/cards.js";
 import { handleDefense } from "./features/defend.js";
+import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
+import { handleCombat } from "./features/resolve_combat.js";
+import { captureTerritory } from "./features/capture_territory.js";
 
 const setupInitialReinforcementPhase = async (gameState) => {
   const { data } = await sendPostRequest(APIs.USER_ACTIONS, {
@@ -122,13 +127,41 @@ const setupDefendPhase = (gameState) => {
   handleDefense(gameState);
 };
 
+const updateGameState = (gameState, newState) => {
+  for (const key in newState) {
+    gameState[key] = newState[key];
+  }
+};
+
 const handleWaiting = async (gameState) => {
   let newState = gameState.state;
   while (newState === STATES.WAITING) {
-    const { action } = await getNewUpdates();
+    const { action, data } = await getNewUpdates();
     newState = action;
+
+    updateGameState(gameState, data);
+
+    renderCurrentPlayerName(gameState);
+    renderGameState(gameState);
+    renderTerritoriesAndTroops(
+      gameState.player,
+      gameState.territories,
+      gameState.opponents,
+    );
   }
+
+  gameState.state = STATES.WAITING;
+
   setUpNextPhase(gameState, newState);
+};
+
+const handleMoveIn = async (gameState) => {
+  const { data: lastUpdate } = await getMoveInData();
+  captureTerritory(
+    gameState,
+    lastUpdate.data.invadeDetails,
+    lastUpdate.data.updatedTerritories,
+  );
 };
 
 export const SETUP_TRANSITION = {
@@ -137,6 +170,8 @@ export const SETUP_TRANSITION = {
   [STATES.INVASION]: setupInvasionPhase,
   [STATES.DEFEND]: setupDefendPhase,
   [STATES.FORTIFICATION]: setupFortification,
+  [STATES.RESOLVE_COMBAT]: handleCombat,
+  [STATES.MOVE_IN]: handleMoveIn,
   [STATES.GET_CARD]: handleGetCard,
   [STATES.WAITING]: handleWaiting,
 };

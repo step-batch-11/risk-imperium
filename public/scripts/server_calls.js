@@ -89,8 +89,15 @@ export const getNewUpdates = async () => {
     return { action: STATES.WAITING };
   }
   if (res.status === 204) {
-    return getNewUpdate();
+    return getNewUpdates();
   }
 
   return res.json();
+};
+
+export const getMoveInData = async () => {
+  const reqData = {
+    userActions: USER_ACTIONS.GET_MOVE_IN_DATA,
+  };
+  return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };

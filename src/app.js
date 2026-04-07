@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
-import { handleUserActions } from "./handlers/user_actions.js";
+import { handleUserActions, handleWaiting } from "./handlers/user_actions.js";
 import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
@@ -39,8 +39,13 @@ export const createApp = (
   app.post("/user-actions", setGame, handleUserActions);
 
   app.post("/login", loginHandler);
+
   app.post("/quick-play", moveToLobby);
+
+  app.get("/get-data", setGame, handleWaiting);
+
   app.get("/get-lobby-data", sendLobbyData);
+
   if (isDevMode) {
     app.get(
       "/load/:state",

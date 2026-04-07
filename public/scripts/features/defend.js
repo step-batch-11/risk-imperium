@@ -1,4 +1,5 @@
 import { defend } from "../server_calls.js";
+import { setUpNextPhase } from "../transition_handlers.js";
 import {
   addListenerTroopSelector,
   displayTroopSelector,
@@ -8,15 +9,14 @@ import {
   highlightTerritories,
   removeHighlights,
 } from "../utilities/highlight.js";
-import { handleCombat } from "./resolve_combat.js";
 
 const defendTerritory = async (gameState, territoryId, troopCount) => {
   const defendData = { territoryId, troopCount };
-  const { action, data } = await defend(defendData);
-  gameState.state = action;
-  await handleCombat(data, action, gameState);
-  delete gameState.invadeDetials;
+  const { action } = await defend(defendData);
+
+  delete gameState.invadeDetails;
   removeHighlights("highlight");
+  setUpNextPhase(gameState, action);
 };
 
 const calculatePosition = (territory) => {
@@ -35,11 +35,11 @@ const setLimit = (gameState, defenderTerritoryId) => {
 };
 
 export const handleDefense = (gameState) => {
-  const defenderTerritoryId = gameState.invadeDetials.defender;
+  const defenderTerritoryId = gameState.invadeDetails.defenderTerritoryId;
   const defendingTerritory = document.querySelector(
     `[data-territory-id="${defenderTerritoryId}"]`,
   );
-  const attackerTerritoryId = gameState.invadeDetials.attacker;
+  const attackerTerritoryId = gameState.invadeDetails.attackerTerritoryId;
   highlightTerritories([attackerTerritoryId], "selected");
   highlightTerritories([defenderTerritoryId], "highlight");
 

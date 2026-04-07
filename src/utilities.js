@@ -5,7 +5,6 @@ export const sendDataToPlayer = (player, state, updates) => {
   const resolver = player.resolver;
   if (resolver) {
     resolver({ state, updates });
-    console.log(player.name);
   }
 };
 
