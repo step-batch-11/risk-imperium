@@ -9,9 +9,7 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@std/testing@^1.0.17": "1.0.17",
-    "npm:hono@^4.12.12": "4.12.12",
-    "npm:hono@^4.12.9": "4.12.9",
-    "npm:playful-avatars@1": "1.0.0"
+    "npm:hono@^4.12.9": "4.12.9"
   },
   "jsr": {
     "@std/assert@1.0.19": {
@@ -54,14 +52,8 @@
     }
   },
   "npm": {
-    "hono@4.12.12": {
-      "integrity": "sha512-p1JfQMKaceuCbpJKAPKVqyqviZdS0eUxH9v82oWo1kb9xjQ5wA6iP3FNVAPDFlz5/p7d45lO+BpSk1tuSZMF4Q=="
-    },
     "hono@4.12.9": {
       "integrity": "sha512-wy3T8Zm2bsEvxKZM5w21VdHDDcwVS1yUFFY6i8UobSsKfFceT7TOwhbhfKsDyx7tYQlmRM5FLpIuYvNFyjctiA=="
-    },
-    "playful-avatars@1.0.0": {
-      "integrity": "sha512-kQK76frsyuX5y7agZKteMwsIFKSxtNg1AnIy8WspO5tAl32hPPSysDHS0WB5xWrvyx58jkhsQ2Jo9GE03W6YtA=="
     }
   },
   "workspace": {
@@ -69,12 +61,6 @@
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/testing@^1.0.17",
       "npm:hono@^4.12.9"
-    ],
-    "packageJson": {
-      "dependencies": [
-        "npm:hono@^4.12.12",
-        "npm:playful-avatars@1"
-      ]
-    }
+    ]
   }
 }

@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "hono": "^4.12.12",
-    "playful-avatars": "^1.0.0"
-  }
-}
