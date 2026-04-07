@@ -6,20 +6,22 @@ export const renderAvatar = (name) => {
   return avatar;
 };
 
-const createPlayerElement = (name) => {
-  const profileContainer = document.createElement("div");
-  const playerName = document.createElement("div");
-  playerName.textContent = name;
+const createPlayerElement = (name, playerTemplate) => {
+  const clone = playerTemplate.content.cloneNode(true);
+  const playerNameContainer = clone.querySelector(".player-name-container");
+  const avatarContainer = clone.querySelector(".player-avatar");
   const avatar = renderAvatar(name);
-  profileContainer.append(avatar, playerName);
-
-  return profileContainer;
+  avatarContainer.innerHTML = "";
+  avatarContainer.appendChild(avatar);
+  playerNameContainer.textContent = name;
+  return clone;
 };
 
 const updatePlayers = (container, players) => {
   const fragment = document.createDocumentFragment();
+  const playerTemplate = document.querySelector("#player-template");
   players.forEach((player) =>
-    fragment.appendChild(createPlayerElement(player))
+    fragment.appendChild(createPlayerElement(player, playerTemplate))
   );
   container.replaceChildren(fragment);
   console.log(container);
@@ -38,10 +40,10 @@ const updateLobby = async (playerContainer, id) => {
 };
 
 const main = () => {
-  const playerContainer = document.querySelector("#players");
-  updateLobby(playerContainer);
+  const playersContainer = document.querySelector("#players-container");
+  updateLobby(playersContainer);
   const id = setInterval(() => {
-    updateLobby(playerContainer, id);
+    updateLobby(playersContainer, id);
   }, 2000);
 };
 

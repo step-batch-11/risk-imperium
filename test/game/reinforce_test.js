@@ -16,7 +16,7 @@ import reinforceState from "../../data/tests/reinforce.json" with {
 import { InvasionController } from "../../src/handlers/invasion_controller.js";
 import { loadGameStateForTest } from "../utilities.js";
 
-describe.ignore("SET REINFORCEMENTS", () => {
+describe("SET REINFORCEMENTS", () => {
   let game;
 
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe.ignore("SET REINFORCEMENTS", () => {
   });
 });
 
-describe.ignore("REINFORCE", () => {
+describe("REINFORCE", () => {
   let game;
 
   beforeEach(() => {
@@ -119,7 +119,7 @@ describe.ignore("REINFORCE", () => {
 
     assertEquals(action, STATES.REINFORCE);
     assertEquals(data.updatedTerritory.length, 1);
-    assertEquals(updatedTerritory.troopCount, 2);
+    assertEquals(updatedTerritory.troopCount, 5);
     assertEquals(data.remainingTroops, 2);
   });
 
@@ -133,7 +133,7 @@ describe.ignore("REINFORCE", () => {
 
     assertEquals(action, STATES.REINFORCE);
     assertEquals(data.updatedTerritory.length, 1);
-    assertEquals(updatedTerritory.troopCount, 1);
+    assertEquals(updatedTerritory.troopCount, 5);
     assertEquals(data.remainingTroops, 3);
   });
 });

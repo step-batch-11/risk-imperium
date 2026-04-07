@@ -198,6 +198,7 @@ describe("Api Handler", () => {
         getGameState: () => {
           return state;
         },
+        players: [],
       };
 
       const context = {
@@ -224,6 +225,7 @@ describe("Api Handler", () => {
         getGameState: () => {
           return state;
         },
+        players: [],
       };
 
       const context = {
@@ -252,6 +254,7 @@ describe("Api Handler", () => {
         getGameState: () => {
           return state;
         },
+        players: [],
       };
 
       const context = {
@@ -280,6 +283,7 @@ describe("Api Handler", () => {
         getGameState: () => {
           return state;
         },
+        players: [],
       };
 
       const context = {
@@ -314,7 +318,12 @@ describe("Api Handler", () => {
 
       loadGameStateForTest(game, fortification);
 
-      const data = fortificationHandler(game, { from: 28, to: 30, count: 4 });
+      const data = fortificationHandler(
+        game,
+        { from: 28, to: 30, count: 4 },
+        "",
+        [],
+      );
       assertEquals(data, { action: STATES.GET_CARD, data: expectedData });
     });
 
@@ -356,6 +365,7 @@ describe("Api Handler", () => {
         },
         getGameState: () => "1",
         canGetCard: true,
+        players: [],
       };
       const context = {
         get: (name) => {
@@ -423,7 +433,7 @@ describe("Api Handler", () => {
       });
       assertEquals(res.status, 302);
       const headers = res.headers;
-      assertEquals(headers.get("location"), "/home.html");
+      assertEquals(headers.get("location"), "/");
       assertStringIncludes(headers.get("set-cookie"), "playerId=1");
     });
 
@@ -431,7 +441,7 @@ describe("Api Handler", () => {
       const players = { "1": "alex" };
       const lobbies = new Map();
       const app = createApp({}, false, players, lobbies);
-      const res = await app.request("/start-game", {
+      const res = await app.request("/quick-play", {
         method: "POST",
         headers: {
           cookie: "playerId=1",
@@ -450,7 +460,7 @@ describe("Api Handler", () => {
       });
       const gamesRepo = new Map();
       const app = createApp(gamesRepo, false, players, lobbies);
-      const res = await app.request("/start-game", {
+      const res = await app.request("/quick-play", {
         method: "POST",
         headers: {
           cookie: "playerId=1",

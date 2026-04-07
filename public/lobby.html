@@ -4,15 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./styles/players.css">
     <script type="module" src="scripts/lobby.js"></script>
     <script
       type="module"
       src="https://cdn.jsdelivr.net/npm/playful-avatars/index.js"
     ></script>
+    <link rel="stylesheet" href="./styles/players.css">
+    <link rel="stylesheet" href="./styles/lobby.css">
   </head>
 
   <body>
-    <div id="players"></div>
+    <main>
+      <div id="players-container"></div>
+      <div id="lobby-details">
+        <div id="room-id">
+          Room Id : 2441139
+        </div>
+        <div id="message">
+          Waiting for players ...
+        </div>
+        <div id="navigations">
+          <button id="leave-button" type="button">Leave</button>
+        </div>
+      </div>
+    </main>
+    <template id="player-template">
+      <div class="player-container">
+        <div class="player-avatar"></div>
+        <div class="player-name-container">Himanshu</div>
+      </div>
+    </template>
   </body>
 </html>

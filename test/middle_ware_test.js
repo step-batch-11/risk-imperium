@@ -1,7 +1,9 @@
 import { describe, it } from "@std/testing/bdd";
 import { assert, assertEquals, assertFalse } from "@std/assert";
 import {
+  redirectInGamePlayer,
   redirectLoggedInPlayer,
+  rejectIfNotInGame,
   rejectUnknownUser,
   setGame,
 } from "../src/middle_ware.js";
@@ -100,7 +102,7 @@ describe("MIDDLE WARE TESTS", () => {
     });
   });
 
-  describe("rejext unknown User", () => {
+  describe("reject unknown User", () => {
     it("Should redirect to login if no player id ", () => {
       const mockCookies = {};
       const mockContextdata = {
@@ -200,9 +202,91 @@ describe("MIDDLE WARE TESTS", () => {
       let isNextCalled = false;
       const mockNext = () => isNextCalled = true;
 
-      rejectUnknownUser(mockContext, mockNext, mockCookieFn);
-      assertEquals(redirectedLocation, "/login.html");
+      redirectInGamePlayer(mockContext, mockNext, mockCookieFn);
+      assertEquals(redirectedLocation, "/game.html");
       assertFalse(isNextCalled);
+    });
+    it("Should call next when no valid game is proivded  ", () => {
+      const mockCookies = {
+        gameId: 1,
+      };
+      const mockContextdata = {
+        "players": { 1: "player1" },
+        "gamesRepo": {
+          has: () => false,
+        },
+      };
+      const mockCookieFn = (mockContext, key) => {
+        return mockContext.cookies[key];
+      };
+
+      const mockContext = {
+        get: (key) => mockContextdata[key],
+        cookies: mockCookies,
+      };
+
+      let isNextCalled = false;
+      const mockNext = () => isNextCalled = true;
+
+      redirectInGamePlayer(mockContext, mockNext, mockCookieFn);
+      assert(isNextCalled);
+    });
+  });
+
+  describe("redirect If player not in game", () => {
+    it("Should redirect to home if not valid game  ", () => {
+      const mockCookies = {
+        gameId: 1,
+      };
+      const mockContextdata = {
+        "players": { 1: "player1" },
+        "gamesRepo": {
+          has: () => false,
+        },
+      };
+      const mockCookieFn = (mockContext, key) => {
+        return mockContext.cookies[key];
+      };
+
+      let redirectedLocation;
+
+      const mockContext = {
+        get: (key) => mockContextdata[key],
+        cookies: mockCookies,
+        redirect: (location) => redirectedLocation = location,
+      };
+
+      let isNextCalled = false;
+      const mockNext = () => isNextCalled = true;
+
+      rejectIfNotInGame(mockContext, mockNext, mockCookieFn);
+      assertEquals(redirectedLocation, "/");
+      assertFalse(isNextCalled);
+    });
+    it("Should call next when  valid game is proivded  ", () => {
+      const mockCookies = {
+        gameId: 1,
+      };
+      const mockContextdata = {
+        "players": { 1: "player1" },
+        "gamesRepo": {
+          has: () => true,
+        },
+      };
+      const mockCookieFn = (mockContext, key) => {
+        return mockContext.cookies[key];
+      };
+
+      const mockContext = {
+        get: (key) => mockContextdata[key],
+        cookies: mockCookies,
+      };
+
+      let isNextCalled = false;
+      const mockNext = () => isNextCalled = true;
+
+      rejectIfNotInGame(mockContext, mockNext, mockCookieFn);
+      assert(isNextCalled);
     });
   });
 });
