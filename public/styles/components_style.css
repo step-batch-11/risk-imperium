@@ -168,6 +168,7 @@
 
 #card-area,
 #force-trade {
+  z-index: 2;
   position: absolute;
   inset: 55% 64%;
   height: 20em;
@@ -306,7 +307,7 @@
   background: var(--color-warning);
 }
 
-#skip-button {
+/* #skip-button {
   z-index: 10;
   position: fixed;
   right: 3%;
@@ -320,6 +321,39 @@
 
 #skip-button:hover {
   background-color: rgba(0, 0, 0, 0.2);
+} */
+
+#skip-button {
+  position: fixed;
+  right: 3%;
+  bottom: 20%;
+
+  padding: 12px 22px;
+  font-size: 16px;
+  font-family: var(--secondary-font);
+
+  color: #3e3326;
+
+  background: linear-gradient(to bottom, #f4e7c5, #e0cfa3);
+
+  border: 2px solid #8b7d6a;
+  border-radius: 8px;
+
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#skip-button:hover {
+  background: linear-gradient(to bottom, #f8edcf, #e8d8b5);
+
+  border-color: #c4a75c;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 6px rgba(196, 167, 92, 0.6);
+
+  transform: translateY(-2px);
 }
 
 input[type="number"]::-webkit-outer-spin-button,

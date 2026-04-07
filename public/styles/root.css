@@ -1,40 +1,52 @@
 :root {
-  --secondary-font: "MedievalSharp", serif;
   --primary-font: sans-serif;
-  --transition-speed: 0.3s;
+  --secondary-font: "MedievalSharp", serif;
+
+  --ui-border: 1px solid rgba(92, 75, 55, 0.25);
+  --player-details-border: 1px solid #8b7d6a;
+  --player-details-bottom-border: 1px solid rgba(139, 125, 106, 0.3);
+  --avatar-border: 2px solid #c4a75c;
+  --close-button-border: 1px solid #5a1a1a;
+  --close-button-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 
   --color-bg-main: #ede6d6;
   --color-surface: rgba(255, 252, 245, 0.75);
-
-  --color-border-ui: rgba(92, 75, 55, 0.25);
-  --ui-border: 1px solid var(--color-border-ui);
+  --color-bg-player-details: rgba(255, 255, 255, 0.62);
+  --color-bg-avatar: #1a1a1a;
+  --color-bg-close-button: #8b2626;
+  --color-bg-deploy-troop-selection: #2a2a40;
+  --color-bg-deploy-form: rgba(0, 0, 0, 0.3);
+  --color-bg-deploy-selector-button: #3a3a55;
+  --color-bg-deploy-selector-button-hover: #50507a;
+  --color-bg-deploy-button: linear-gradient(135deg, #4caf50, #6be675);
+  --color-bg-cancel-deploy: #444;
+  --color-bg-cancel-deploy-hover: #666;
+  --color-bg-glass-box: linear-gradient(
+    45deg,
+    white,
+    rgba(240, 248, 255, 0.437),
+    white
+  );
 
   --text-primary: #3e3326;
   --text-secondary: #6f5e49;
   --text-tertiary: #ffffff;
-
-  --glass-bg: rgba(255, 252, 245, 0.55);
-  --glass-bg-strong: rgba(255, 252, 245, 0.75);
-  --glass-border: rgba(92, 75, 55, 0.25);
-  --glass-blur: blur(10px);
+  --color-player-info: #635432;
+  --color-player-name: #c99000;
 
   --map-background: linear-gradient(to bottom, #f4efe3, #e8decc);
   --color-map-stroke: #5c4b37;
-
-  --color-selection: #6c7a89;
-  --color-selection-glow: rgba(108, 122, 137, 0.25);
-  --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
-
-  --color-target: #a05a4a;
-  --target-filter: opacity(0.85) saturate(1.1);
-
-  --color-highlight: #c2a96a;
+  --territory-name-size: 7px;
+  --troop-count-size: 12px;
+  --text-centered: middle;
+  --color-troop-count: rgba(0, 0, 0, 0.7);
+  --color-selected-territory: green;
+  --color-captured: rgb(8, 204, 8);
+  --color-highlight: rgb(136, 0, 0);
   --color-highlight-icon: rgba(194, 169, 106, 0.7);
-
-  --color-success: #8f9f7a;
-  --color-warning: #c2a96a;
-  --color-info: #6c7a89;
-  --color-fail: #a05a4a;
+  --color-selection: #6c7a89;
+  --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
+  --color-target: #a05a4a;
 
   --player-1: #b07a6a;
   --player-2: #6f8fa6;
@@ -43,10 +55,10 @@
   --player-5: #8c6f9c;
   --player-6: #a4876a;
 
-  --shadow-soft: 0 3px 10px rgba(60, 50, 35, 0.25);
-  --shadow-strong: 0 6px 18px rgba(60, 50, 35, 0.35);
-
-  --texture-parchment: url("path/to/aged-paper.jpg");
+  --color-success: #8f9f7a;
+  --color-warning: #c2a96a;
+  --color-info: #6c7a89;
+  --color-fail: #a05a4a;
 
   --north-america-outline: #eeee04;
   --south-america-outline: #ffa500;
@@ -57,51 +69,5 @@
 
   --sea-route: #4b4b4b;
 
-  --territory-name-size: 7px;
-  --text-centered: middle;
-  --troop-count-size: 12px;
-  --color-troop-count: rgba(0, 0, 0, 0.7);
-
-  --color-bg-player-details: rgba(255, 255, 255, 0.62);
-  --color-border-player-details: #8b7d6a;
-  --player-details-border: 1px solid var(--color-border-player-details);
-  --color-bottom-border-player-details: rgba(139, 125, 106, 0.3);
-  --player-details-bottom-border: 1px solid var(
-    --color-bottom-border-player-details
-  );
-  --color-player-info: #635432;
-  --color-player-name: #c99000;
-
-  --color-border-avatar: #c4a75c;
-  --avatar-border: 2px solid var(--color-border-avatar);
-  --color-bg-avatar: #1a1a1a;
-
-  --color-close-button: #f1f5f9;
-  --color-bg-close-button: #8b2626;
-  --color-border-close-button: #5a1a1a;
-  --close-button-border: 1px solid var(--color-border-close-button);
-  --close-button-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --color-close-button-hover: #a52a2a;
-
-  --color-selected-territory: green;
-  --color-captured: rgb(8, 204, 8);
-  --color-highlight: rgb(136, 0, 0);
-
-  --remaining-troops-size: 3em;
-
-  --color-bg-deploy-troop-selection: #2a2a40;
-  --color-bg-deploy-form: rgba(0, 0, 0, 0.3);
-  --color-bg-deploy-selector-button: #3a3a55;
-  --color-bg-deploy-selector-button-hover: #50507a;
-  --color-bg-deploy-button: linear-gradient(135deg, #4caf50, #6be675);
-  --color-bg-cancel-deploy: #444;
-  --color-bg-cancel-deploy-hover: #666;
-
-  --color-bg-glass-box: linear-gradient(
-    45deg,
-    white,
-    rgba(240, 248, 255, 0.437),
-    white
-  );
   --color-glass-box: rgba(94, 123, 220, 0.936);
 }

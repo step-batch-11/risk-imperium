@@ -49,6 +49,6 @@
 #remaining-troops {
   color: var(--text-primary);
   font-family: var(--primary-font);
-  font-size: var(--remaining-troops-size);
+  font-size: 2.5em;
   font-weight: bold;
 }

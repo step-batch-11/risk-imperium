@@ -1,6 +1,6 @@
 @import url(root.css);
 
-.continent > g {
+/* .continent > g {
   cursor: pointer;
   transform-box: fill-box;
   transform-origin: center;
@@ -22,23 +22,7 @@
   fill: var(--color-target);
   transition: fill 0.3s ease-in-out;
 }
-
-.dice-roll {
-  color: transparent !important;
-}
-
-.dice-roll::before {
-  content: "";
-  display: flex;
-  position: absolute;
-  inset: 0;
-  color: var(--text-primary);
-  justify-content: center;
-  align-items: center;
-  animation:
-    dice-faces 0.2s step-end infinite,
-    roll 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
-}
+  */
 
 .captured {
   transition: all 10s ease-in;
@@ -47,4 +31,38 @@
   fill: var(--color-captured);
   fill-opacity: 0.5;
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.selected {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(1.02);
+}
+
+.selected > .territory-outline {
+  filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.5));
+}
+
+.highlight > .territory-outline {
+  fill: #e74c3c;
+  animation: pulse-highlight 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-highlight {
+  0% {
+    fill-opacity: 0.5;
+  }
+  50% {
+    fill-opacity: 1;
+  }
+  100% {
+    fill-opacity: 0.5;
+  }
+}
+
+.continent > g:hover {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(1.02);
+  filter: brightness(1.08);
 }

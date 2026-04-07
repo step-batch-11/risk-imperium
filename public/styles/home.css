@@ -1,0 +1,166 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+}
+
+body, html {
+  height: 100%;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+main {
+  display: flex;
+  height: 100vh;
+}
+
+#image-container {
+  flex: 1;
+  padding: 10em 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.6s ease;
+}
+
+#image-container:hover {
+  transform: scale(1.02);
+}
+
+#risk-logo-img {
+  transform: rotate(-90deg);
+  width: 90%;
+  height: auto;
+}
+
+#content-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+  gap: 3em;
+  /* background-color: #ffffff; */
+  flex-direction: column;
+}
+
+#game-info {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+#game-info-btn {
+  font-size: 1.8em;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  color: #222;
+  transition: all 0.3s ease;
+}
+
+#game-info-btn:hover {
+  background: #222;
+  color: #fff;
+  transform: rotate(360deg);
+}
+
+#game-heading {
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 0.2s;
+}
+
+header h1 {
+  font-size: 5em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+header h2 {
+  font-size: 2rem;
+  font-weight: 400;
+  color: #555;
+}
+
+#quick-play-actions {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#quick-play-btn {
+  width: 100%;
+  padding: 18px 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  background-color: #ff4c4c;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 76, 76, 0.4);
+  animation: pulse 2s infinite;
+}
+
+#quick-play-btn:hover {
+  background-color: #ff1a1a;
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(255, 26, 26, 0.5);
+}
+
+#room-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+#create-room-btn, #join-room-btn {
+  padding: 14px 30px;
+  font-size: 1.1em;
+  font-weight: 500;
+  border-radius: 10px;
+  border: none;
+  background-color: #f0f0f0;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#create-room-btn:hover, #join-room-btn:hover {
+  background-color: #ddd;
+  transform: translateY(-3px);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

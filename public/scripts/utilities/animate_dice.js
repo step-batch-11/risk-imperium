@@ -1,10 +1,10 @@
 const FACE_ROT = {
-  1: { x: -180, y: 0 },
+  1: { x: 0, y: 0 },
   2: { x: 0, y: -90 },
   3: { x: -90, y: 0 },
   4: { x: 90, y: 0 },
   5: { x: 0, y: 90 },
-  6: { x: 0, y: 180 },
+  6: { x: 180, y: 0 },
 };
 
 export const ATTACKER_DICE_CONFIGS = [
@@ -20,11 +20,13 @@ export const DEFENDER_DICE_CONFIGS = [
 const buildPips = (n) => {
   const grid = document.createElement("div");
   grid.className = `pip-grid pip-grid-${n}`;
+
   for (let i = 0; i < n; i++) {
     const pip = document.createElement("div");
     pip.className = "pip";
     grid.appendChild(pip);
   }
+
   return grid;
 };
 
@@ -53,7 +55,7 @@ const createCube = () => {
 
 export const animateDice = (cube, targetValue, spinDir) => {
   const rot = FACE_ROT[targetValue];
-  const spins = 360 * spinDir;
+  const spins = 720 * spinDir;
   const finalX = rot.x + spins;
   const finalY = rot.y + spins;
 
@@ -66,7 +68,7 @@ export const animateDice = (cube, targetValue, spinDir) => {
       },
       {
         transform: `rotateX(${spins * 0.7}deg) rotateY(${spins * 0.6}deg)`,
-        offset: 0.60,
+        offset: 0.6,
       },
       {
         transform: `rotateX(${spins * 0.9}deg) rotateY(${spins * 0.85}deg)`,
@@ -94,7 +96,7 @@ const getOverlay = () => {
   if (!el) {
     el = document.createElement("div");
     el.id = "dice-overlay";
-    document.body.appendChild(el);
+    document.querySelector("#controls-panel").appendChild(el);
   }
   return el;
 };
@@ -187,9 +189,12 @@ export const showDiceAnimations = (
 
     animateWrapperFall(cubeObj.wrapper, index * 60, config.landY, direction);
 
-    setTimeout(() => {
-      animateDice(cubeObj.cube, value, config.spinDir);
-    }, index * 60 + 80);
+    setTimeout(
+      () => {
+        animateDice(cubeObj.cube, value, config.spinDir);
+      },
+      index * 60 + 80,
+    );
   });
 
   triggerExitAnimation(cubes, overlay);

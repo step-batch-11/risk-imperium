@@ -48,8 +48,8 @@
 
 #player-details-container {
   position: absolute;
-  inset: 20% 1% 12% auto;
-  width: 17em;
+  inset: 27% 1% 12% auto;
+  width: 16.5em;
   padding: 1em;
   display: flex;
   flex-direction: column;
@@ -60,6 +60,7 @@
   background-color: var(--color-bg-player-details);
   border: var(--player-details-border);
   border-radius: 6px;
+  z-index: 2;
   transition: transform 0.4s ease-out;
 }
 
@@ -71,7 +72,7 @@
   background-color: var(--color-bg-avatar);
 }
 
-#close-player-details-button {
+/* #close-player-details-button {
   width: 100%;
   padding: 0.6em;
   font-size: 12px;
@@ -91,7 +92,7 @@
 #close-player-details-button:hover {
   background-color: var(--color-close-button-hover);
   transform: translateY(-1px);
-}
+} */
 
 .player-details {
   gap: 14px;
