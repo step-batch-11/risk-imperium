@@ -7,5 +7,5 @@ export const loginHandler = async (context) => {
   players[id] = username;
   setCookie(context, "playerId", id);
   id++;
-  return context.redirect("/home.html");
+  return context.redirect("/");
 };

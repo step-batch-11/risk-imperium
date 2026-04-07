@@ -19,7 +19,7 @@ const updateLobby = async (playerContainer, id) => {
     updatePlayers(playerContainer, data.playerList);
   }
   if (data.start) {
-    globalThis.location = "/";
+    globalThis.location = "/game.html";
     clearInterval(id);
   }
 };

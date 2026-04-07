@@ -6,7 +6,13 @@ import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
 import { loginHandler } from "./handlers/login_handler.js";
 import { moveToLobby, sendLobbyData } from "./handlers/lobby_handler.js";
-import { setGame } from "./middle_ware.js";
+import {
+  redirectInGamePlayer,
+  redirectLoggedInPlayer,
+  rejectIfNotInGame,
+  rejectUnknownUser,
+  setGame,
+} from "./middle_ware.js";
 
 export const createApp = (
   gamesRepo,
@@ -33,7 +39,7 @@ export const createApp = (
   app.post("/user-actions", setGame, handleUserActions);
 
   app.post("/login", loginHandler);
-  app.post("/start-game", moveToLobby);
+  app.post("/quick-play", moveToLobby);
   app.get("/get-lobby-data", sendLobbyData);
   if (isDevMode) {
     app.get(
@@ -48,6 +54,23 @@ export const createApp = (
       (c) => handleSaveGameState(c, writeTextFile, game),
     );
   }
+  app.get(
+    "/login.html",
+    redirectLoggedInPlayer,
+    serveStatic({ root: "./public" }),
+  );
+  app.get(
+    "/",
+    rejectUnknownUser,
+    redirectInGamePlayer,
+    serveStatic({ root: "./public" }),
+  );
+  app.get(
+    "/game.html",
+    rejectUnknownUser,
+    rejectIfNotInGame,
+    serveStatic({ root: "./public" }),
+  );
   app.get("*", serveStatic({ root: "./public" }));
   return app;
 };
