@@ -12,4 +12,5 @@ export const SPECTATOR_MSGs = {
   [STATES.FORTIFICATION]: MSG.fortificationMsg,
   [STATES.SKIP_FORTIFICATION]: MSG.skipFortificationMsg,
   [STATES.GET_CARD]: MSG.getCardMsg,
+  [STATES.TRADE_CARD]: MSG.tradeCardMsg,
 };

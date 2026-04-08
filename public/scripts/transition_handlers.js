@@ -144,14 +144,19 @@ const showLastUpdates = (gameState, lastAction) => {
     return;
   }
 
-  const message = SPECTATOR_MSGs[action](gameState, player.name, data);
-  showNotification(message);
+  const messageFormatter = SPECTATOR_MSGs[action];
+
+  if (messageFormatter) {
+    const message = messageFormatter(gameState, player.name, data);
+    showNotification(message);
+  }
 };
 
 const handleWaiting = async (gameState) => {
   let newState = gameState.state;
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
+    console.log(lastAction);
     newState = action;
     updateGameState(gameState, data);
 

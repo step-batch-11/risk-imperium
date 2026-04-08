@@ -110,3 +110,6 @@ export const skipFortificationMsg = (_gameState, player) =>
   `${player} holds position, choosing not to fortify this turn!`;
 
 export const getCardMsg = (_gameState, player) => `${player} gains a card!`;
+
+export const tradeCardMsg = (_gameState, player) =>
+  `${player} trades cards for reinforcements!`;
