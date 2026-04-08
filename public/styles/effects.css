@@ -1,6 +1,6 @@
 @import url(root.css);
 
-/* .continent > g {
+.continent > g {
   cursor: pointer;
   transform-box: fill-box;
   transform-origin: center;
@@ -8,21 +8,24 @@
 }
 
 .selected > .territory-outline {
-  stroke: var(--color-selected-territory);
+  /* 
   stroke-width: 3;
-  fill: var(--color-selection);
-  fill-opacity: 0.5;
   filter: var(--selection-shadow);
+  fill-opacity: 0.5;
+  filter: brightness(1.3) saturate(1.2);
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.7));
+  stroke: #fff;
+  */
+  stroke: rgb(74, 74, 74);
+  stroke-width: 3px;
 }
 
 .highlight > .territory-outline {
   stroke: var(--color-highlight);
-  stroke-width: 4px;
+  stroke-width: 2px;
   stroke-opacity: 0.5;
-  fill: var(--color-target);
   transition: fill 0.3s ease-in-out;
 }
-  */
 
 .captured {
   transition: all 10s ease-in;
@@ -33,15 +36,15 @@
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
 }
 
-.selected {
+.selected > .territory-outline {
   transform-box: fill-box;
   transform-origin: center;
-  transform: scale(1.02);
+  transform: scale(1.08);
 }
 
-.selected > .territory-outline {
+/* .selected > .territory-outline {
   filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.5));
-}
+} */
 
 .highlight > .territory-outline {
   fill: #e74c3c;
