@@ -2,6 +2,7 @@ import { describe, it } from "@std/testing/bdd";
 import { assert, assertEquals, assertFalse } from "@std/assert";
 import {
   redirectInGamePlayer,
+  redirectInLobbyPlayer,
   redirectLoggedInPlayer,
   rejectIfNotInGame,
   rejectUnknownUser,
@@ -287,6 +288,63 @@ describe("MIDDLE WARE TESTS", () => {
 
       rejectIfNotInGame(mockContext, mockNext, mockCookieFn);
       assert(isNextCalled);
+    });
+  });
+  describe("redirect in lobby player ", () => {
+    it("Should call next when  valid lobby is not proivded  ", () => {
+      const mockCookies = {
+        gameId: 1,
+        lobbyId: 1,
+      };
+      const mockContextdata = {
+        "players": { 1: "player1" },
+        "lobbies": {
+          has: () => false,
+        },
+      };
+      const mockCookieFn = (mockContext, key) => {
+        return mockContext.cookies[key];
+      };
+
+      const mockContext = {
+        get: (key) => mockContextdata[key],
+        cookies: mockCookies,
+      };
+
+      let isNextCalled = false;
+      const mockNext = () => isNextCalled = true;
+
+      redirectInLobbyPlayer(mockContext, mockNext, mockCookieFn);
+      assert(isNextCalled);
+    });
+    it("Should call redirect when  valid lobby is proivded  ", () => {
+      const mockCookies = {
+        gameId: 1,
+        lobbyId: 1,
+      };
+      let redirectedLocation;
+      const mockContextdata = {
+        "players": { 1: "player1" },
+        "lobbies": {
+          has: () => true,
+        },
+      };
+      const mockCookieFn = (mockContext, key) => {
+        return mockContext.cookies[key];
+      };
+
+      const mockContext = {
+        get: (key) => mockContextdata[key],
+        cookies: mockCookies,
+        redirect: (location) => redirectedLocation = location,
+      };
+
+      let isNextCalled = false;
+      const mockNext = () => isNextCalled = true;
+
+      redirectInLobbyPlayer(mockContext, mockNext, mockCookieFn);
+      assertFalse(isNextCalled);
+      assertEquals(redirectedLocation, "/lobby.html");
     });
   });
 });

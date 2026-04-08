@@ -378,7 +378,6 @@ export class Game {
 
   defend({ troopCount }) {
     const { defenderTerritoryId } = this.#invasionController.invadeDetails;
-
     const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
     try {
       this.#invasionController.setDefenderTroops(troopCount);

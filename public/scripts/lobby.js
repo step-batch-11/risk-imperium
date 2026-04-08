@@ -24,7 +24,6 @@ const updatePlayers = (container, players) => {
     fragment.appendChild(createPlayerElement(player, playerTemplate))
   );
   container.replaceChildren(fragment);
-  console.log(container);
 };
 
 const updateLobby = async (playerContainer, id) => {

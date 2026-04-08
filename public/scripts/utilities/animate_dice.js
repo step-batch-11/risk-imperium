@@ -179,7 +179,6 @@ export const showDiceAnimations = (
   configs,
   playerType,
 ) => {
-  console.log({ diceValues });
   const cubes = [];
   const direction = playerType === "attacker" ? "left" : "right";
 

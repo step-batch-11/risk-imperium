@@ -45,4 +45,11 @@ describe("INITIAL REINFORCEMENT", () => {
     assertEquals(data.remainingTroops, 0);
     assertEquals(action, STATES.WAITING);
   });
+  it("remaing troops test ", () => {
+    const savedState = initialReinforcementState;
+    loadGameStateForTest(game, savedState);
+    const { action, data } = game.setupNextPhase();
+    assertEquals(data.troopsToReinforce, 13);
+    assertEquals(action, STATES.INITIAL_REINFORCEMENT);
+  });
 });

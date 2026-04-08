@@ -9,8 +9,6 @@ import { ReinforcementController } from "./reinforcement_controller.js";
 
 export const handleLoadGameState = async (c, readTextFile) => {
   const game = c.get("game");
-  console.log({ game });
-
   const { state } = c.req.param();
   return await readTextFile(`./data/states/${state}.json`).then((data) => {
     const savedState = JSON.parse(data);

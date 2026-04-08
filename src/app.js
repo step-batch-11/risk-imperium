@@ -8,6 +8,7 @@ import { loginHandler } from "./handlers/login_handler.js";
 import { moveToLobby, sendLobbyData } from "./handlers/lobby_handler.js";
 import {
   redirectInGamePlayer,
+  redirectInLobbyPlayer,
   redirectLoggedInPlayer,
   rejectIfNotInGame,
   rejectUnknownUser,
@@ -31,16 +32,33 @@ export const createApp = (
     context.set("gamesRepo", gamesRepo);
     context.set("players", players);
     context.set("lobbies", lobby);
-    await next();
+    return await next();
   });
 
-  app.get("/setup", setGame, handleGameSetup);
+  app.get(
+    "/setup",
+    rejectUnknownUser,
+    rejectIfNotInGame,
+    setGame,
+    handleGameSetup,
+  );
 
-  app.post("/user-actions", setGame, handleUserActions);
+  app.post(
+    "/user-actions",
+    rejectUnknownUser,
+    rejectIfNotInGame,
+    setGame,
+    handleUserActions,
+  );
 
-  app.post("/login", loginHandler);
+  app.post("/login", redirectLoggedInPlayer, loginHandler);
 
-  app.post("/quick-play", moveToLobby);
+  app.post(
+    "/quick-play",
+    rejectUnknownUser,
+    redirectInLobbyPlayer,
+    moveToLobby,
+  );
 
   app.get("/get-data", setGame, handleWaiting);
 
@@ -51,16 +69,26 @@ export const createApp = (
     redirectLoggedInPlayer,
     serveStatic({ root: "./public" }),
   );
+
   app.get(
     "/",
     rejectUnknownUser,
+    redirectInLobbyPlayer,
     redirectInGamePlayer,
     serveStatic({ root: "./public" }),
   );
+
   app.get(
     "/game.html",
     rejectUnknownUser,
     rejectIfNotInGame,
+    serveStatic({ root: "./public" }),
+  );
+
+  app.get(
+    "/lobby.html",
+    rejectUnknownUser,
+    redirectInGamePlayer,
     serveStatic({ root: "./public" }),
   );
 

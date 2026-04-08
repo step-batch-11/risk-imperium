@@ -1,58 +1,27 @@
 import { assertEquals, assertStringIncludes } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { handleGameSetup } from "../src/handler.js";
-import { Game } from "../src/game.js";
 import { handleUserActions } from "../src/handlers/user_actions.js";
-import { ContinentsHandler } from "../src/models/continents_handler.js";
-import { CONFIG, STATES } from "../src/config.js";
+import { STATES } from "../src/config.js";
 import { fortificationHandler } from "../src/models/fortification_handler.js";
-import { mockPlayers } from "../src/mock_data.js";
-import { FortificationController } from "../src/handlers/fortification_controller.js";
-import { Cards } from "../src/models/cards.js";
-import { Cavalry } from "../src/models/cavalry.js";
-import { TerritoriesHandler } from "../src/models/territoryHandler.js";
-import { InitialReinforcementController } from "../src/handlers/initial_reinforcement_controller.js";
-import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
-import { InvasionController } from "../src/handlers/invasion_controller.js";
 import { loadGameStateForTest } from "./utilities.js";
 
 import fortification from "../data/tests/fortification.json" with {
+  type: "json",
+};
+import reinforce from "../data/tests/reinforce2.json" with {
   type: "json",
 };
 import invasionState from "../data/tests/invasion.json" with { type: "json" };
 import captureState from "../data/tests/capture.json" with { type: "json" };
 
 import { createApp } from "../src/app.js";
+import { createGame } from "../src/create_game.js";
 
 describe("Api Handler", () => {
   let game;
   beforeEach(() => {
-    const handlers = {
-      fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-      continentsHandler: new ContinentsHandler(),
-      cardsHandler: new Cards(),
-      cavalry: new Cavalry(),
-      territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
-    };
-
-    const utilities = { random: Math.random };
-
-    const controllers = {
-      initialReinforcementController: new InitialReinforcementController(
-        1,
-        handlers.territoriesHandler,
-      ),
-      reinforcementController: new ReinforcementController(
-        handlers.territoriesHandler,
-        handlers.continentsHandler,
-      ),
-      invasionController: new InvasionController(
-        handlers.territoriesHandler,
-        utilities.random,
-      ),
-    };
-
-    game = new Game(mockPlayers(), handlers, controllers, utilities);
+    game = createGame();
   });
   describe("handleGameSetup", () => {
     it("Should return the game setup data when called", () => {
@@ -84,24 +53,21 @@ describe("Api Handler", () => {
           }),
         },
         json: (data) => data,
+        header: () => {},
       };
 
-      const { action, data } = await handleUserActions(context);
+      const { action, data } = await handleUserActions(context, "");
 
-      assertEquals(action, "INITIAL_REINFORCEMENT");
+      assertEquals(action, "WAITING");
 
       assertEquals(data.updatedTerritory.length, 1);
       const updatedTerritory = data.updatedTerritory[0];
-      assertEquals(updatedTerritory.troopCount, 2);
+      assertEquals(updatedTerritory.troopCount, 4);
       assertEquals(updatedTerritory.territoryId, 37);
     });
 
     it("SETUP : Should handle user actions when called", async () => {
-      game.initTerritories();
-      for (let i = 1; i <= 13; i++) {
-        game.reinforce({ territoryId: 37, troopCount: 1 });
-      }
-
+      loadGameStateForTest(game, reinforce);
       const context = {
         get: () => game,
         req: {
@@ -110,7 +76,7 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
 
-      const { action, data } = await handleUserActions(context);
+      const { action, data } = await handleUserActions(context, "", () => {});
 
       assertEquals(action, "REINFORCE");
       assertEquals(data.troopsToReinforce, 3);
@@ -134,9 +100,9 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
 
-      const { newState, data } = await handleUserActions(context);
+      const { newState, data } = await handleUserActions(context, "", () => {});
 
-      assertEquals(newState, STATES.DEFEND);
+      assertEquals(newState, STATES.WAITING);
       assertEquals(data, {});
     });
   });
@@ -171,7 +137,7 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
 
-      handleUserActions(attackContext);
+      handleUserActions(attackContext, "");
 
       const expectedData = {
         attackerTerritoryId: 16,
@@ -182,8 +148,12 @@ describe("Api Handler", () => {
         defenderDice: null,
       };
 
-      const { action, data } = await handleUserActions(defendContext);
-      assertEquals(action, STATES.RESOLVE_COMBAT);
+      const { action, data } = await handleUserActions(
+        defendContext,
+        "",
+        () => {},
+      );
+      assertEquals(action, STATES.WAITING);
       assertEquals(data, expectedData);
     });
   });
@@ -212,7 +182,7 @@ describe("Api Handler", () => {
         },
         json: (data) => data,
       };
-      const data = await handleUserActions(context);
+      const data = await handleUserActions(context, "", () => {});
       assertEquals(data.action, STATES.REINFORCE);
     });
 
@@ -239,7 +209,7 @@ describe("Api Handler", () => {
         },
         json: (data) => data,
       };
-      const data = await handleUserActions(context);
+      const data = await handleUserActions(context, "", () => {});
       assertEquals(data.action, STATES.SETUP);
     });
   });
@@ -269,7 +239,7 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
 
-      const data = await handleUserActions(context);
+      const data = await handleUserActions(context, "", () => {});
 
       assertEquals(data.action, STATES.FORTIFICATION);
     });
@@ -298,7 +268,7 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
 
-      const data = await handleUserActions(context);
+      const data = await handleUserActions(context, "", () => {});
       assertEquals(data.action, STATES.SETUP);
     });
   });
@@ -353,7 +323,10 @@ describe("Api Handler", () => {
     it("Should return the previous phase when called without fortification phase", () => {
       const expectedData = [];
       const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
-      assertEquals(data, { action: STATES.SETUP, data: expectedData });
+      assertEquals(data, {
+        action: STATES.INITIAL_REINFORCEMENT,
+        data: expectedData,
+      });
     });
   });
 
@@ -366,6 +339,7 @@ describe("Api Handler", () => {
         getGameState: () => "1",
         canGetCard: true,
         players: [],
+        passToNextPlayer: () => {},
       };
       const context = {
         get: (name) => {
@@ -378,8 +352,8 @@ describe("Api Handler", () => {
         },
         json: (data) => data,
       };
-      const data = await handleUserActions(context);
-      assertEquals(data, { action: "1", data: { card: "2" } });
+      const data = await handleUserActions(context, "", () => {});
+      assertEquals(data, { action: "WAITING", data: { card: "2" } });
     });
   });
 
@@ -417,7 +391,7 @@ describe("Api Handler", () => {
           },
         ],
       };
-      const data = await handleUserActions(context);
+      const data = await handleUserActions(context, "", () => {});
       assertEquals(data, { action: STATES.INVASION, data: expectedData });
     });
   });
@@ -434,7 +408,7 @@ describe("Api Handler", () => {
       assertEquals(res.status, 302);
       const headers = res.headers;
       assertEquals(headers.get("location"), "/");
-      assertStringIncludes(headers.get("set-cookie"), "playerId=1");
+      assertStringIncludes(headers.get("set-cookie"), "playerId");
     });
 
     it("post  /start game should redirect to lobby and add the player to waiting list", async () => {

@@ -14,7 +14,7 @@ export const moveToLobby = (context) => {
   const lobbies = context.get("lobbies");
   const players = context.get("players");
 
-  const playerId = getCookie(context, "playerId");
+  const playerId = Number(getCookie(context, "playerId"));
   const username = players[playerId];
 
   const player = new Player(+playerId, username);
@@ -23,7 +23,7 @@ export const moveToLobby = (context) => {
   );
 
   if (!lobby) {
-    const lobbyId = Date.now();
+    const lobbyId = Date.now() % 10000000;
     lobby = createLobby(lobbyId);
     lobbies.set(lobbyId, lobby);
   }

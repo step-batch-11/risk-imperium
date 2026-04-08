@@ -5,7 +5,6 @@ import { getCookie, setCookie } from "hono/cookie";
 
 const USER_ACTIONS = {
   REINFORCE: (game, data) => game.reinforce(data),
-
   SETUP: (game) => game.setupNextPhase(),
 
   INVADE: (game, data) => game.invade(data),
@@ -68,7 +67,11 @@ const broadCastNewUpdates = (players) => {
   });
 };
 
-export const handleUserActions = async (context) => {
+export const handleUserActions = async (
+  context,
+  _next,
+  setCookieFn = setCookie,
+) => {
   try {
     const game = context.get("game");
     const { userActions, data } = await context.req.json();
@@ -76,12 +79,13 @@ export const handleUserActions = async (context) => {
     const actionToPerform = USER_ACTIONS[userActions];
 
     const players = game.players;
+
     const activePlayerId = game.activePlayerId;
     const opponents = players.filter((player) => player.id !== activePlayerId);
 
     const result = actionToPerform(game, data, activePlayerId, opponents);
     const gameVersion = game.version;
-    setCookie(context, "game-version", gameVersion);
+    setCookieFn(context, "game-version", gameVersion);
     broadCastNewUpdates(players);
 
     return context.json(result);
