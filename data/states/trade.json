@@ -256,8 +256,8 @@
     }
   },
   "players": [
-    { "id": 2, "name": "reger", "cards": ["4"] },
-    { "id": 1, "name": "Himanshuj", "cards": [] },
+    { "id": 2, "name": "reger", "cards": ["4", "4", "4"] },
+    { "id": 1, "name": "Himanshuj", "cards": ["4", "4", "4"] },
     { "id": 3, "name": "Iron man", "cards": [] }
   ],
   "continents": {

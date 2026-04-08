@@ -83,6 +83,8 @@ export const addListenerToCard = (gameState, cardContainer) => {
     }
 
     gameState.selectedCards[id] = cards[cardId];
+    console.log({ gameState: gameState.selectedCards, cards, id });
+
     card.classList.add(STYLES.GLOW);
     canBeTraded(gameState.selectedCards, cardContainer);
   };
@@ -93,6 +95,8 @@ const createCardElement = (card, i) => {
   cardElement.dataset.cardType = TERRITORY_CARD[card];
   cardElement.textContent = TERRITORY_CARD[card];
   cardElement.classList.add("card");
+  console.log(i);
+
   cardElement.id = `card-${i}`;
   return cardElement;
 };
@@ -103,6 +107,6 @@ export const updateCards = (
 ) => {
   const cardsArea = document.querySelector(`${id} > div`);
   const fragment = document.createDocumentFragment();
-  cards.forEach((card) => fragment.appendChild(createCardElement(card)));
+  cards.forEach((card, i) => fragment.appendChild(createCardElement(card, i)));
   cardsArea.replaceChildren(fragment);
 };
