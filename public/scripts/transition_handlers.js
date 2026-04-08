@@ -6,7 +6,7 @@ import {
   skipFortificationRequest,
   skipInvasionRequest,
 } from "./server_calls.js";
-import { removeSkipButton, setTroopLimit } from "./utilities.js";
+import { delay, removeSkipButton, setTroopLimit } from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
 import {
@@ -135,7 +135,7 @@ const updateGameState = (gameState, newState) => {
   }
 };
 
-const showLastUpdates = (gameState, lastAction) => {
+const showLastUpdates = async (gameState, lastAction) => {
   const { action, data, playerId } = lastAction;
 
   const player = gameState.opponents[playerId];
@@ -148,6 +148,10 @@ const showLastUpdates = (gameState, lastAction) => {
 
   if (messageFormatter) {
     const message = messageFormatter(gameState, player.name, data);
+    if (action === STATES.RESOLVE_COMBAT) {
+      await delay(2000);
+    }
+
     showNotification(message);
   }
 };
@@ -156,9 +160,10 @@ const handleWaiting = async (gameState) => {
   let newState = gameState.state;
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
-    console.log(lastAction);
     newState = action;
     updateGameState(gameState, data);
+
+    await showLastUpdates(gameState, lastAction);
 
     renderCurrentPlayerName(gameState);
     renderGameState(gameState);
@@ -167,8 +172,6 @@ const handleWaiting = async (gameState) => {
       gameState.territories,
       gameState.opponents,
     );
-
-    showLastUpdates(gameState, lastAction);
   }
 
   gameState.state = STATES.WAITING;

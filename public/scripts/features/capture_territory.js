@@ -36,7 +36,6 @@ const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
     defenderTerritoryId,
   );
   territoryElement.dataset.player = gameState.player.id;
-  console.log("here", territoryElement);
 };
 
 const showCapturedMsg = (gameState, defenderTerritoryId) => {
@@ -57,7 +56,6 @@ const handleElimination = (defender, gameState, combatResult) => {
 
 const handlePostCapture = async (gameState, defender, troopCount) => {
   const { action, data } = await sendCaptureRequest(troopCount);
-  console.log(action, data);
   updateTroopsInTerritories(gameState, data.updatedTerritories);
   setUpNextPhase(gameState, action);
 
