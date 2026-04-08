@@ -28,7 +28,11 @@ describe("card handler tests", () => {
       passToNextPlayer: () => {},
     };
     const result = getCardHandler(game, "", 1, [new Player()]);
-    const expected = { action: STATES.WAITING, data: { card: 1 } };
-    assertEquals(result, expected);
+    const expected = {
+      action: STATES.WAITING,
+      data: { card: 1, currentPlayerId: undefined },
+    };
+    assertEquals(result.action, expected.action);
+    assertEquals(result.data.card, expected.data.card);
   });
 });

@@ -34,7 +34,7 @@ const USER_ACTIONS = {
     game.skipFortification();
     const newState = game.getGameState();
 
-    return { action: newState, data: [] };
+    return { action: newState, data: {} };
   },
 
   GET_CARD: getCardHandler,

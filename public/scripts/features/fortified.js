@@ -31,12 +31,13 @@ const handleFortifyTerritoryFromSelection = (gameState, territory) => {
 };
 
 const handleFortification = async (_event, gameState, fromId, id, count) => {
-  const { action: nextPhase, data: updatedTerritories } = await fortifyRequest({
+  const { action: nextPhase, data } = await fortifyRequest({
     from: fromId,
     to: id,
     count,
   });
-  updateTroopsInTerritories(gameState, updatedTerritories);
+
+  updateTroopsInTerritories(gameState, data.updatedTerritories);
 
   delete gameState.fortifyFrom;
   delete gameState.fortifyTo;

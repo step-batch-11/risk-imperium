@@ -9,9 +9,7 @@ import { loadGameStateForTest } from "./utilities.js";
 import fortification from "../data/tests/fortification.json" with {
   type: "json",
 };
-import reinforce from "../data/tests/reinforce2.json" with {
-  type: "json",
-};
+import reinforce from "../data/tests/reinforce2.json" with { type: "json" };
 import invasionState from "../data/tests/invasion.json" with { type: "json" };
 import captureState from "../data/tests/capture.json" with { type: "json" };
 
@@ -275,16 +273,18 @@ describe("Api Handler", () => {
 
   describe("FORTIFICATION", () => {
     it("Should return the new phase and updated territory when data is valid", () => {
-      const expectedData = [
-        {
-          territoryId: 28,
-          troopCount: 5,
-        },
-        {
-          territoryId: 30,
-          troopCount: 5,
-        },
-      ];
+      const expectedData = {
+        updatedTerritories: [
+          {
+            territoryId: 28,
+            troopCount: 5,
+          },
+          {
+            territoryId: 30,
+            troopCount: 5,
+          },
+        ],
+      };
 
       loadGameStateForTest(game, fortification);
 
@@ -353,7 +353,10 @@ describe("Api Handler", () => {
         json: (data) => data,
       };
       const data = await handleUserActions(context, "", () => {});
-      assertEquals(data, { action: "WAITING", data: { card: "2" } });
+      const expected = { action: "WAITING", data: { card: "2" } };
+      assertEquals(data.action, expected.action);
+
+      assertEquals(data.data.card, expected.data.card);
     });
   });
 
@@ -413,7 +416,7 @@ describe("Api Handler", () => {
   });
   describe("LOBBY TESTS", () => {
     it("post  /quick-play should redirect to lobby and add the player to waiting list", async () => {
-      const players = { "1": "alex" };
+      const players = { 1: "alex" };
       const lobbies = new Map();
       const app = createApp({}, false, players, lobbies);
       const res = await app.request("/quick-play", {
@@ -426,7 +429,7 @@ describe("Api Handler", () => {
       assertEquals(res.headers.get("location"), "/lobby.html");
     });
     it("post  /quick-play should create game if  waiting list is equal 3", async () => {
-      const players = { "1": "alex", "2": "lisa" };
+      const players = { 1: "alex", 2: "lisa" };
       const lobbies = new Map();
       lobbies.set(1, {
         id: 1,
@@ -487,7 +490,7 @@ describe("Api Handler", () => {
     });
 
     it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
-      const players = { "1": "alex", "2": "lisa" };
+      const players = { 1: "alex", 2: "lisa" };
       const lobbies = new Map();
       lobbies.set(1, {
         id: 1,

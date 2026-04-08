@@ -19,7 +19,7 @@ export class InitialReinforcementController {
     this.#round++;
     const deployedTroopsPerPlayer = this.#round / this.#playersCount;
     this.#isDone = deployedTroopsPerPlayer === this.#troops;
-    return this.#troops - Math.floor(deployedTroopsPerPlayer);
+    return this.#troops - Math.ceil(deployedTroopsPerPlayer);
   }
 
   get isDone() {

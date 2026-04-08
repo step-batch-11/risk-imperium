@@ -156,7 +156,6 @@ const handleWaiting = async (gameState) => {
   let newState = gameState.state;
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
-    console.log(lastAction);
     newState = action;
     updateGameState(gameState, data);
 

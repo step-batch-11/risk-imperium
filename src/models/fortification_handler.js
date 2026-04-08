@@ -27,6 +27,5 @@ export const fortificationHandler = (game, data) => {
   const updatedTerritories = game.fortification(from, to, troopCount);
 
   const newState = game.getGameState();
-
-  return { action: newState, data: updatedTerritories };
+  return { action: newState, data: { updatedTerritories } };
 };

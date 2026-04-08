@@ -18,5 +18,6 @@ export const getCardHandler = (game) => {
 
   const action = STATES.WAITING;
 
-  return { action, data: { card } };
+  const currentPlayerId = game.activePlayerId;
+  return { action, data: { card, currentPlayerId } };
 };

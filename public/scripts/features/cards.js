@@ -4,6 +4,7 @@ import { USER_ACTIONS } from "../configs/user_action.js";
 import { sendPostRequest } from "../server_calls.js";
 import { addGlow } from "../utilities/highlight.js";
 import { showNotification } from "../utilities/notifications.js";
+import { renderCurrentPlayerName } from "../utilities/render_UI.js";
 import { forceTrade } from "./force_trade.js";
 import { addListenerToCard, updateCards } from "./setup.js";
 
@@ -26,6 +27,9 @@ export const getCard = async (gameState) => {
     updateCards(player.cards);
     showNotification(`${player.name} received a card`);
   }
+
+  gameState.currentPlayer = data.currentPlayerId;
+  renderCurrentPlayerName(gameState);
   return action;
 };
 
@@ -106,7 +110,7 @@ export const removeCardAreaListener = (gameState, id = "#card-area") => {
   cardIcon.classList.remove(STYLES.HIGHLIGHT_CARD_ICON);
   cardArea.onclick = () => {};
   const cards = document.querySelectorAll(".card");
-  cards.forEach((card) => card.className = STYLES.CARD);
+  cards.forEach((card) => (card.className = STYLES.CARD));
   button.setAttribute("disabled", true);
 
   gameState.selectedCard = {};

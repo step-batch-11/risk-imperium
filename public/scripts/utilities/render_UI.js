@@ -40,6 +40,7 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
 
 export const renderCurrentPlayerName = (gameState) => {
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);
+
   renderCurrentUserTurn(players, gameState.currentPlayer);
 };
 

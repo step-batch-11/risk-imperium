@@ -69,10 +69,12 @@ describe("FORTIFICATION ", () => {
     });
 
     it("Should return the new phase and updated territory when data is valid", () => {
-      const expectedData = [
-        { territoryId: 18, troopCount: 1 },
-        { territoryId: 19, troopCount: 8 },
-      ];
+      const expectedData = {
+        updatedTerritories: [
+          { territoryId: 18, troopCount: 1 },
+          { territoryId: 19, troopCount: 8 },
+        ],
+      };
 
       loadGameStateForTest(game, fortification);
 
