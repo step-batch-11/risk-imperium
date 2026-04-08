@@ -20,9 +20,6 @@ export class Player {
     return this.#cards;
   }
 
-  set cards(cards) {
-    this.#cards = cards;
-  }
   getBasicDetails() {
     return { id: this.#id, name: this.#name };
   }

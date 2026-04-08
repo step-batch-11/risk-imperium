@@ -59,27 +59,33 @@
 }
 
 .pill-na {
-  background: var(--north-america-outline);
+  border: 2px solid var(--north-america-outline);
+  color: var(--north-america-outline);
 }
 
 .pill-sa {
-  background: var(--south-america-outline);
+  border: 2px solid var(--south-america-outline);
+  color: var(--south-america-outline);
 }
 
 .pill-eu {
-  background: var(--europe-outline);
+  border: 2px solid var(--europe-outline);
+  color: var(--europe-outline);
 }
 
 .pill-af {
-  background: var(--africa-outline);
+  border: 2px solid var(--africa-outline);
+  color: var(--africa-outline);
 }
 
 .pill-as {
-  background: var(--asia-outline);
+  border: 2px solid var(--asia-outline);
+  color: var(--asia-outline);
 }
 
 .pill-au {
-  background: var(--australia-outline);
+  border: 2px solid var(--australia-outline);
+  color: var(--australia-outline);
 }
 
 .action-menu {

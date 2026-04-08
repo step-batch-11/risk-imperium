@@ -34,7 +34,7 @@
   --color-player-info: #635432;
   --color-player-name: #c99000;
 
-  --map-background: linear-gradient(to bottom, #f4efe3, #e8decc);
+  --map-background: #f0f0f0;
   --color-map-stroke: #5c4b37;
   --territory-name-size: 7px;
   --troop-count-size: 12px;
@@ -60,13 +60,12 @@
   --color-info: #6c7a89;
   --color-fail: #a05a4a;
 
-  --north-america-outline: #d4d413da;
-  --south-america-outline: #ffa600d6;
-  --africa-outline: #d48383;
-  --europe-outline: #8e8ee7e3;
-  --asia-outline: #619f61bb;
-  --australia-outline: #f1a4b1;
-
+  --north-america-outline: #b07a6a;
+  --south-america-outline: #6f8fa6;
+  --africa-outline: #c1a45a;
+  --europe-outline: #7f9c8b;
+  --asia-outline: #8c6f9c;
+  --australia-outline: #a4876a;
   --sea-route: #4b4b4b;
 
   --color-glass-box: rgba(94, 123, 220, 0.936);

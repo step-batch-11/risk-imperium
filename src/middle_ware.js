@@ -1,4 +1,5 @@
 import { getCookie } from "hono/cookie";
+
 export const setGame = (context, next, getCookieFn = getCookie) => {
   const gamesRepo = context.get("gamesRepo");
   const gid = Number(getCookieFn(context, "gameId"));
@@ -22,6 +23,7 @@ export const redirectLoggedInPlayer = (
   }
   return next();
 };
+
 export const rejectUnknownUser = (context, next, getCookieFn = getCookie) => {
   const playerId = getCookieFn(context, "playerId");
   const players = context.get("players");

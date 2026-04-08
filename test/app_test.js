@@ -217,7 +217,7 @@ describe("App Handler", () => {
     });
   });
 
-  describe.ignore("DEV Mode", () => {
+  describe("DEV Mode", () => {
     // let app;
     // let game;
     // beforeEach(() => {
@@ -231,7 +231,7 @@ describe("App Handler", () => {
     //   app = createApp(gamesRepo, true, [], [], {logger, });
     // })
     describe("Load Game", () => {
-      it("should provide a path for /:state for valid states in dev mode", async () => {
+      it("should provide a path for /;pad/:state for valid states in dev mode", async () => {
         const configName = "start-no-setup";
         let configToLoad = null;
 
@@ -245,7 +245,15 @@ describe("App Handler", () => {
             assertEquals(data, {});
           },
         };
-        const app = createApp(game, true, [], [], { readTextFile: reader });
+
+        const players = {};
+        const lobbies = new Map();
+        const gamesRepo = { get: () => game };
+
+        const isDevMode = true;
+        const app = createApp(gamesRepo, isDevMode, players, lobbies, {
+          readTextFile: reader,
+        });
         const res = await app.request(`/load/${configName}`);
         assertEquals(res.status, 302);
         assertEquals(configToLoad, `./data/states/${configName}.json`);
@@ -253,11 +261,19 @@ describe("App Handler", () => {
 
       it("should provide not found for /:state for invalid states in dev mode", async () => {
         const game = {};
-        const reader = async () => {
-          throw await new Error("Not found");
-        };
+        const players = {};
+        const lobbies = new Map();
+        const gamesRepo = { get: () => game };
 
-        const app = createApp(game, true, { readTextFile: reader });
+        const isDevMode = true;
+
+        const app = createApp(gamesRepo, isDevMode, players, lobbies, {
+          readTextFile: () =>
+            new Promise((resolve) => {
+              resolve(gameData);
+            }),
+        });
+
         const res = await app.request("/load/non-existing-setup");
         assertEquals(res.status, 404);
         await res.text();
@@ -283,8 +299,22 @@ describe("App Handler", () => {
           },
         };
 
-        const app = createApp(game, true, { writeTextFile: writer });
+        const players = {};
+        const lobbies = new Map();
+        const gamesRepo = { get: () => game };
+
+        const isDevMode = true;
+
+        const app = createApp(gamesRepo, isDevMode, players, lobbies, {
+          readTextFile: () =>
+            new Promise((resolve) => {
+              resolve(gameData);
+            }),
+          writeTextFile: writer,
+        });
+
         const res = await app.request(`/save/${configName}`);
+
         assertEquals(res.status, 302);
         assertEquals(actualStoringPath, `./data/states/${configName}.json`);
         assertEquals(actualStoringData, JSON.stringify(gameData));

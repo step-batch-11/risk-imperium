@@ -80,9 +80,5 @@ body {
 .troop-count {
   fill: var(--color-troop-count);
   font-size: var(--troop-count-size);
-  text-shadow:
-    0 0 3px rgba(255, 255, 255, 0.6),
-    0 0 6px rgba(255, 255, 255, 0.6),
-    0 0 10px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(255, 255, 255, 0.6);
+  text-shadow: 0 0 3px #cdcdcd;
 }

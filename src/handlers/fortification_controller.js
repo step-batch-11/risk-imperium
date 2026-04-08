@@ -43,18 +43,12 @@ export class FortificationController {
     return this.#findTerritory(playerTerritories);
   }
 
-  #moveTroopsBetween(from, to, count) {
-    const fromTerritory = this.#territories[from];
-    const toTerritory = this.#territories[to];
-    fromTerritory.troopCount -= count;
-    toTerritory.troopCount += count;
-  }
-
   moveTroops(from, to, count, playerTerritories) {
     const territoriesSets = this.#getFortifiableTerritory(playerTerritories);
     const territorySetWithFromLocation = territoriesSets.find((set) =>
       set.includes(from)
     );
+
     if (!territorySetWithFromLocation) {
       throw new Error("Invalid Territory!");
     }
