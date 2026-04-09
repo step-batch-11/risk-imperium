@@ -3,7 +3,7 @@
   --color-bg-hover-light: #ddd;
 
   --text-primary: #171717;
-  --text-secondary: #939393;
+  --text-secondary: #555;
   --text-dark: #222;
   --text-inverse: #ffffff;
 
@@ -24,7 +24,7 @@
   --color-icon-hover-bg: #222;
   --color-icon-hover-text: #fff;
 
-  --button-light-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
+  --button-light-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-strong: 0 8px 20px rgba(255, 26, 26, 0.5);
 }
@@ -78,14 +78,19 @@ main {
   flex-direction: column;
 }
 
-#game-info {
+#menu {
   position: absolute;
   top: 20px;
   right: 20px;
   z-index: 2;
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
 }
 
-#game-info-btn {
+#game-info-btn,
+#logout-button {
   font-size: 1.8em;
   border: none;
   background: transparent;
@@ -97,9 +102,25 @@ main {
   transition: all 0.3s ease;
 }
 
+#logout-button {
+  background-size: 30px 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #game-info-btn:hover {
   background: var(--color-icon-hover-bg);
   color: var(--color-icon-hover-text);
+  transform: rotate(360deg);
+}
+
+#logout-button:hover {
+  background-color: #222;
+  fill: white;
   transform: rotate(360deg);
 }
 
@@ -141,6 +162,7 @@ header h2 {
   border-radius: 10px;
   transition: all 0.3s ease;
   color: var(--text-inverse);
+  animation: pulse 2s infinite;
   box-shadow: var(--shadow-soft);
   background-color: var(--color-accent);
 }
