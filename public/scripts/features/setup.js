@@ -2,7 +2,7 @@ import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import { STYLES } from "../configs/styles.js";
 import { TERRITORY_CARD } from "../configs/territory_card.js";
 import { addListenersToPlayerIcon } from "../listeners.js";
-import { renderAvatar } from "../lobby.js";
+import { renderAvatar } from "../lobby/lobby.js";
 import { getAllPlayersDetail, getOwnedContinents } from "../utilities.js";
 import { addGlow } from "../utilities/highlight.js";
 import { showNotification } from "../utilities/notifications.js";

@@ -3,6 +3,7 @@
   <head>
     <title>Home</title>
     <link rel="stylesheet" href="./styles/home.css" />
+    <script type="module" src="./scripts/home_page/home.js"></script>
   </head>
 
   <body>
@@ -34,6 +35,58 @@
       <div id="game-info">
         <button id="game-info-btn">&#9432;</button>
       </div>
+      <section id="game-information" class="game-info hidden">
+        <article id="about">
+          <h2>About</h2>
+          <p>
+            A strategy game of world domination. Capture territories, grow your
+            armies, and eliminate opponents to control the entire map.
+          </p>
+        </article>
+
+        <article id="objective">
+          <h2>Objective</h2>
+          <p>Conquer all 42 territories and defeat all players.</p>
+        </article>
+
+        <article id="turn-flow">
+          <h2>Turn Flow</h2>
+          <p>Each turn:</p>
+          <ol>
+            <li>
+              <strong>Reinforce</strong> – Get armies (territories ÷ 3, min 3 +
+              continent bonuses + cards)
+            </li>
+            <li>
+              <strong>Attack</strong> – Invade adjacent territories using dice
+            </li>
+            <li>
+              <strong>Fortify</strong> – Move armies between your territories
+              (once)
+            </li>
+          </ol>
+        </article>
+
+        <article id="combat">
+          <h2>Combat</h2>
+          <ol>
+            <li>Attack with up to 3 dice (need 2+ armies)</li>
+            <li>Defender rolls up to 2 dice</li>
+            <li>Highest dice win → loser removes 1 army</li>
+            <li>Capture territory when enemy reaches 0</li>
+          </ol>
+        </article>
+
+        <article id="cards">
+          <h2>Cards</h2>
+          <ol>
+            <li>Gain 1 card if you capture a territory</li>
+            <li>Trade sets for bonus armies</li>
+            <li>Max 4 cards → must trade</li>
+            <li>Eliminating a player gives you their cards</li>
+          </ol>
+        </article>
+      </section>
     </main>
   </body>
 </html>
