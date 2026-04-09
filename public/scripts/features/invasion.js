@@ -53,8 +53,8 @@ const handleAttack = async (
   });
 
   showNotification(
-    "Please click on the defender territory. Be human. Be kind.",
-    "warning",
+    "Wait for defender to choose troop count",
+    "info",
     5000,
   );
 

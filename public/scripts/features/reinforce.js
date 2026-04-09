@@ -11,7 +11,10 @@ import {
   NOTIFICATION_MESSAGES,
   NOTIFICATION_TYPES,
 } from "../configs/notification_config.js";
-import { renderRemainingTroopsToDeploy } from "../utilities/render_UI.js";
+import {
+  renderCurrentPlayerName,
+  renderRemainingTroopsToDeploy,
+} from "../utilities/render_UI.js";
 import { removeCardAreaListener } from "./cards.js";
 
 const notifyNotOwned = (gameState, id) => {
@@ -41,7 +44,7 @@ const updateRemainingTroops = (remainingTroops) => {
 const updateAfterDeploy = (gameState, response, troopCount) => {
   const {
     action: nextState,
-    data: { updatedTerritory, remainingTroops },
+    data: { updatedTerritory, remainingTroops, currentPlayerId },
   } = response;
 
   updateTroopsInTerritories(gameState, updatedTerritory);
@@ -49,6 +52,8 @@ const updateAfterDeploy = (gameState, response, troopCount) => {
 
   notifyDeployment(gameState, updatedTerritoryId, troopCount);
   updateRemainingTroops(remainingTroops);
+  gameState.currentPlayer = currentPlayerId;
+  renderCurrentPlayerName(gameState);
   setUpNextPhase(gameState, nextState);
 };
 
@@ -64,7 +69,9 @@ const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
   removeCardAreaListener(gameState);
   return sendReinforceRequest({ territoryId, troopCount })
     .then((res) => updateAfterDeploy(gameState, res, troopCount))
-    .catch(() => {
+    .catch((e) => {
+      console.log(e);
+
       showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
     });
 };

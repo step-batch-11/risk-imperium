@@ -78,6 +78,7 @@ export const addListenerToTrade = (
     (_) => tradeSelectedCards(gameState, cards, close),
   );
 };
+
 const isValidTroopCount = (value, max) => value > 0 && value <= max;
 
 const updateTroopCount = (input, offset) => {

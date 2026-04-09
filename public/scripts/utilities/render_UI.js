@@ -2,7 +2,7 @@ import { updateCavalry } from "../features/cavalry_update.js";
 import { STYLES } from "../configs/styles.js";
 
 import { getAllPlayersDetail } from "../utilities.js";
-import { renderAvatar } from "../lobby.js";
+import { renderAvatar } from "../lobby/lobby.js";
 
 export const renderUpdatedTroopCount = (territory, newTroopCount) => {
   const troopCount = territory.querySelector(".troop-count tspan");

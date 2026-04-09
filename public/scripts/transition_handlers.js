@@ -6,7 +6,12 @@ import {
   skipFortificationRequest,
   skipInvasionRequest,
 } from "./server_calls.js";
-import { removeSkipButton, setTroopLimit } from "./utilities.js";
+import {
+  delay,
+  getAllPlayersDetail,
+  removeSkipButton,
+  setTroopLimit,
+} from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
 import {
@@ -135,7 +140,7 @@ const updateGameState = (gameState, newState) => {
   }
 };
 
-const showLastUpdates = (gameState, lastAction) => {
+const showLastUpdates = async (gameState, lastAction) => {
   const { action, data, playerId } = lastAction;
 
   const player = gameState.opponents[playerId];
@@ -148,6 +153,10 @@ const showLastUpdates = (gameState, lastAction) => {
 
   if (messageFormatter) {
     const message = messageFormatter(gameState, player.name, data);
+    if (action === STATES.RESOLVE_COMBAT) {
+      await delay(2000);
+    }
+
     showNotification(message);
   }
 };
@@ -157,17 +166,18 @@ const handleWaiting = async (gameState) => {
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
     newState = action;
+
     updateGameState(gameState, data);
+
+    await showLastUpdates(gameState, lastAction);
 
     renderCurrentPlayerName(gameState);
     renderGameState(gameState);
+    const players = getAllPlayersDetail(gameState.player, gameState.opponents);
     renderTerritoriesAndTroops(
-      gameState.player,
+      players,
       gameState.territories,
-      gameState.opponents,
     );
-
-    showLastUpdates(gameState, lastAction);
   }
 
   gameState.state = STATES.WAITING;
@@ -185,9 +195,11 @@ const handleMoveIn = async (gameState) => {
 };
 
 const handleElimination = (_gameState) => {
-  const dialoge = document.querySelector("#elimination-box");
-  dialoge.classList.toggle("d-none");
-  dialoge.classList.add("glass-box");
+  setTimeout(() => {
+    const dialoge = document.querySelector("#elimination-box");
+    dialoge.classList.toggle("d-none");
+    dialoge.classList.add("glass-box");
+  }, 2000);
 };
 
 const handleWin = (_gameState) => {
