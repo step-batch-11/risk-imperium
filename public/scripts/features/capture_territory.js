@@ -1,3 +1,4 @@
+import { LABELS } from "../configs/label.js";
 import { NOTIFICATION_TYPES } from "../configs/notification_config.js";
 import { sendCaptureRequest } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
@@ -99,7 +100,7 @@ export const captureTerritory = (
     handlePostCapture(gameState, defender, troopCount)
   );
 
-  displayTroopSelector(event);
+  displayTroopSelector(event, LABELS.MOVE_IN);
 
   addListenerTroopSectorCancle((troopCount) =>
     handlePostCapture(gameState, defender, troopCount)

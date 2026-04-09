@@ -13,6 +13,7 @@ import {
   removeSkipButton,
   setTroopLimit,
 } from "../utilities.js";
+import { LABELS } from "../configs/label.js";
 
 const opponentNeighbours = (player, territories, selectedTerritoryId) => {
   const neighbours = territories[selectedTerritoryId].neighbours;
@@ -32,7 +33,7 @@ const selectAttackingTroops = (event, gameState, attacker, handleSelection) => {
 
   setTroopLimit(maxTroops, minTroops, maxTroops);
   addListenerTroopSelector(handleSelection);
-  displayTroopSelector(event);
+  displayTroopSelector(event, LABELS.INVASION);
 };
 
 const isNeighbouringOpponent = (gameState, selectedTerritoryId) => {

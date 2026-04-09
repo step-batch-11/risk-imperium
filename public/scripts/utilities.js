@@ -90,9 +90,16 @@ export const addListenerTroopSectorCancle = (handleSelection) => {
     await handleSelection(0);
   };
 };
-export const displayTroopSelector = (event, cancelDisabled = false) => {
+export const displayTroopSelector = (
+  event,
+  labelMsg,
+  cancelDisabled = false,
+) => {
   const dialog = document.querySelector("#deploy-troops-container");
   const cancelBtn = dialog.querySelector("#cancel-deploy-btn");
+  const label = dialog.querySelector("#input-label");
+
+  label.textContent = labelMsg;
   cancelBtn.disabled = cancelDisabled;
   dialog.showModal();
 

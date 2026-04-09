@@ -128,8 +128,6 @@ main {
   text-align: center;
   margin-bottom: 40px;
   opacity: 0;
-  animation: fadeIn 1s ease forwards;
-  animation-delay: 0.3s;
 }
 
 header h1 {
@@ -284,7 +282,7 @@ main.show-info #content-container {
 
 main:not(.show-info) #game-heading {
   animation: fadeIn 1s ease-in forwards;
-  animation-delay: 0.6s;
+  animation-delay: 0.3s;
 }
 
 main.show-info #game-heading {

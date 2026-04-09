@@ -327,6 +327,7 @@ export class Game {
             territoryId,
           ),
           remainingTroops: remainingTroopToDeploy,
+          currentPlayerId: this.#activePlayerId,
         },
       };
     } catch {
@@ -337,6 +338,7 @@ export class Game {
             territoryId,
           ),
           remainingTroops: 0,
+          currentPlayerId: this.#activePlayerId,
         },
       };
     }

@@ -16,6 +16,7 @@ import {
   renderRemainingTroopsToDeploy,
 } from "../utilities/render_UI.js";
 import { removeCardAreaListener } from "./cards.js";
+import { LABELS } from "../configs/label.js";
 
 const notifyNotOwned = (gameState, id) => {
   const territoryName = gameState.territories[id].name;
@@ -44,8 +45,9 @@ const updateRemainingTroops = (remainingTroops) => {
 const updateAfterDeploy = (gameState, response, troopCount) => {
   const {
     action: nextState,
-    data: { updatedTerritory, remainingTroops, currentPlayerId },
+    data,
   } = response;
+  const { updatedTerritory, remainingTroops, currentPlayerId } = data;
 
   updateTroopsInTerritories(gameState, updatedTerritory);
   const updatedTerritoryId = updatedTerritory[0].territoryId;
@@ -53,6 +55,7 @@ const updateAfterDeploy = (gameState, response, troopCount) => {
   notifyDeployment(gameState, updatedTerritoryId, troopCount);
   updateRemainingTroops(remainingTroops);
   gameState.currentPlayer = currentPlayerId;
+
   renderCurrentPlayerName(gameState);
   setUpNextPhase(gameState, nextState);
 };
@@ -62,7 +65,7 @@ const handleCustomDeployment = (event, gameState, territoryId) => {
     deployTroops(event, gameState, territoryId, troopCount);
 
   addListenerTroopSelector(handleSelection);
-  displayTroopSelector(event);
+  displayTroopSelector(event, LABELS.REINFORCE);
 };
 
 const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
