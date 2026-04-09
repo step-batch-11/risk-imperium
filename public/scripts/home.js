@@ -7,6 +7,8 @@ const joinForm = document.querySelector("#join-room");
 joinRoomBtn.addEventListener("click", () => {
   actionsPanel.classList.add("disable-join");
   joinForm.classList.toggle("disable-join");
+  const input = document.querySelector("#join-form input");
+  input.focus();
 });
 
 const form = document.querySelector("#join-form");

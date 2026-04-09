@@ -76,16 +76,30 @@ main {
   line-height: 1.3em;
 }
 
-#leave-button {
-  font-size: 40px;
-  padding: 0.3em;
-  color: white;
-  background-color: rgb(238, 98, 98);
-  border-radius: 10%;
-  border: none;
+#nav-container {
+  display: flex;
+  flex-direction: row;
+  width: 300px;
+  justify-content: space-between;
 }
 
-#leave-button:hover {
+#leave-button, .startBtn {
+  font-size: 30px;
+  padding: 0.2em 0.6em;
+  color: white;
+  background-color: rgb(238, 98, 98);
+  border-radius: 5%;
+  border: none;
+  box-shadow: var(--shadow-soft);
+}
+
+#leave-button {
+  height: 45px;
+  padding: 0.2em 0.4em;
+  margin-top: 9px;
+}
+
+#leave-button:hover, .startBtn:hover {
   background-color: rgb(227, 47, 47);
   cursor: pointer;
 }

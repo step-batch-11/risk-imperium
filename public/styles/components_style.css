@@ -486,3 +486,31 @@ input[type="number"]::-webkit-inner-spin-button {
 .remove-events {
   pointer-events: none;
 }
+
+#roomId-text {
+  width: 65%;
+  padding: 0.5em;
+  border-radius: 4px;
+}
+#joinBtn-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+#joinBtn-container button {
+  padding: 0.3em;
+  width: 35%;
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-soft);
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: 4px;
+  font-size: 20px;
+}
+
+#join-form {
+  font-size: 20px;
+  width: 300px;
+}

@@ -11,6 +11,7 @@
     ></script>
     <link rel="stylesheet" href="./styles/players.css">
     <link rel="stylesheet" href="./styles/lobby.css">
+    <link rel="stylesheet" href="./styles/components_style.css">
   </head>
 
   <body>
@@ -34,9 +35,11 @@
           </div>
         </template>
         <template id="game-start-btn"></template>
-        <div id="navigations"></div>
+        <div id="nav-container">
+          <div id="navigations"></div>
+          <button id="leave-button" type="button">Leave</button>
+        </div>
       </div>
-      <button id="leave-button" type="button">Leave</button>
     </main>
     <template id="player-template">
       <div class="player-container">

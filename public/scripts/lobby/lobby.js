@@ -35,7 +35,8 @@ const renderStartButton = () => {
   const clone = template.content.cloneNode("true");
   const navigationsContainer = document.querySelector("#navigations");
   const startBtn = document.createElement("button");
-  startBtn.textContent = "start";
+  startBtn.className = "startBtn";
+  startBtn.textContent = "Start";
   clone.appendChild(startBtn);
   navigationsContainer.replaceChildren(clone);
   return startBtn;

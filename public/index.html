@@ -30,8 +30,17 @@
 
         <div id="join-room" class="disable-join">
           <form action="/join-room" method="post" id="join-form">
-            <input type="text" name="roomId">
-            <button type="submit">Enter</button>
+            <label for="roomId-text" id="room-title">Room-Id : </label>
+            <input
+              type="text"
+              name="roomId"
+              id="roomId-text"
+              required
+              autofocus
+            ><br>
+            <div id="joinBtn-container">
+              <button type="submit">Join</button>
+            </div>
           </form>
         </div>
 
