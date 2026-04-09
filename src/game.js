@@ -230,7 +230,14 @@ export class Game {
   }
 
   getSetup(playerId) {
-    const opponents = this.#getOpponentsDetail();
+    if (!playerId) {
+      return {
+        territories: this.#territoriesHandler.getTerritories(),
+        opponents: this.#getOpponentsDetail(-1),
+        player: { territories: [] },
+      };
+    }
+    const opponents = this.#getOpponentsDetail(playerId);
 
     const currentPlayer = this.#players.find(({ id }) => id === playerId);
 

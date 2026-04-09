@@ -14,6 +14,6 @@ export const logoutHandler = (context) => {
   deleteCookie(context, "playerId");
   deleteCookie(context, "lobbyId");
   deleteCookie(context, "gameId");
-  deleteCookie(context, "game-v ersion");
+  deleteCookie(context, "game-version");
   return context.redirect("/login.html");
 };

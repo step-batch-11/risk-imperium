@@ -156,7 +156,7 @@ export const handleWaiting = async (c) => {
     deleteCookie(c, "gameId");
     return c.json({
       action: STATES.ELIMINATED,
-      data: {},
+      data: game.getUpdates(gameVersionId),
       lastAction: game.lastUpdate,
     });
   }

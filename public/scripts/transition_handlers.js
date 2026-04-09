@@ -6,7 +6,12 @@ import {
   skipFortificationRequest,
   skipInvasionRequest,
 } from "./server_calls.js";
-import { delay, removeSkipButton, setTroopLimit } from "./utilities.js";
+import {
+  delay,
+  getAllPlayersDetail,
+  removeSkipButton,
+  setTroopLimit,
+} from "./utilities.js";
 import { USER_ACTIONS } from "./configs/user_action.js";
 
 import {
@@ -161,16 +166,17 @@ const handleWaiting = async (gameState) => {
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
     newState = action;
+
     updateGameState(gameState, data);
 
     await showLastUpdates(gameState, lastAction);
 
     renderCurrentPlayerName(gameState);
     renderGameState(gameState);
+    const players = getAllPlayersDetail(gameState.player, gameState.opponents);
     renderTerritoriesAndTroops(
-      gameState.player,
+      players,
       gameState.territories,
-      gameState.opponents,
     );
   }
 
