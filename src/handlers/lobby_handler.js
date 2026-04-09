@@ -70,8 +70,8 @@ const moveJoineeToLobby = (context, lobby) => {
 export const createRoom = (context) => {
   const lobbies = context.get("lobbies");
   const player = createPlayer(context);
-  let counter = context.get("counter");
-  const lobbyId = counter++;
+  const counter = context.get("counter");
+  const lobbyId = counter.value++;
   const lobby = createLobby(lobbyId, "private");
   lobby["host"] = +player.id;
   lobbies.set(lobbyId, lobby);

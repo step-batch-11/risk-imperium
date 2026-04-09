@@ -17,10 +17,26 @@ form.addEventListener("submit", async (event) => {
   const roomId = formData.get("roomId");
 
   const response = await sendPostRequest("/join-room", { roomId });
-  console.log(response);
   if (response.success) {
     globalThis.location = "/lobby.html";
+    return;
   }
 
-  console.log("invalid roomid");
+  form.reset();
+  invalidRoomIdNotification("Room is not available..");
 });
+
+const invalidRoomIdNotification = (message, type = "info", duration = 2000) => {
+  let notifyTimer = 0;
+
+  const notification = document.querySelector("#notification-container");
+  notification.className = `notification ${type}`;
+  const paragraph = notification.querySelector("#notification-text");
+  paragraph.textContent = message;
+
+  clearTimeout(notifyTimer);
+
+  notifyTimer = setTimeout(() => {
+    notification.classList.remove(type);
+  }, duration);
+};
