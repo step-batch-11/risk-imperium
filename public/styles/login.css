@@ -1,3 +1,30 @@
+:root {
+  --color-bg-overlay-dark: rgba(0, 0, 0, 0.8);
+  --color-bg-overlay-light: rgba(0, 0, 0, 0.5);
+
+  --color-bg-main: #f0f0f0;
+  --color-bg-hover-light: #ddd;
+
+  --color-glass: rgba(255, 255, 255, 0.1);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+
+  --text-primary: #e4e4e4;
+  --text-inverse: #ffffff;
+
+  --color-input-border: #ddd;
+  --color-input-focus: #ff7e5f;
+  --color-input-focus-shadow: rgba(255, 126, 95, 0.4);
+
+  --color-accent-start: #f62c2c;
+  --color-accent-end: #df0808;
+
+  --color-accent-hover-start: #f23c3c;
+  --color-accent-hover-end: #ef2f2f;
+
+  --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.37);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -13,17 +40,18 @@ body {
   background:
     linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.5)),
     url("../assets/territory.jpg");
-  background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
 }
 
 form {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-glass);
   padding: 40px 30px;
   border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.37);
+  box-shadow: var(--shadow-soft);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-glass-border);
   width: 350px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -31,30 +59,30 @@ form {
 
 form:hover {
   transform: scale(1.03);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-hover);
 }
 
 label {
   display: block;
   margin-bottom: 10px;
   font-weight: 600;
-  color: #f3efef;
+  color: var(--text-primary);
 }
 
 input[type="text"] {
   width: 100%;
   padding: 12px 15px;
   margin-bottom: 20px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-input-border);
   border-radius: 10px;
   font-size: 16px;
   transition: 0.3s;
 }
 
 input[type="text"]:focus {
-  border-color: #ff7e5f;
+  border-color: var(--color-input-focus);
   outline: none;
-  box-shadow: 0 0 8px rgba(255, 126, 95, 0.4);
+  box-shadow: 0 0 8px var(--color-input-focus-shadow);
 }
 
 button {
@@ -62,8 +90,12 @@ button {
   padding: 12px 0;
   border: none;
   border-radius: 10px;
-  background: linear-gradient(135deg, #f62c2c, #df0808);
-  color: white;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-start),
+    var(--color-accent-end)
+  );
+  color: var(--text-inverse);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -71,6 +103,10 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(135deg, #f23c3c, #ef2f2f);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-hover-start),
+    var(--color-accent-hover-end)
+  );
   transform: scale(1.02);
 }

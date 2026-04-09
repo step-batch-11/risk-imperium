@@ -79,27 +79,6 @@ playful-avatar {
   border: 2px black;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;
 }
-/* #close-player-details-button {
-  width: 100%;
-  padding: 0.6em;
-  font-size: 12px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-family: var(--secondary-font);
-  transition: all 0.4s;
-}
-
-#close-player-details-button {
-  color: var(--color-close-button);
-  background-color: var(--color-bg-close-button);
-  border: var(--close-button-border);
-  box-shadow: var(--close-button-shadow);
-}
-
-#close-player-details-button:hover {
-  background-color: var(--color-close-button-hover);
-  transform: translateY(-1px);
-} */
 
 .player-details {
   gap: 14px;
