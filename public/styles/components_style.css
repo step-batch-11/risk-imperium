@@ -494,6 +494,10 @@ input[type="number"]::-webkit-inner-spin-button {
   transform: translateY(-60em);
 }
 
+.disable-join {
+  display: none;
+}
+
 .remove-events {
   pointer-events: none;
 }

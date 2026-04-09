@@ -6,6 +6,41 @@ export const renderAvatar = (name) => {
   return avatar;
 };
 
+const displayRoomId = (lobbyId) => {
+  const template = document.querySelector("#room-id-template");
+  const clone = template.content.cloneNode("true");
+  const roomContainer = document.querySelector("#room-id-container");
+  const roomElement = clone.querySelector("#room-id");
+  roomElement.textContent = `RoomId : ${lobbyId}`;
+  roomContainer.replaceChildren(clone);
+};
+
+const startQuickGame = (id) => {
+  clearInterval(id);
+  globalThis.location = "/game.html";
+};
+
+const startHostGame = (id) => {
+  const startBtn = renderStartButton();
+  startBtn.addEventListener("click", async () => {
+    await fetch("/start-game");
+    globalThis.location = "/game.html";
+    clearInterval(id);
+    return;
+  });
+};
+
+const renderStartButton = () => {
+  const template = document.querySelector("#game-start-btn");
+  const clone = template.content.cloneNode("true");
+  const navigationsContainer = document.querySelector("#navigations");
+  const startBtn = document.createElement("button");
+  startBtn.textContent = "start";
+  clone.appendChild(startBtn);
+  navigationsContainer.replaceChildren(clone);
+  return startBtn;
+};
+
 const createPlayerElement = (name, playerTemplate) => {
   const clone = playerTemplate.content.cloneNode(true);
   const playerNameContainer = clone.querySelector(".player-name-container");
@@ -17,25 +52,43 @@ const createPlayerElement = (name, playerTemplate) => {
   return clone;
 };
 
-const updatePlayers = (container, players) => {
+const isHost = (data, playerId) => data.host === Number(playerId.value);
+
+const updatePlayers = (container, players, lobbyId) => {
+  displayRoomId(lobbyId);
   const fragment = document.createDocumentFragment();
   const playerTemplate = document.querySelector("#player-template");
-  players.forEach((player) =>
-    fragment.appendChild(createPlayerElement(player, playerTemplate))
-  );
+
+  players.forEach((player) => {
+    return fragment.appendChild(createPlayerElement(player, playerTemplate));
+  });
   container.replaceChildren(fragment);
 };
 
 const updateLobby = async (playerContainer, id) => {
   const response = await fetch("/get-lobby-data");
-  const data = await response.json();
+  const playerId = await cookieStore.get("playerId");
+
+  const { playerDetails, data } = await response.json();
   if (response.status === 200) {
-    updatePlayers(playerContainer, data.playerList);
+    updatePlayers(playerContainer, playerDetails, data.id);
   }
-  if (data.start) {
-    globalThis.location = "/game.html";
-    clearInterval(id);
+
+  if (
+    data.status === "in-game" && data.roomType === "public" ||
+    (data.status === "game-started")
+  ) {
+    return startQuickGame(id);
   }
+
+  if (data.status === "in-game" && isHost(data, playerId)) {
+    return startHostGame(id);
+  }
+
+  // if (data.status === "game-started") {
+  //   globalThis.location = "/game.html";
+  //   clearInterval(id);
+  // }
 };
 
 const leaveLobby = async (_event) => {

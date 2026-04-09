@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <title>Home</title>
+    <script type="module" src="./scripts/home.js"></script>
     <link rel="stylesheet" href="./styles/home.css" />
+    <link rel="stylesheet" href="./styles/components_style.css">
   </head>
 
   <body>
@@ -14,11 +16,23 @@
           id="risk-logo-img"
         />
       </section>
+
       <section id="content-container">
         <header id="game-heading">
           <h1>Risk</h1>
           <h2>The world of global domination</h2>
         </header>
+
+        <div id="game-info">
+          <button id="game-info-btn">&#9432;</button>
+        </div>
+
+        <div id="join-room" class="disable-join">
+          <form action="/join-room" method="post" id="join-form">
+            <input type="text" name="roomId">
+            <button type="submit">Enter</button>
+          </form>
+        </div>
 
         <div id="actions-panel">
           <form method="post" action="/quick-play" id="quick-play-actions">
@@ -26,7 +40,10 @@
           </form>
 
           <div id="room-actions">
-            <button id="create-room-btn">Create Room</button>
+            <form action="/create-room" method="post">
+              <button id="create-room-btn">Create Room</button>
+            </form>
+
             <button id="join-room-btn">Join Room</button>
           </div>
         </div>

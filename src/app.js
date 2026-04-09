@@ -6,9 +6,12 @@ import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
 import { loginHandler } from "./handlers/login_handler.js";
 import {
+  createRoom,
+  joinRoom,
   leaveLobbyHandler,
   moveToLobby,
   sendLobbyData,
+  startGame,
 } from "./handlers/lobby_handler.js";
 import {
   redirectInGamePlayer,
@@ -24,7 +27,7 @@ export const createApp = (
   isDevMode,
   players,
   lobbies,
-  { logger, readTextFile, writeTextFile } = {},
+  { counter, logger, readTextFile, writeTextFile } = {},
 ) => {
   const app = new Hono();
 
@@ -36,7 +39,8 @@ export const createApp = (
     context.set("gamesRepo", gamesRepo);
     context.set("players", players);
     context.set("lobbies", lobbies);
-    return await next();
+    context.set("counter", counter);
+    await next();
   });
 
   app.get(
@@ -63,6 +67,9 @@ export const createApp = (
     redirectInLobbyPlayer,
     moveToLobby,
   );
+  app.post("/create-room", createRoom);
+  app.post("/join-room", joinRoom);
+  app.get("/start-game", startGame);
 
   app.get("/get-data", setGame, handleWaiting);
 

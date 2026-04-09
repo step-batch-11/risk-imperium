@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lobby</title>
+    <title>Document</title>
     <script type="module" src="scripts/lobby.js"></script>
     <script
       type="module"
@@ -17,31 +17,21 @@
     <main>
       <div id="players-container"></div>
       <div id="lobby-details">
-        <template id="room-id-template">
-          <span id="room-id">RoomId : </span>
-        </template>
-        <div id="room-id-container"></div>
+        <div id="room-id">
+          Room Id : 2441139
+        </div>
         <div id="message">
           Waiting for players ...
         </div>
-
-        <template id="join-room-template">
-          <div id="join-room-id">
-            <form action="/join-room">
-              <input type="text">
-              <button type="submit">enter</button>
-            </form>
-          </div>
-        </template>
-        <template id="game-start-btn"></template>
-        <div id="navigations"></div>
+        <div id="navigations">
+          <button id="leave-button" type="button">Leave</button>
+        </div>
       </div>
-      <button id="leave-button" type="button">Leave</button>
     </main>
     <template id="player-template">
       <div class="player-container">
         <div class="player-avatar"></div>
-        <div class="player-name-container"></div>
+        <div class="player-name-container">Himanshu</div>
       </div>
     </template>
   </body>
