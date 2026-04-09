@@ -66,7 +66,8 @@ export const resolveCombatMsg = (gameState, player, data) => {
   const { attackerDice, defenderDice, defenderTerritoryId } = invadeDetails;
 
   const territory = getTerritoryName(gameState, defenderTerritoryId);
-  const defender = gameState.opponents[defenderId].name;
+  const defendingPlayer = gameState.opponents[defenderId] || gameState.player;
+  const defender = defendingPlayer.name;
 
   displayDiceAnimations(attackerDice, defenderDice);
 

@@ -101,3 +101,8 @@ export const getMoveInData = async () => {
   };
   return await sendPostRequest(APIs.USER_ACTIONS, reqData);
 };
+
+export const createRoom = async () => {
+  const res = await fetch("/create-room");
+  return await res.json();
+};

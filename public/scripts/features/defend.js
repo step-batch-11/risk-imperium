@@ -1,3 +1,4 @@
+import { LABELS } from "../configs/label.js";
 import { defend } from "../server_calls.js";
 import { setUpNextPhase } from "../transition_handlers.js";
 import {
@@ -50,6 +51,6 @@ export const handleDefense = (gameState) => {
 
   const position = calculatePosition(defendingTerritory);
   const cancelDisabled = true;
-  displayTroopSelector(position, cancelDisabled);
+  displayTroopSelector(position, LABELS.DEFEND, cancelDisabled);
   addListenerTroopSelector(defendHandler);
 };

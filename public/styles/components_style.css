@@ -49,8 +49,6 @@
 }
 
 .continent-pill {
-  border: var(--ui-border);
-  color: var(--text-primary);
   border-radius: 8px;
   padding: 10px 15px;
   font-size: 0.9em;
@@ -87,6 +85,22 @@
   border: 2px solid var(--australia-outline);
   color: var(--australia-outline);
 }
+
+/* @media (min-width: 800px) {
+  .continent-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(5em, 6em));
+    gap: 12px;
+  }∑
+}
+
+@media (min-width: 1024px) {
+  .continent-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(8em, 1fr));
+    gap: 12px;
+  }
+} */
 
 .action-menu {
   position: absolute;
@@ -313,22 +327,6 @@
   background: var(--color-warning);
 }
 
-/* #skip-button {
-  z-index: 10;
-  position: fixed;
-  right: 3%;
-  bottom: 20%;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  background: white;
-  border-radius: 5px;
-  padding: 20px;
-  font-size: 20px;
-}
-
-#skip-button:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-} */
-
 #skip-button {
   position: fixed;
   right: 3%;
@@ -407,6 +405,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
   color: var(--text-tertiary);
   font-family: var(--primary-font);
+  align-items: center;
+  justify-content: center;
 }
 
 #deploy-troops-selector button,
@@ -471,7 +471,8 @@ input[type="number"]::-webkit-inner-spin-button {
   transform: scale(0.9);
 }
 
-.glass-box, #glass-box {
+.glass-box,
+#glass-box {
   position: absolute;
   background: var(--color-bg-glass-box);
   margin: 0 auto;
@@ -492,6 +493,10 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .d-none {
   transform: translateY(-60em);
+}
+
+.disable-join {
+  display: none;
 }
 
 .remove-events {

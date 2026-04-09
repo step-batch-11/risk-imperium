@@ -11,8 +11,12 @@ import {
   NOTIFICATION_MESSAGES,
   NOTIFICATION_TYPES,
 } from "../configs/notification_config.js";
-import { renderRemainingTroopsToDeploy } from "../utilities/render_UI.js";
+import {
+  renderCurrentPlayerName,
+  renderRemainingTroopsToDeploy,
+} from "../utilities/render_UI.js";
 import { removeCardAreaListener } from "./cards.js";
+import { LABELS } from "../configs/label.js";
 
 const notifyNotOwned = (gameState, id) => {
   const territoryName = gameState.territories[id].name;
@@ -41,14 +45,18 @@ const updateRemainingTroops = (remainingTroops) => {
 const updateAfterDeploy = (gameState, response, troopCount) => {
   const {
     action: nextState,
-    data: { updatedTerritory, remainingTroops },
+    data,
   } = response;
+  const { updatedTerritory, remainingTroops, currentPlayerId } = data;
 
   updateTroopsInTerritories(gameState, updatedTerritory);
   const updatedTerritoryId = updatedTerritory[0].territoryId;
 
   notifyDeployment(gameState, updatedTerritoryId, troopCount);
   updateRemainingTroops(remainingTroops);
+  gameState.currentPlayer = currentPlayerId;
+
+  renderCurrentPlayerName(gameState);
   setUpNextPhase(gameState, nextState);
 };
 
@@ -57,14 +65,16 @@ const handleCustomDeployment = (event, gameState, territoryId) => {
     deployTroops(event, gameState, territoryId, troopCount);
 
   addListenerTroopSelector(handleSelection);
-  displayTroopSelector(event);
+  displayTroopSelector(event, LABELS.REINFORCE);
 };
 
 const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
   removeCardAreaListener(gameState);
   return sendReinforceRequest({ territoryId, troopCount })
     .then((res) => updateAfterDeploy(gameState, res, troopCount))
-    .catch(() => {
+    .catch((e) => {
+      console.log(e);
+
       showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
     });
 };

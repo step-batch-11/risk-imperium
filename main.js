@@ -5,10 +5,12 @@ const main = () => {
   const players = {};
   const lobbies = new Map();
   const gamesRepo = new Map();
+  const counter = 100;
 
   const isDevMode = Deno.env.get("DEV_MODE") === "true";
 
   const app = createApp(gamesRepo, isDevMode, players, lobbies, {
+    counter,
     logger,
     readTextFile: Deno.readTextFile,
     writeTextFile: Deno.writeTextFileSync,

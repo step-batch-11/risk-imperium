@@ -17,16 +17,26 @@
     <main>
       <div id="players-container"></div>
       <div id="lobby-details">
-        <div id="room-id">
-          Room Id : 2441139
-        </div>
+        <template id="room-id-template">
+          <span id="room-id">RoomId : </span>
+        </template>
+        <div id="room-id-container"></div>
         <div id="message">
           Waiting for players ...
         </div>
-        <div id="navigations">
-          <button id="leave-button" type="button">Leave</button>
-        </div>
+
+        <template id="join-room-template">
+          <div id="join-room-id">
+            <form action="/join-room">
+              <input type="text">
+              <button type="submit">enter</button>
+            </form>
+          </div>
+        </template>
+        <template id="game-start-btn"></template>
+        <div id="navigations"></div>
       </div>
+      <button id="leave-button" type="button">Leave</button>
     </main>
     <template id="player-template">
       <div class="player-container">

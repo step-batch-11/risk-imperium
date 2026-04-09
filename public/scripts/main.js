@@ -11,15 +11,15 @@ import {
   renderGameState,
 } from "./utilities/render_UI.js";
 import { setup } from "./features/setup.js";
+import { getAllPlayersDetail } from "./utilities.js";
 
 globalThis.onload = async () => {
   const gameState = await getSetup();
   gameState.selectedCards = {};
-
+  const players = getAllPlayersDetail(gameState.player, gameState.opponents);
   renderTerritoriesAndTroops(
-    gameState.player,
+    players,
     gameState.territories,
-    gameState.opponents,
   );
 
   setupListeners(gameState);

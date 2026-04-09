@@ -464,9 +464,14 @@ describe("Api Handler", () => {
       });
       assertEquals(res.status, 200);
       const data = await res.json();
+
       assertEquals(data, {
-        playerList: ["alex", "alice"],
-        start: false,
+        playerDetails: ["alex", "alice"],
+        data: {
+          id: 1,
+          players: [{ name: "alex" }, { name: "alice" }],
+          status: "waiting",
+        },
       });
     });
     it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
@@ -484,8 +489,12 @@ describe("Api Handler", () => {
       assertEquals(res.status, 200);
       const data = await res.json();
       assertEquals(data, {
-        playerList: ["alex", "alice", "resso"],
-        start: true,
+        playerDetails: ["alex", "alice", "resso"],
+        data: {
+          id: 1,
+          players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
+          status: "in-game",
+        },
       });
     });
 

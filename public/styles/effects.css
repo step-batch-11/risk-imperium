@@ -22,7 +22,7 @@
   filter: drop-shadow(0 0 6px rgba(255,255,255,0.7));
   stroke: #fff;
   */
-  cursor: pointer;
+
   stroke: rgb(74, 74, 74);
   stroke-width: 3px;
 }
@@ -47,26 +47,4 @@
 .selected > .territory-outline {
   transform-box: fill-box;
   transform-origin: center;
-  /* transform: scale(1.02); */
 }
-
-/* .selected > .territory-outline {
-  filter: drop-shadow(0 0 8px rgba(241, 196, 15, 0.5));
-} */
-/* 
-.highlight > .territory-outline {
-  fill: #e74c3c;
-  animation: pulse-highlight 1.2s infinite ease-in-out;
-}
-
-@keyframes pulse-highlight {
-  0% {
-    fill-opacity: 0.5;
-  }
-  50% {
-    fill-opacity: 1;
-  }
-  100% {
-    fill-opacity: 0.5;
-  } 
-} */
