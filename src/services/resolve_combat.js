@@ -39,9 +39,15 @@ const calculateLoss = (defenderDice, attackerDice) => {
   return combatResult;
 };
 
-const resolveCombat = (game) => {
-  const attackerDice = rollDice(game.stateDetails.attackerTroops);
-  const defenderDice = rollDice(game.stateDetails.defenderTroopCount);
+const resolveCombat = (game, randomFunction) => {
+  const attackerDice = rollDice(
+    game.stateDetails.attackerTroops,
+    randomFunction,
+  );
+  const defenderDice = rollDice(
+    game.stateDetails.defenderTroopCount,
+    randomFunction,
+  );
   const { attackerLoss, defenderLoss } = calculateLoss(
     defenderDice,
     attackerDice,
@@ -64,11 +70,11 @@ const resolveCombat = (game) => {
   return [attackerTerritoryId, defenderTerritoryId];
 };
 
-export const resolveCombatService = (game) => {
+export const resolveCombatService = (game, randomFunction = Math.random) => {
   const { defenderTerritoryId } = game.stateDetails;
   const defenderId = game.getOwnerOfTerritory(defenderTerritoryId);
 
-  const territoriesIds = resolveCombat(game);
+  const territoriesIds = resolveCombat(game, randomFunction);
   const { attackerDice, defenderDice } = game.stateDetails;
   const updatedTerritories = game.getTerritoriesDetails(...territoriesIds);
   const isCurrentCaptured = game.stateDetails.isCaptured;

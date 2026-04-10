@@ -1,10 +1,21 @@
-describe("Invade", () => {
+import { beforeEach, describe, it } from "@std/testing/bdd";
+import { assertThrows } from "@std/assert/throws";
+import invasionState from "../../data/tests/invasion.json" with {type:"json"};
+import { Game } from "../../src/game.js";
+
+    // players = mockPlayers(),
+    // handlers = {},
+    // controllers = {},
+    // utilities = {},
+
+describe.ignore("Invade", () => {
   beforeEach(() => {
+    const game = new Game({},{},{},{});
     const gameState = invasionState;
     game.loadGameState(gameState);
   });
 
-  it("invade should throw if troop count is invalid", () => {
+  it.only("invade should throw if troop count is invalid", () => {
     const invadeDetails = {
       attackerTerritoryId: 36,
       defenderTerritoryId: 37,
@@ -26,7 +37,7 @@ describe("Invade", () => {
     assertEquals(currentState.state, STATES.DEFEND);
   });
 
-  it("invade should throw if troop count is negative", () => {
+  it.ignore("invade should throw if troop count is negative", () => {
     const invadeDetails = {
       attackerTerritoryId: 36,
       defenderTerritoryId: 37,

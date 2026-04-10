@@ -40,12 +40,13 @@ export class Game {
     this.#cavalry = handlers.cavalry;
     this.#state = STATES.SETUP;
     this.#hasCaptured = false;
-    this.#fortificationController = controllers.fortificationController;
 
+    this.#fortificationController = controllers.fortificationController;
     this.#initialReinforcementController =
       controllers.initialReinforcementController;
     this.#reinforcementController = controllers.reinforcementController;
     this.#invasionController = controllers.invasionController;
+
     this.#versionId = 0;
     this.#lastUpdate = {};
 
@@ -506,130 +507,131 @@ export class Game {
     }
   }
 
-  invade({ attackerTerritoryId, attackerTroops, defenderTerritoryId }) {
-    try {
-      this.#invasionController.setNewInvasion(
-        this.#activePlayerId,
-        attackerTerritoryId,
-        defenderTerritoryId,
-        attackerTroops,
-      );
-      const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
+  // invade({ attackerTerritoryId, attackerTroops, defenderTerritoryId }) {
+  //   try {
+  //     this.#invasionController.setNewInvasion(
+  //       this.#activePlayerId,
+  //       attackerTerritoryId,
+  //       defenderTerritoryId,
+  //       attackerTroops,
+  //     );
+  //     const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
 
-      this.updateGame(
-        STATES.INVASION,
-        {
-          attackerId: this.#activePlayerId,
-          defenderId,
-          attackerTerritoryId,
-          defenderTerritoryId,
-          attackerTroops,
-        },
-        this.#activePlayerId,
-      );
+  //     this.updateGame(
+  //       STATES.INVASION,
+  //       {
+  //         attackerId: this.#activePlayerId,
+  //         defenderId,
+  //         attackerTerritoryId,
+  //         defenderTerritoryId,
+  //         attackerTroops,
+  //       },
+  //       this.#activePlayerId,
+  //     );
 
-      this.#state = STATES.DEFEND;
-      return { newState: STATES.WAITING, data: {} };
-    } catch (e) {
-      console.log(e);
-      throw new Error("Invalid Attack");
-    }
-  }
+  //     this.#state = STATES.DEFEND;
+  //     return { newState: STATES.WAITING, data: {} };
+  //   } catch (e) {
+  //     console.log(e);
+  //     throw new Error("Invalid Attack");
+  //   }
+  // }
 
-  defend({ troopCount }) {
-    const { defenderTerritoryId } = this.#invasionController.invadeDetails;
-    const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
-    try {
-      this.#invasionController.setDefenderTroops(troopCount);
-      this.updateGame(
-        STATES.DEFEND,
-        {
-          attackerId: this.#activePlayerId,
-          defenderId,
-          defenderTroopCount: troopCount,
-        },
-        this.#activePlayerId,
-      );
+  // defend({ troopCount }) {
+  //   const { defenderTerritoryId } = this.#invasionController.invadeDetails;
+  //   const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
+  //   try {
+  //     this.#invasionController.setDefenderTroops(troopCount);
+  //     this.updateGame(
+  //       STATES.DEFEND,
+  //       {
+  //         attackerId: this.#activePlayerId,
+  //         defenderId,
+  //         defenderTroopCount: troopCount,
+  //       },
+  //       this.#activePlayerId,
+  //     );
 
-      this.#state = STATES.RESOLVE_COMBAT;
-      return {
-        action: STATES.WAITING,
-        data: this.#invasionController.invadeDetails,
-      };
-    } catch (e) {
-      console.log(e);
-      return {
-        action: STATES.DEFEND,
-        data: this.#invasionController.invadeDetails,
-      };
-    }
-  }
+  //     this.#state = STATES.RESOLVE_COMBAT;
+  //     return {
+  //       action: STATES.WAITING,
+  //       data: this.#invasionController.invadeDetails,
+  //     };
+  //   } catch (e) {
+  //     console.log(e);
+  //     return {
+  //       action: STATES.DEFEND,
+  //       data: this.#invasionController.invadeDetails,
+  //     };
+  //   }
+  // }
 
-  resolveCombat() {
-    const { defenderTerritoryId } = this.#invasionController.invadeDetails;
-    const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
-    const updatedTerritoriesIds = this.#invasionController.resolve();
+  // resolveCombat() {
+  //   const { defenderTerritoryId } = this.#invasionController.invadeDetails;
+  //   const defenderId = this.#territories.getOwnerOf(defenderTerritoryId);
+  //   const updatedTerritoriesIds = this.#invasionController.resolve();
 
-    const { attackerDice, defenderDice } =
-      this.#invasionController.invadeDetails;
+  //   const { attackerDice, defenderDice } =
+  //     this.#invasionController.invadeDetails;
 
-    const updatedTerritories = this.#territories.getTerritoryAndTroopsCount(
-      ...updatedTerritoriesIds,
-    );
+  //   const updatedTerritories = this.#territories.getTerritoryAndTroopsCount(
+  //     ...updatedTerritoriesIds,
+  //   );
 
-    const isCurrentCaptured = this.#invasionController.isCaptured;
-    const isEliminated = this.#isEliminated(defenderId);
+  //   const isCurrentCaptured = this.#invasionController.isCaptured;
+  //   const isEliminated = this.#isEliminated(defenderId);
 
-    if (isEliminated) {
-      this.#eliminatePlayer(defenderId);
-    }
+  //   if (isEliminated) {
+  //     this.#eliminatePlayer(defenderId);
+  //   }
 
-    const isWon = this.#hasPlayerWon();
+  //   const isWon = this.#hasPlayerWon();
 
-    this.#state = isWon
-      ? STATES.WON
-      : isCurrentCaptured
-      ? STATES.MOVE_IN
-      : STATES.INVASION;
+  //   this.#state = isWon
+  //     ? STATES.WON
+  //     : isCurrentCaptured
+  //     ? STATES.MOVE_IN
+  //     : STATES.INVASION;
 
-    const notifyMsg = this.#invasionController.isAttackSuccessful
-      ? { status: "success", msg: "Attack Successful" }
-      : { status: "fail", msg: "Attack Unsuccessful" };
+  //   const notifyMsg = this.#invasionController.isAttackSuccessful
+  //     ? { status: "success", msg: "Attack Successful" }
+  //     : { status: "fail", msg: "Attack Unsuccessful" };
 
-    this.#hasCaptured = this.#hasCaptured || isCurrentCaptured;
+  //   this.#hasCaptured = this.#hasCaptured || isCurrentCaptured;
 
-    this.updateGame(
-      STATES.RESOLVE_COMBAT,
-      {
-        attackerId: this.#activePlayerId,
-        defenderId,
-        attackerDice,
-        defenderDice,
-        notifyMsg,
-        updatedTerritories,
-        hasCaptured: isCurrentCaptured,
-        hasEliminated: isEliminated,
-        invadeDetails: this.#invasionController.invadeDetails,
-      },
-      this.#activePlayerId,
-    );
+  //   this.updateGame(
+  //     STATES.RESOLVE_COMBAT,
+  //     {
+  //       attackerId: this.#activePlayerId,
+  //       defenderId,
+  //       attackerDice,
+  //       defenderDice,
+  //       notifyMsg,
+  //       updatedTerritories,
+  //       hasCaptured: isCurrentCaptured,
+  //       hasEliminated: isEliminated,
+  //       invadeDetails: this.#invasionController.invadeDetails,
+  //     },
+  //     this.#activePlayerId,
+  //   );
 
-    return {
-      action: this.#state,
-      data: {
-        defenderId,
-        attackerDice,
-        defenderDice,
-        notifyMsg,
-        updatedTerritories,
-        hasCaptured: isCurrentCaptured,
-        hasEliminated: isEliminated,
-        hasWon: isWon,
-        newCards: this.#activePlayer.cards,
-        invadeDetails: this.#invasionController.invadeDetails,
-      },
-    };
-  }
+  //   return {
+  //     action: this.#state,
+  //     data: {
+  //       defenderId,
+  //       attackerDice,
+  //       defenderDice,
+  //       notifyMsg,
+  //       updatedTerritories,
+  //       hasCaptured: isCurrentCaptured,
+  //       hasEliminated: isEliminated,
+  //       hasWon: isWon,
+  //       newCards: this.#activePlayer.cards,
+  //       invadeDetails: this.#invasionController.invadeDetails,
+  //     },
+  //   };
+  // }
+  
   get canGetCard() {
     return this.#hasCaptured;
   }
