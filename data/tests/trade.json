@@ -1,5 +1,6 @@
 {
   "activePlayerIndex": 0,
+  "activePlayerId": 1775804090315,
   "territories": {
     "1": {
       "name": "Alaska",
@@ -9,7 +10,7 @@
         32
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804103807
     },
     "2": {
       "name": "Northwest Territory",
@@ -20,7 +21,7 @@
         5
       ],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1775804103807
     },
     "3": {
       "name": "Greenland",
@@ -30,8 +31,8 @@
         6,
         14
       ],
-      "troopCount": 9,
-      "ownerId": 1
+      "troopCount": 1,
+      "ownerId": 1775804103807
     },
     "4": {
       "name": "Alberta",
@@ -42,7 +43,7 @@
         7
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804103807
     },
     "5": {
       "name": "Ontario",
@@ -54,8 +55,8 @@
         7,
         8
       ],
-      "troopCount": 2,
-      "ownerId": 1
+      "troopCount": 1,
+      "ownerId": 1775804103807
     },
     "6": {
       "name": "Quebec",
@@ -64,8 +65,8 @@
         5,
         8
       ],
-      "troopCount": 7,
-      "ownerId": 1
+      "troopCount": 1,
+      "ownerId": 1775804103807
     },
     "7": {
       "name": "Western United States",
@@ -76,7 +77,7 @@
         9
       ],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1775804103807
     },
     "8": {
       "name": "Eastern United States",
@@ -87,7 +88,7 @@
         9
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804103807
     },
     "9": {
       "name": "Central America",
@@ -97,7 +98,7 @@
         10
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804103807
     },
     "10": {
       "name": "Venezuela",
@@ -107,7 +108,7 @@
         12
       ],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 1775804103807
     },
     "11": {
       "name": "Peru",
@@ -117,7 +118,7 @@
         13
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804103807
     },
     "12": {
       "name": "Brazil",
@@ -128,7 +129,7 @@
         21
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804103807
     },
     "13": {
       "name": "Argentina",
@@ -137,7 +138,7 @@
         12
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804103807
     },
     "14": {
       "name": "Iceland",
@@ -147,7 +148,7 @@
         17
       ],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 1775804103807
     },
     "15": {
       "name": "Scandinavia",
@@ -158,7 +159,7 @@
         18
       ],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1775804103807
     },
     "16": {
       "name": "Ukraine",
@@ -171,7 +172,7 @@
         35
       ],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1775804103152
     },
     "17": {
       "name": "Great Britain",
@@ -182,7 +183,7 @@
         19
       ],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 1775804103807
     },
     "18": {
       "name": "Northern Europe",
@@ -194,7 +195,7 @@
         20
       ],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1775804103807
     },
     "19": {
       "name": "Western Europe",
@@ -205,7 +206,7 @@
         21
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804103807
     },
     "20": {
       "name": "Southern Europe",
@@ -218,7 +219,7 @@
         23
       ],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 1775804103807
     },
     "21": {
       "name": "North Africa",
@@ -231,7 +232,7 @@
         25
       ],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1775804103807
     },
     "22": {
       "name": "Egypt",
@@ -242,7 +243,7 @@
         24
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804090315
     },
     "23": {
       "name": "Middle East",
@@ -255,7 +256,7 @@
         37
       ],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1775804090315
     },
     "24": {
       "name": "East Africa",
@@ -268,7 +269,7 @@
         27
       ],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 1775804103807
     },
     "25": {
       "name": "Congo",
@@ -278,7 +279,7 @@
         26
       ],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1775804090315
     },
     "26": {
       "name": "South Africa",
@@ -288,7 +289,7 @@
         27
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804090315
     },
     "27": {
       "name": "Madagascar",
@@ -297,7 +298,7 @@
         24
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804090315
     },
     "28": {
       "name": "Ural",
@@ -309,7 +310,7 @@
         36
       ],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1775804103807
     },
     "29": {
       "name": "Siberia",
@@ -321,7 +322,7 @@
         36
       ],
       "troopCount": 1,
-      "ownerId": 3
+      "ownerId": 1775804103152
     },
     "30": {
       "name": "Yakutsk",
@@ -330,8 +331,8 @@
         31,
         32
       ],
-      "troopCount": 1,
-      "ownerId": 2
+      "troopCount": 3,
+      "ownerId": 1775804103152
     },
     "31": {
       "name": "Irkutsk",
@@ -341,8 +342,8 @@
         32,
         33
       ],
-      "troopCount": 1,
-      "ownerId": 5
+      "troopCount": 2,
+      "ownerId": 1775804103152
     },
     "32": {
       "name": "Kamchatka",
@@ -353,8 +354,8 @@
         33,
         34
       ],
-      "troopCount": 1,
-      "ownerId": 4
+      "troopCount": 4,
+      "ownerId": 1775804103152
     },
     "33": {
       "name": "Mongolia",
@@ -365,8 +366,8 @@
         34,
         36
       ],
-      "troopCount": 1,
-      "ownerId": 5
+      "troopCount": 4,
+      "ownerId": 1775804103152
     },
     "34": {
       "name": "Japan",
@@ -375,7 +376,7 @@
         33
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804103807
     },
     "35": {
       "name": "Afghanistan",
@@ -387,7 +388,7 @@
         37
       ],
       "troopCount": 1,
-      "ownerId": 6
+      "ownerId": 1775804090315
     },
     "36": {
       "name": "China",
@@ -399,8 +400,8 @@
         37,
         38
       ],
-      "troopCount": 1,
-      "ownerId": 5
+      "troopCount": 2,
+      "ownerId": 1775804090315
     },
     "37": {
       "name": "India",
@@ -411,7 +412,7 @@
         23
       ],
       "troopCount": 1,
-      "ownerId": 4
+      "ownerId": 1775804090315
     },
     "38": {
       "name": "Siam",
@@ -421,7 +422,7 @@
         39
       ],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 1775804090315
     },
     "39": {
       "name": "Indonesia",
@@ -431,7 +432,7 @@
         41
       ],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1775804090315
     },
     "40": {
       "name": "New Guinea",
@@ -441,7 +442,7 @@
         42
       ],
       "troopCount": 1,
-      "ownerId": 1
+      "ownerId": 1775804103807
     },
     "41": {
       "name": "Western Australia",
@@ -451,7 +452,7 @@
         42
       ],
       "troopCount": 1,
-      "ownerId": 5
+      "ownerId": 1775804090315
     },
     "42": {
       "name": "Eastern Australia",
@@ -461,47 +462,37 @@
         41
       ],
       "troopCount": 1,
-      "ownerId": 2
+      "ownerId": 1775804090315
     }
   },
   "players": [
     {
-      "id": 1,
-      "name": "Jon",
+      "id": 1775804090315,
+      "name": "karthik",
+      "color": 1,
       "cards": [
         "2",
         "2",
-        "2",
-        "3"
+        "4"
       ]
     },
     {
-      "id": 2,
-      "name": "Rob",
-      "cards": []
-    },
-    {
-      "id": 3,
-      "name": "Sansa",
-      "cards": []
-    },
-    {
-      "id": 4,
-      "name": "Arya",
-      "cards": []
-    },
-    {
-      "id": 5,
-      "name": "Rickon",
-      "cards": []
-    },
-    {
-      "id": 6,
-      "name": "Bran",
+      "id": 1775804103152,
+      "name": "ibrahim",
+      "color": 2,
       "cards": [
-        1,
-        2,
-        3
+        "2",
+        "2"
+      ]
+    },
+    {
+      "id": 1775804103807,
+      "name": "Che Guvera",
+      "color": 3,
+      "cards": [
+        "1",
+        "3",
+        "3"
       ]
     }
   ],
@@ -585,35 +576,49 @@
       "armies": 2
     }
   },
-  "state": "INVASION",
+  "state": "REINFORCE",
   "initReinforce": {
-    "round": 13,
+    "round": 0,
     "troops": 13,
-    "isDone": true,
-    "playersCount": 1
+    "isDone": false,
+    "playersCount": 3
   },
   "reinforce": {
     "remainingReinforce": 0
   },
   "invasion": {
-    "isDone": true,
-    "attackerId": 1,
-    "attackFrom": 3,
-    "attackTo": 6,
-    "attackerTroopsCount": 3,
-    "defenderTroopsCount": 1,
-    "state": "moved-in",
-    "isCaptured": true,
-    "isAttackSuccessful": true,
-    "attackerDice": [
-      6,
-      1,
-      1
-    ],
-    "defenderDice": [
-      1
-    ]
+    "isDone": false,
+    "attackerId": null,
+    "attackFrom": null,
+    "attackTo": null,
+    "attackerTroopsCount": null,
+    "defenderTroopsCount": null,
+    "state": "start",
+    "isCaptured": null,
+    "isAttackSuccessful": null,
+    "attackerDice": null,
+    "defenderDice": null
   },
   "cavalry": 0,
-  "hasCaptured": false
+  "hasCaptured": false,
+  "round": 6,
+  "troops": 2,
+  "playersCount": 3,
+  "stateDetails": {
+    "attackerTerritoryId": 24,
+    "attackerTroops": 1,
+    "defenderTerritoryId": 27,
+    "defenderId": 1775804090315,
+    "defenderTroopCount": 1,
+    "attackerDice": [
+      3
+    ],
+    "defenderDice": [
+      5
+    ],
+    "attackerLoss": 1,
+    "defenderLoss": 0,
+    "isAttackSuccessful": false,
+    "remainingTroopsCount": 4
+  }
 }

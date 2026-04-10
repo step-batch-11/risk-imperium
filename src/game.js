@@ -13,8 +13,6 @@ export class Game {
   #fortificationController;
   #cavalry;
   #territories;
-  #initialReinforcementController;
-  #reinforcementController;
   #invasionController;
   #hasCaptured;
   #versionId;
@@ -42,9 +40,6 @@ export class Game {
     this.#hasCaptured = false;
     this.#fortificationController = controllers.fortificationController;
 
-    this.#initialReinforcementController =
-      controllers.initialReinforcementController;
-    this.#reinforcementController = controllers.reinforcementController;
     this.#invasionController = controllers.invasionController;
     this.#versionId = 0;
     this.#lastUpdate = {};
@@ -80,6 +75,7 @@ export class Game {
       remainingTroopsCount,
     };
   }
+
   get remainingTroop() {
     const deployedTroopsPerPlayer = this.#round / this.#playersCount;
     return this.#troops - Math.floor(deployedTroopsPerPlayer);
@@ -264,12 +260,6 @@ export class Game {
     return state;
   }
 
-  #setReinforcementsIfNotExists() {
-    if (this.#reinforcementController.isDone) {
-      this.#reinforcementController.setToReinforce(this.#activePlayerId);
-    }
-  }
-
   #getDefenderCards(attacker, defender) {
     attacker.cards.push(...defender.cards);
   }
@@ -413,97 +403,6 @@ export class Game {
       players: this.#players,
       territories: this.#territories.territories,
     };
-  }
-
-  initialReinforcement(territoryId) {
-    const troopsLeft = this.#initialReinforcementController.addOne(territoryId);
-
-    const data = {
-      updatedTerritory: this.#territories.getTerritoryAndTroopsCount(
-        territoryId,
-      ),
-      remainingTroops: troopsLeft,
-    };
-
-    this.updateGame(STATES.INITIAL_REINFORCEMENT, data, this.#activePlayerId);
-    this.#changeTurn();
-
-    if (this.#initialReinforcementController.isDone) {
-      this.#updateState(STATES.REINFORCE);
-    }
-
-    return {
-      action: STATES.WAITING,
-      data: { ...data, currentPlayerId: this.#activePlayerId },
-    };
-  }
-
-  reinforce({ territoryId, troopCount }) {
-    if (this.#state === STATES.INITIAL_REINFORCEMENT) {
-      return this.initialReinforcement(territoryId, troopCount);
-    }
-
-    try {
-      const remainingTroopToDeploy = this.#reinforcementController.reinforce(
-        territoryId,
-        troopCount,
-      );
-
-      this.updateGame(
-        STATES.REINFORCE,
-        {
-          territoryId,
-          troopCount,
-        },
-        this.#activePlayerId,
-      );
-
-      if (this.#reinforcementController.isDone) {
-        this.#state = STATES.INVASION;
-      }
-
-      return {
-        action: this.#state,
-        data: {
-          updatedTerritory: this.#territories.getTerritoryAndTroopsCount(
-            territoryId,
-          ),
-          remainingTroops: remainingTroopToDeploy,
-          currentPlayerId: this.#activePlayerId,
-        },
-      };
-    } catch (e) {
-      console.log(e);
-      return {
-        action: this.#state,
-        data: {
-          updatedTerritory: this.#territories.getTerritoryAndTroopsCount(
-            territoryId,
-          ),
-          remainingTroops: 0,
-          currentPlayerId: this.#activePlayerId,
-        },
-      };
-    }
-  }
-
-  setupNextPhase() {
-    if (this.#state === STATES.INITIAL_REINFORCEMENT) {
-      const troopsToReinforce =
-        this.#initialReinforcementController.remainingTroop;
-      return {
-        action: this.#state,
-        data: { troopsToReinforce },
-      };
-    }
-
-    if (this.#state === STATES.REINFORCE) {
-      this.#setReinforcementsIfNotExists();
-      return {
-        action: this.#state,
-        data: { troopsToReinforce: this.#reinforcementController.remaining },
-      };
-    }
   }
 
   invade({ attackerTerritoryId, attackerTroops, defenderTerritoryId }) {
@@ -676,20 +575,7 @@ export class Game {
   }
 
   getCard() {
-    this.#state = STATES.REINFORCE;
-
-    const card = this.#cards.drawCard();
-    const activePlayer = this.#activePlayer;
-    activePlayer.cards.push(card);
-    this.#hasCaptured = false;
-
-    this.updateGame(
-      STATES.GET_CARD,
-      { playerId: this.#activePlayerId },
-      this.#activePlayerId,
-    );
-
-    return card;
+    return this.#cards.drawCard();
   }
 
   removePlayerCards(cards) {
@@ -712,35 +598,6 @@ export class Game {
   getCavalryTroops() {
     return this.#cavalry.getCurrentCount();
   }
-  tradeCard(cards) {
-    const isValidCombo = this.#cards.isValidCombination(cards);
-    const isPlayerCards = this.#isPlayerCards(cards);
-
-    if (!isValidCombo || !isPlayerCards) {
-      throw new Error("INVALID CARDS COMBO");
-    }
-    this.#state = STATES.REINFORCE;
-    const troops = this.#cavalry.getCurrentCount();
-
-    this.#reinforcementController.addExtraTroops(troops);
-
-    const remainingTroopsToDeploy = this.#reinforcementController.remaining;
-    this.removePlayerCards(cards);
-    this.#cavalry.moveCavalry();
-    const positions = this.#cavalry.getPositions();
-
-    this.updateGame(
-      STATES.TRADE_CARD,
-      {
-        playerId: this.#activePlayerId,
-        cavalryPositions: positions,
-        troopsLeft: remainingTroopsToDeploy,
-      },
-      this.#activePlayerId,
-    );
-
-    return { troops: remainingTroopsToDeploy, positions };
-  }
 
   isCurrentUserTerritory(territoryId) {
     return this.#territories.isTerritoryOwnBy(
@@ -757,8 +614,6 @@ export class Game {
       players: this.#players.map((player) => player.getSaveableData()),
       continents: this.#continents.getContinents(),
       state: this.#state,
-      initReinforce: this.#initialReinforcementController.saveableState(),
-      reinforce: this.#reinforcementController.saveableState(),
       invasion: this.#invasionController.saveableState(),
       cavalry: this.#cavalry.lastPos,
       hasCaptured: this.#hasCaptured,
@@ -777,13 +632,6 @@ export class Game {
     this.#invasionController = controller.invasionController;
 
     this.#invasionController.loadState(gameState.invasion);
-
-    this.#reinforcementController = controller.reinforcementController;
-    this.#reinforcementController.loadState(gameState.reinforce);
-
-    this.#initialReinforcementController =
-      controller.initialReinforcementController;
-    this.#initialReinforcementController.loadGameState(gameState.initReinforce);
 
     this.#activePlayerIndex = activePlayerIndex;
     this.#territories = handlers.territoriesHandler;
