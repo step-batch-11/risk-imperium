@@ -21,5 +21,6 @@ export const getReinforcementCount = (territories) => {
     3,
     Math.floor(territories.length / 3),
   );
+
   return reinforcementForTerritory + continentBonus;
 };

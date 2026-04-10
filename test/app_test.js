@@ -10,8 +10,6 @@ import { Cavalry } from "../src/models/cavalry.js";
 import { FortificationController } from "../src/handlers/fortification_controller.js";
 import { Cards } from "../src/models/cards.js";
 import { Territories } from "../src/models/territory.js";
-import { InitialReinforcementController } from "../src/handlers/initial_reinforcement_controller.js";
-import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../src/handlers/invasion_controller.js";
 import { loadGameStateForTest } from "./utilities.js";
 import defendState from "../data/tests/defend.json" with { type: "json" };
@@ -29,14 +27,6 @@ const createGame = () => {
   const utilities = { random: Math.random };
 
   const controllers = {
-    initialReinforcementController: new InitialReinforcementController(
-      1,
-      handlers.territoriesHandler,
-    ),
-    reinforcementController: new ReinforcementController(
-      handlers.territoriesHandler,
-      handlers.continentsHandler,
-    ),
     invasionController: new InvasionController(
       handlers.territoriesHandler,
       utilities.random,

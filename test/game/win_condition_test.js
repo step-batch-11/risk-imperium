@@ -2,8 +2,6 @@ import { beforeEach, describe } from "@std/testing/bdd";
 import { FortificationController } from "../../src/handlers/fortification_controller.js";
 import { Continents } from "../../src/models/continents.js";
 import { Territories } from "../../src/models/territory.js";
-import { InitialReinforcementController } from "../../src/handlers/initial_reinforcement_controller.js";
-import { ReinforcementController } from "../../src/handlers/reinforcement_controller.js";
 import { InvasionController } from "../../src/handlers/invasion_controller.js";
 import { mockPlayers } from "../../src/mock_data.js";
 import { CONFIG } from "../../src/config.js";
@@ -24,14 +22,6 @@ describe("WIN CONDITION", () => {
     const utilities = { random: () => 1 };
 
     const controllers = {
-      initialReinforcementController: new InitialReinforcementController(
-        1,
-        handlers.territoriesHandler,
-      ),
-      reinforcementController: new ReinforcementController(
-        handlers.territoriesHandler,
-        handlers.continentsHandler,
-      ),
       invasionController: new InvasionController(
         handlers.territoriesHandler,
         utilities.random,
