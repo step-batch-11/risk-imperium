@@ -1,7 +1,12 @@
 import { STATES } from "../config.js";
 import { ERROR_MESSAGE } from "../config/error_message.js";
 
-const continuousNeighbour = (territories, currentTerritory, owned, covered) => {
+export const continuousNeighbour = (
+  territories,
+  currentTerritory,
+  owned,
+  covered,
+) => {
   const set = [];
   for (const territoryId of currentTerritory.neighbours) {
     if (owned.includes(territoryId) && !covered.includes(territoryId)) {
@@ -39,19 +44,14 @@ const findTerritory = (territories, ownedTerritories) => {
   );
 };
 
-const getFortifiableTerritory = (territories, playerTerritories) => {
-  return findTerritory(territories, playerTerritories);
-};
-
-const validateTerritory = (
-  game,
+export const validateTerritory = (
   territories,
   playerTerritories,
   from,
   to,
   troopCount,
 ) => {
-  const territoriesSets = getFortifiableTerritory(
+  const territoriesSets = findTerritory(
     territories,
     playerTerritories,
   );
@@ -66,17 +66,13 @@ const validateTerritory = (
     throw new Error("Territories are not connected");
   }
   const fromTerritoryTroopCount = territories[from].troopCount;
+
   if (fromTerritoryTroopCount < troopCount + 1) {
-    throw new Error("InValid troop Count");
+    throw new Error("Invalid troop Count");
   }
-  if (!game.isCurrentUserTerritory(to)) {
-    throw ERROR_MESSAGE.INVALID_PARAMETERS;
-  }
-  if (!game.isCurrentUserTerritory(from)) {
-    throw ERROR_MESSAGE.INVALID_PARAMETERS;
-  }
+
   if (to === from) {
-    throw ERROR_MESSAGE.INVALID_PARAMETERS;
+    throw new Error(ERROR_MESSAGE.INVALID_SAME_TERRITORY);
   }
 };
 
@@ -91,7 +87,7 @@ export const fortificationService = (game, data) => {
   const territories = game.getAllTerritories();
   const playerTerritory = game.getPlayerTerritory(game.activePlayerId);
 
-  validateTerritory(game, territories, playerTerritory, from, to, troopCount);
+  validateTerritory(territories, playerTerritory, from, to, troopCount);
 
   game.moveTroops(
     from,

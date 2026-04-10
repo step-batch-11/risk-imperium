@@ -5,7 +5,7 @@ import {
 } from "./listeners.js";
 import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
 import { getSetup } from "./server_calls.js";
-import { SETUP_TRANSITION } from "./transition_handlers.js";
+import { playIntroReveal, SETUP_TRANSITION } from "./transition_handlers.js";
 import {
   renderCurrentPlayerName,
   renderGameState,
@@ -27,6 +27,8 @@ globalThis.onload = async () => {
   setup(gameState);
   addListenerToTrade(gameState);
   addListenerToCardIcon(gameState.player);
+
+  await playIntroReveal(gameState);
 
   if (gameState.state in SETUP_TRANSITION) {
     SETUP_TRANSITION[gameState.state](gameState);

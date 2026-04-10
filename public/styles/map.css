@@ -66,19 +66,24 @@ body {
 
 .territory-name,
 .troop-count {
-  font-weight: 600;
+  font-weight: 800;
   text-transform: uppercase;
   text-anchor: var(--text-centered);
   pointer-events: none;
+
+  fill: var(--text-primary);
+
+  paint-order: stroke fill;
+  stroke: var(--color-surface);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .territory-name {
-  fill: var(--text-primary);
   font-size: var(--territory-name-size);
 }
 
 .troop-count {
-  fill: var(--color-troop-count);
   font-size: var(--troop-count-size);
-  text-shadow: 0 0 3px #cdcdcd;
 }

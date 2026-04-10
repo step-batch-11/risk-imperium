@@ -1,51 +1,15 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { Game } from "../src/game.js";
 import { assert, assertEquals, assertFalse } from "@std/assert";
-import { CONFIG, STATES } from "../src/config.js";
-import { FortificationController } from "../src/handlers/fortification_controller.js";
-
-import { Cards } from "../src/models/cards.js";
-import { mockPlayers } from "../src/mock_data.js";
-import { Cavalry } from "../src/models/cavalry.js";
-import { InitialReinforcementController } from "../src/handlers/initial_reinforcement_controller.js";
-import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
-import { InvasionController } from "../src/handlers/invasion_controller.js";
-
+import { STATES } from "../src/config.js";
 import aboutToWon from "../data/tests/about-to-win.json" with { type: "json" };
 import { loadGameStateForTest } from "./utilities.js";
-import { Continents } from "../src/models/continents.js";
-import { Territories } from "../src/models/territory.js";
+import { createGame } from "../src/create_game.js";
 
 describe("Game", () => {
   let game;
 
   beforeEach(() => {
-    const handlers = {
-      fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-      continentsHandler: new Continents(),
-      cardsHandler: new Cards(),
-      cavalry: new Cavalry(),
-      territoriesHandler: new Territories(CONFIG.TERRITORIES),
-    };
-
-    const utilities = { random: Math.random };
-
-    const controllers = {
-      initialReinforcementController: new InitialReinforcementController(
-        1,
-        handlers.territoriesHandler,
-      ),
-      reinforcementController: new ReinforcementController(
-        handlers.territoriesHandler,
-        handlers.continentsHandler,
-      ),
-      invasionController: new InvasionController(
-        handlers.territoriesHandler,
-        utilities.random,
-      ),
-    };
-
-    game = new Game(mockPlayers(), handlers, controllers, utilities);
+    game = createGame();
   });
 
   it("setup method should return data for the single user", () => {
@@ -71,6 +35,7 @@ describe("Game", () => {
     beforeEach(() => {
       loadGameStateForTest(game, aboutToWon);
     });
+
     it("should give true if current player own territory of given territory id ", () => {
       assert(game.isCurrentUserTerritory(16));
     });
@@ -83,7 +48,7 @@ describe("Game", () => {
   describe("getGameState", () => {
     it("Should return the current state of the game", () => {
       const state = game.getGameState();
-      assertEquals(state, STATES.SETUP);
+      assertEquals(state, STATES.INITIAL_REINFORCEMENT);
     });
   });
 
@@ -98,9 +63,6 @@ describe("Game", () => {
         "players",
         "continents",
         "state",
-        "initReinforce",
-        "reinforce",
-        "invasion",
         "cavalry",
         "hasCaptured",
         "round",
@@ -112,7 +74,7 @@ describe("Game", () => {
       const parameters = Object.keys(gameState);
       assertEquals(expectedParameters.length, parameters.length);
       assert(parameters.every((param) => expectedParameters.includes(param)));
-      assertEquals(gameState.state, STATES.SETUP);
+      assertEquals(gameState.state, STATES.INITIAL_REINFORCEMENT);
     });
 
     it("Should return updated game state when game is initialize and troop initialization action is already done", () => {
@@ -125,9 +87,6 @@ describe("Game", () => {
         "players",
         "continents",
         "state",
-        "initReinforce",
-        "reinforce",
-        "invasion",
         "cavalry",
         "hasCaptured",
         "round",
@@ -149,33 +108,7 @@ describe("Game", () => {
   });
 
   describe("LOAD GAME STATE", () => {
-    const handlers = {
-      fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-      continentsHandler: new Continents(),
-      cardsHandler: new Cards(),
-      cavalry: new Cavalry(),
-      territoriesHandler: new Territories(CONFIG.TERRITORIES),
-    };
-
-    const utilities = { random: Math.random };
-
-    const controllers = {
-      initialReinforcementController: new InitialReinforcementController(
-        1,
-        handlers.territoriesHandler,
-      ),
-      reinforcementController: new ReinforcementController(
-        handlers.territoriesHandler,
-        handlers.continentsHandler,
-      ),
-      invasionController: new InvasionController(
-        handlers.territoriesHandler,
-        utilities.random,
-      ),
-    };
-
-    const game1 = new Game(mockPlayers(), handlers, controllers, utilities);
-
+    const game1 = createGame();
     game1.initTerritories();
 
     const initializedGameState = game1.getSavableGameState();
@@ -188,7 +121,7 @@ describe("Game", () => {
       loadGameStateForTest(game, initialGameState);
       const loadedGameState = game.getSavableGameState();
 
-      assertEquals(loadedGameState.state, STATES.SETUP);
+      assertEquals(loadedGameState.state, STATES.INITIAL_REINFORCEMENT);
     });
 
     it("Should load the initialized game state when loaded with initializedGameState", () => {

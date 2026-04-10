@@ -3,8 +3,11 @@ import { getReinforcementCount } from "./setup_reinforce.js";
 
 export const setupService = (game) => {
   const playerTerritory = game.activePlayerTerritory;
+
   if (game.getGameState() === STATES.INITIAL_REINFORCEMENT) {
     const troopsToReinforce = game.remainingTroop;
+    console.log({ troopsToReinforce });
+
     return {
       action: game.getGameState(),
       data: { troopsToReinforce },

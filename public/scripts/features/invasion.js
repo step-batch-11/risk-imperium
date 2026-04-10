@@ -26,6 +26,27 @@ const isMyTerritory = (gameState, territoryId) => {
   return gameState.player.territories.includes(territoryId);
 };
 
+const hasEnemyNeighbour = (gameState, territoryId) =>
+  gameState.territories[territoryId].neighbours.some(
+    (neighbour) => !isMyTerritory(gameState, neighbour),
+  );
+
+const hasEnoughTroops = (gameState, territoryId) =>
+  gameState.territories[territoryId].troopCount > 1;
+
+const canAttackFrom = (gameState, territoryId) =>
+  hasEnoughTroops(gameState, territoryId) &&
+  hasEnemyNeighbour(gameState, territoryId);
+
+const isAttackableTerritory = (gameState, territoryId) =>
+  isMyTerritory(gameState, territoryId) &&
+  canAttackFrom(gameState, territoryId);
+
+const isNeighbouringOpponent = (gameState, selectedTerritoryId) => {
+  if (!gameState.invadeDetials) return false;
+  return gameState.invadeDetials.neighbours.includes(selectedTerritoryId);
+};
+
 const selectAttackingTroops = (event, gameState, attacker, handleSelection) => {
   const troopCount = gameState.territories[attacker].troopCount;
   const maxTroops = Math.min(3, troopCount - 1);
@@ -36,9 +57,49 @@ const selectAttackingTroops = (event, gameState, attacker, handleSelection) => {
   displayTroopSelector(event, LABELS.INVASION);
 };
 
-const isNeighbouringOpponent = (gameState, selectedTerritoryId) => {
-  if (!gameState.invadeDetials) return false;
-  return gameState.invadeDetials.neighbours.includes(selectedTerritoryId);
+export const highlightPotentialAttackers = (gameState) => {
+  removeHighlights("can-attack");
+
+  const potentialAttackers = gameState.player.territories.filter((
+    territoryId,
+  ) => canAttackFrom(gameState, territoryId));
+
+  highlightTerritories(potentialAttackers, "can-attack");
+};
+
+const selectAttacker = (gameState, selectedTerritoryId) => {
+  removeHighlights("selected");
+  removeHighlights("target");
+
+  const neighbours = opponentNeighbours(
+    gameState.player,
+    gameState.territories,
+    selectedTerritoryId,
+  );
+
+  gameState.invadeDetials = { attacker: selectedTerritoryId, neighbours };
+
+  highlightTerritories([selectedTerritoryId], "selected");
+  highlightTerritories(neighbours, "target");
+};
+
+const selectDefender = (event, gameState, selectedTerritoryId) => {
+  removeHighlights("target");
+
+  const attackerTerritoryId = gameState.invadeDetials.attacker;
+  const defenderTerritoryId = selectedTerritoryId;
+  gameState.invadeDetials.defender = defenderTerritoryId;
+
+  const handleSelection = async (troopCount) =>
+    await handleAttack(
+      gameState,
+      attackerTerritoryId,
+      defenderTerritoryId,
+      troopCount,
+    );
+
+  highlightTerritories([defenderTerritoryId], "target");
+  selectAttackingTroops(event, gameState, attackerTerritoryId, handleSelection);
 };
 
 const handleAttack = async (
@@ -61,54 +122,11 @@ const handleAttack = async (
 
   removeSkipButton();
   removeHighlights("selected");
+  removeHighlights("target");
+  removeHighlights("can-attack");
+
   setUpNextPhase(gameState, newState);
 };
-
-const selectAttacker = (gameState, selectedTerritoryId) => {
-  removeHighlights("highlight", ".territory");
-  const neighbours = opponentNeighbours(
-    gameState.player,
-    gameState.territories,
-    selectedTerritoryId,
-  );
-
-  gameState.invadeDetials = { attacker: selectedTerritoryId, neighbours };
-
-  highlightTerritories(neighbours, "highlight");
-};
-
-const selectDefender = (event, gameState, selectedTerritoryId) => {
-  removeHighlights("highlight", ".territory");
-  const attackerTerritoryId = gameState.invadeDetials.attacker;
-  const defenderTerritoryId = selectedTerritoryId;
-  gameState.invadeDetials.defender = defenderTerritoryId;
-
-  const handleSelection = async (troopCount) =>
-    await handleAttack(
-      gameState,
-      attackerTerritoryId,
-      defenderTerritoryId,
-      troopCount,
-    );
-  highlightTerritories([defenderTerritoryId], "higlight");
-  selectAttackingTroops(event, gameState, attackerTerritoryId, handleSelection);
-};
-
-const hasEnemyNeighbour = (gameState, territoryId) =>
-  gameState.territories[territoryId].neighbours.some(
-    (neighbour) => !isMyTerritory(gameState, neighbour),
-  );
-
-const hasEnoughTroops = (gameState, territoryId) =>
-  gameState.territories[territoryId].troopCount > 1;
-
-const canAttackFrom = (gameState, territoryId) =>
-  hasEnoughTroops(gameState, territoryId) &&
-  hasEnemyNeighbour(gameState, territoryId);
-
-const isAttackableTerritory = (gameState, territoryId) =>
-  isMyTerritory(gameState, territoryId) &&
-  canAttackFrom(gameState, territoryId);
 
 export const handleInvasion = (territory, gameState, event) => {
   const selectedTerritoryId = Number(territory.dataset.territoryId);
@@ -120,6 +138,10 @@ export const handleInvasion = (territory, gameState, event) => {
   if (isNeighbouringOpponent(gameState, selectedTerritoryId)) {
     return selectDefender(event, gameState, selectedTerritoryId);
   }
+
+  removeHighlights("selected");
+  removeHighlights("target");
+  highlightPotentialAttackers(gameState);
 
   showNotification(
     NOTIFICATION_MESSAGES.INVALID_TERRITORY,

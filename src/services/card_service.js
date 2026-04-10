@@ -1,6 +1,6 @@
 import { STATES } from "../config.js";
 
-const validateCardCombination = (game, cards) => {
+export const validateCardCombination = (game, cards) => {
   const isValidCombo = game.isValidCombination(cards);
   const isPlayerCards = game.isPlayerCards(cards);
 

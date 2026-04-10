@@ -66,15 +66,13 @@
 
 .avatar {
   border: var(--avatar-border);
-  width: 3.5em;
-  height: 3.5em;
   border-radius: 50%;
   background-color: var(--color-bg-avatar);
 }
 
 .player-profile {
-  width: 3.5em;
-  height: 3.5em;
+  width: 4em;
+  height: 4em;
   border-radius: 50%;
   border: 2px black;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;

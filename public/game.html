@@ -23,6 +23,24 @@
     <div class="game-viewport">
       <div class="map-layer">
         <svg viewBox="200 100 752 535" id="map-svg">
+          <defs>
+            <pattern
+              id="danger-stripe"
+              patternUnits="userSpaceOnUse"
+              width="10"
+              height="10"
+              patternTransform="rotate(-45)"
+            >
+              <line
+                x1="0"
+                y="0"
+                x2="0"
+                y2="10"
+                stroke="rgba(200, 50, 50, 0.6)"
+                stroke-width="5"
+              />
+            </pattern>
+          </defs>
           <g>
             <!-- Continent Outlines -->
             <g id="australia-continent-outline" class="continent-outline">

@@ -31,7 +31,8 @@
   --color-player-info: #635432;
   --color-player-name: #c99000;
 
-  --map-background: #f0f0f0;
+  --map-background: linear-gradient(135deg, #f0f0f0 0%, #dcf0fb 100%);
+
   --color-map-stroke: #5c4b37;
 
   --color-troop-count: rgba(0, 0, 0, 0.7);
@@ -45,17 +46,24 @@
 
   --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
 
-  --player-1: #b07a6a;
-  --player-2: #6f8fa6;
-  --player-3: #c1a45a;
-  --player-4: #7f9c8b;
-  --player-5: #8c6f9c;
-  --player-6: #a4876a;
+  --player-1: hsl(4, 75%, 69%);
+  --player-2: hsl(209, 75%, 65%);
+  --player-3: hsl(40, 75%, 66%);
+  --player-4: hsl(193, 75%, 62%);
+  --player-5: hsl(338, 75%, 75%);
+  --player-6: hsl(25, 75%, 65%);
 
-  --color-success: #8f9f7a;
-  --color-warning: #c2a96a;
-  --color-info: #6c7a89;
-  --color-fail: #a05a4a;
+  /* --player-1: hsl(4, 60%, 70%); */
+  /* --player-2: hsl(209, 60%, 70%); */
+  /* --player-3: hsl(40, 60%, 70%); */
+  /* --player-4: hsl(193, 60%, 70%); */
+  /* --player-5: hsl(338, 60%, 70%); */
+  /* --player-6: hsl(25, 60%, 70%); */
+
+  --color-success: #557153;
+  --color-warning: #b07d35;
+  --color-info: #425b66;
+  --color-fail: #8b3e36;
 
   --north-america-outline: #b07a6a;
   --south-america-outline: #6f8fa6;

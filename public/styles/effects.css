@@ -1,5 +1,3 @@
-@import url(root.css);
-
 .continent > g {
   transform-box: fill-box;
   transform-origin: center;
@@ -13,19 +11,6 @@
   filter: brightness(1.08);
 }
 
-.selected > .territory-outline {
-  stroke: rgb(74, 74, 74);
-  stroke-width: 2px;
-}
-
-.highlight > .territory-outline {
-  cursor: pointer;
-  stroke: var(--color-highlight);
-  stroke-width: 2px;
-  stroke-opacity: 0.5;
-  transition: fill 0.3s ease-in-out;
-}
-
 .captured {
   transition: all 10s ease-in;
   stroke: var(--color-selected-territory);
@@ -33,4 +18,76 @@
   fill: var(--color-captured);
   fill-opacity: 0.5;
   filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.can-attack > .territory-outline {
+  cursor: pointer;
+  stroke: #ffffff;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  mask-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 1),
+    rgba(0, 0, 0, 1) 4px,
+    rgba(0, 0, 0, 0.7) 4px,
+    rgba(0, 0, 0, 0.7) 8px
+  );
+}
+
+.selected > .territory-outline {
+  stroke: whitesmoke;
+  stroke-width: 2;
+}
+
+.target > .territory-outline {
+  cursor: pointer;
+  stroke: whitesmoke;
+  stroke-width: 2;
+  animation: friendly-breathe 1.5s infinite alternate ease-in-out;
+}
+
+.can-fortify > .territory-outline {
+  cursor: pointer;
+  stroke: whitesmoke;
+  stroke-width: 2px;
+  animation: friendly-breathe 2s infinite ease-in-out;
+}
+
+.fortify-selected > .territory-outline {
+  -webkit-mask-image: none;
+  mask-image: none;
+  filter: brightness(1.15);
+  stroke: whitesmoke;
+  stroke-width: 3.5px;
+  animation: none;
+}
+
+.fortify-target > .territory-outline {
+  cursor: pointer;
+  -webkit-mask-image: none;
+  mask-image: none;
+  stroke: whitesmoke;
+  stroke-width: 2.5px;
+  stroke-dasharray: 6 4;
+  filter: brightness(1.1);
+  animation: friendly-pulse 1.5s infinite alternate ease-in-out;
+}
+
+.fortify-target:hover > .territory-outline {
+  stroke-width: 3.5px;
+  filter: brightness(1.25) drop-shadow(0 0 6px rgba(245, 245, 245, 0.5));
+}
+
+.territory > .territory-outline {
+  transition:
+    filter 0.8s ease,
+    stroke 0.8s ease,
+    stroke-width 0.8s ease,
+    transform 0.8s ease;
+}
+
+#map-svg.intro-dim .territory.intro-flash > .territory-outline {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+  stroke: #f9f9f9;
+  stroke-width: 2.5;
 }

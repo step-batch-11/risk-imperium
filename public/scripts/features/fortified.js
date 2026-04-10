@@ -24,10 +24,14 @@ const handleFortifyTerritoryFromSelection = (gameState, territory) => {
     return;
   }
 
+  removeHighlights("can-fortify");
+
   const territoriesToMoveTo = connectedTerritories.filter((tid) => tid !== id);
-  highlightTerritories([id], "reinforce-from-selected");
+
+  highlightTerritories([id], "fortify-selected");
   removeHighlights("selected");
-  highlightTerritories(territoriesToMoveTo);
+
+  highlightTerritories(territoriesToMoveTo, "fortify-target");
   gameState.fortifyFrom = id;
 };
 
@@ -44,6 +48,10 @@ const handleFortification = async (_event, gameState, fromId, id, count) => {
   delete gameState.fortifyTo;
 
   removeSkipButton();
+
+  removeHighlights("fortify-selected");
+  removeHighlights("fortify-target");
+
   setUpNextPhase(gameState, nextPhase);
 };
 
@@ -66,6 +74,9 @@ const handleFortifyTo = (event, gameState, territory) => {
   const handleSelection = async (troopCount) =>
     await handleFortification(event, gameState, fromId, id, troopCount);
 
+  removeHighlights("fortify-target");
+  highlightTerritories([id], "fortify-target");
+
   selectFortifyingTroops(event, gameState, fromId, handleSelection);
 };
 
@@ -85,7 +96,9 @@ export const handleFortified = (territory, gameState, event) => {
 
   if (id === gameState.fortifyFrom) {
     delete gameState.fortifyFrom;
-    removeHighlights("reinforce-from-selected");
+
+    removeHighlights("fortify-selected");
+    removeHighlights("fortify-target");
     removeHighlights("selected");
     removeSkipButton();
     SETUP_TRANSITION[STATES.FORTIFICATION](gameState);
@@ -94,6 +107,7 @@ export const handleFortified = (territory, gameState, event) => {
 
   if (connectedTerritories.includes(gameState.fortifyFrom)) {
     handleFortifyTo(event, gameState, territory);
-    removeHighlights("reinforce-from-selected");
+
+    removeHighlights("fortify-selected");
   }
 };

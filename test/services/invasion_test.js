@@ -4,11 +4,7 @@ import { assertEquals, assertThrows } from "@std/assert";
 import { invadeService } from "../../src/services/invade.js";
 import { defendService } from "../../src/services/defend.js";
 
-import { Game } from "../../src/game.js";
-import { mockPlayers } from "../../src/mock_data.js";
-import { FortificationController } from "../../src/handlers/fortification_controller.js";
-import { Territories } from "../../src/models/territory.js";
-import { CONFIG, STATES } from "../../src/config.js";
+import { STATES } from "../../src/config.js";
 
 import invasion from "../../data/tests/invasion copy.json" with {
   type: "json",
@@ -18,26 +14,15 @@ import winState from "../../data/tests/win.json" with {
   type: "json",
 };
 
-import { Continents } from "../../src/models/continents.js";
-import { Cards } from "../../src/models/cards.js";
-import { Cavalry } from "../../src/models/cavalry.js";
 import { loadGameStateForTest } from "../utilities.js";
 import { resolveCombatService } from "../../src/services/resolve_combat.js";
+import { createGame } from "../../src/create_game.js";
 
 describe("Invasion test", () => {
   let game;
-  const utilities = { random: Math.random };
-  const handlers = {
-    territoriesHandler: new Territories(CONFIG.TERRITORIES),
-    continentHandler: new Continents(CONFIG.CONTINENTS),
-    fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-    cardsHandler: new Cards(),
-    cavalry: new Cavalry(),
-  };
 
-  const controllers = {};
   beforeEach(() => {
-    game = new Game(mockPlayers(), handlers, controllers, utilities);
+    game = createGame();
     loadGameStateForTest(game, invasion);
   });
   describe("===> INVADE", () => {
@@ -121,18 +106,8 @@ describe("Invasion test", () => {
 
 describe("===> DEFEND", () => {
   let game;
-  const utilities = { random: Math.random };
-  const handlers = {
-    territoriesHandler: new Territories(CONFIG.TERRITORIES),
-    continentHandler: new Continents(CONFIG.CONTINENTS),
-    fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-    cardsHandler: new Cards(),
-    cavalry: new Cavalry(),
-  };
-
-  const controllers = {};
   beforeEach(() => {
-    game = new Game(mockPlayers(), handlers, controllers, utilities);
+    game = createGame();
     loadGameStateForTest(game, invasion);
     const invadeDetail = {
       attackerTerritoryId: 2,
@@ -182,18 +157,9 @@ describe("===> DEFEND", () => {
 
 describe("===> RESOLVE COMBAT", () => {
   let game;
-  const utilities = { random: () => 1 };
-  const handlers = {
-    territoriesHandler: new Territories(CONFIG.TERRITORIES),
-    continentHandler: new Continents(CONFIG.CONTINENTS),
-    fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-    cardsHandler: new Cards(),
-    cavalry: new Cavalry(),
-  };
 
-  const controllers = {};
   beforeEach(() => {
-    game = new Game(mockPlayers(), handlers, controllers, utilities);
+    game = createGame();
     loadGameStateForTest(game, invasion);
     const invadeDetail = {
       attackerTerritoryId: 2,
@@ -226,18 +192,9 @@ describe("===> RESOLVE COMBAT", () => {
 
 describe("===> RESOLVE  COMBAT WIN STATE", () => {
   let game;
-  const utilities = { random: () => 1 };
-  const handlers = {
-    territoriesHandler: new Territories(CONFIG.TERRITORIES),
-    continentHandler: new Continents(CONFIG.CONTINENTS),
-    fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-    cardsHandler: new Cards(),
-    cavalry: new Cavalry(),
-  };
 
-  const controllers = {};
   beforeEach(() => {
-    game = new Game(mockPlayers(), handlers, controllers, utilities);
+    game = createGame();
     loadGameStateForTest(game, winState);
     const invadeDetail = {
       attackerTerritoryId: 26,

@@ -232,20 +232,20 @@
 }
 
 [data-card-type="canon"] {
-  background-image: url(../assets/canon.svg);
+  background-image: url(../assets/artillary.png);
   background-position: center;
   background-size: cover;
 }
 
 [data-card-type="soldier"] {
-  background-image: url(../assets/cavalry.png);
+  background-image: url(../assets/infantry.png);
   background-size: cover;
   background-position: center;
 }
 
 [data-card-type="knight"] {
   background-size: cover;
-  background-image: url(../assets/artillery.png);
+  background-image: url(../assets/artillary.png);
   background-position: center;
 }
 
@@ -270,12 +270,48 @@
 .notification {
   position: fixed;
   display: none;
-  width: 100%;
-  top: 80%;
-  left: 0px;
-  height: 4em;
+  width: 60%;
+  left: 20%;
+  top: 82%;
+  height: auto;
+  padding: 15px 30px;
+
+  border-radius: 8px;
+  border: 2px solid var(--text-primary);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+  transform: translateY(20px);
+  z-index: 1000;
+}
+
+.notification[style*="display: flex"] {
+  transform: translateY(0);
+}
+
+.notification.success {
+  background: var(--color-success);
+}
+.notification.fail {
+  background: var(--color-fail);
+}
+.notification.info {
+  background: var(--color-info);
+}
+.notification.warning {
+  background: var(--color-warning);
+}
+
+#notification-text {
+  color: var(--color-surface);
+  font-family: var(--secondary-font);
+  text-align: center;
+  font-size: 1.9em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  margin: 0;
 }
 
 .notification.success,
@@ -288,29 +324,6 @@
   opacity: 0.8;
 }
 
-.notification.success {
-  background: var(--color-success);
-}
-
-.notification.fail {
-  background: var(--color-fail);
-}
-
-#notification-text {
-  color: black;
-  font-family: var(--text-secondary);
-  text-align: center;
-  font-size: 2em;
-}
-
-.notification.info {
-  background: var(--color-info);
-}
-
-.notification.warning {
-  background: var(--color-warning);
-}
-
 #skip-button {
   position: fixed;
   right: 3%;
@@ -318,7 +331,7 @@
 
   padding: 12px 22px;
   font-size: 16px;
-  font-family: var(--secondary-font);
+  font-family: var(--primary-font);
 
   color: #3e3326;
 
@@ -492,6 +505,7 @@ input[type="number"]::-webkit-inner-spin-button {
   padding: 0.5em;
   border-radius: 4px;
 }
+
 #joinBtn-container {
   display: flex;
   align-items: center;
