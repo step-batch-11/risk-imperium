@@ -77,10 +77,6 @@ export const createApp = (
 
   app.get("/get-lobby-data", sendLobbyData);
 
-  app.get("/login.html", (c) => {
-    return c.redirect("/dev");
-  });
-
   app.get(
     "/login.html",
     redirectLoggedInPlayer,
