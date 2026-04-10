@@ -3,10 +3,12 @@ export class Player {
   #name;
   #cards;
   #resolver;
+  #colorId;
   constructor(id, name, cards = []) {
     this.#id = id;
     this.#name = name;
     this.#cards = cards;
+    this.#colorId;
   }
 
   get id() {
@@ -19,9 +21,12 @@ export class Player {
   get cards() {
     return this.#cards;
   }
+  set color(colorId) {
+    this.#colorId = colorId;
+  }
 
   getBasicDetails() {
-    return { id: this.#id, name: this.#name };
+    return { id: this.#id, name: this.#name, colorId: this.#colorId };
   }
 
   set resolve(resolve) {

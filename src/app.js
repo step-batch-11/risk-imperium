@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
-import { handleUserActions, handleWaiting } from "./handlers/user_actions.js";
+import { gameController, handleWaiting } from "./handlers/user_actions.js";
 import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
@@ -57,7 +57,7 @@ export const createApp = (
     rejectUnknownUser,
     rejectIfNotInGame,
     setGame,
-    handleUserActions,
+    gameController,
   );
 
   app.post("/login", redirectLoggedInPlayer, loginHandler);
@@ -141,6 +141,7 @@ export const createApp = (
       return c.json("Done");
     });
   }
+
   app.get("*", serveStatic({ root: "./public" }));
   return app;
 };

@@ -23,7 +23,8 @@ const startQuickGame = (id) => {
 const startHostGame = (id) => {
   const startBtn = renderStartButton();
   startBtn.addEventListener("click", async () => {
-    await fetch("/start-game");
+    const res = await fetch("/start-game").then((x) => x.json());
+    if (!res.ok) return;
     globalThis.location = "/game.html";
     clearInterval(id);
     return;
@@ -41,7 +42,6 @@ const renderStartButton = () => {
   navigationsContainer.replaceChildren(clone);
   return startBtn;
 };
-
 const createPlayerElement = (name, playerTemplate) => {
   const clone = playerTemplate.content.cloneNode(true);
   const playerNameContainer = clone.querySelector(".player-name-container");
@@ -52,8 +52,6 @@ const createPlayerElement = (name, playerTemplate) => {
   playerNameContainer.textContent = name;
   return clone;
 };
-
-const isHost = (data, playerId) => data.host === Number(playerId.value);
 
 const updatePlayers = (container, players, lobbyId) => {
   displayRoomId(lobbyId);
@@ -68,9 +66,8 @@ const updatePlayers = (container, players, lobbyId) => {
 
 const updateLobby = async (playerContainer, id) => {
   const response = await fetch("/get-lobby-data");
-  const playerId = await cookieStore.get("playerId");
 
-  const { playerDetails, data } = await response.json();
+  const { playerDetails, data, isHost } = await response.json();
   if (response.status === 200) {
     updatePlayers(playerContainer, playerDetails, data.id);
   }
@@ -82,8 +79,11 @@ const updateLobby = async (playerContainer, id) => {
     return startQuickGame(id);
   }
 
-  if (data.status === "in-game" && isHost(data, playerId)) {
+  if (data.status === "in-game" && isHost) {
     return startHostGame(id);
+  }
+  if (data.status !== "in-game" && isHost) {
+    return nav.textContent = "";
   }
 };
 
@@ -102,9 +102,10 @@ const addListenerToLeave = () => {
 
 const main = () => {
   const playersContainer = document.querySelector("#players-container");
-  updateLobby(playersContainer);
+  const nav = document.querySelector("#navigations");
+  updateLobby(playersContainer, "", nav);
   const id = setInterval(() => {
-    updateLobby(playersContainer, id);
+    updateLobby(playersContainer, id, nav);
   }, 2000);
 
   addListenerToLeave();

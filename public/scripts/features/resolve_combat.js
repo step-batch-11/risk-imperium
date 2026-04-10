@@ -23,7 +23,7 @@ export const handleCombat = async (gameState) => {
 
   updateTroopsInTerritories(gameState, updatedTerritories);
   if (data.hasWon) {
-    const playerId = gameState.player.id;
+    const playerId = gameState.player.colorId;
     changeTerritoryOwner(updatedTerritories, playerId);
   }
   showNotification(message, data.notifyMsg.status);

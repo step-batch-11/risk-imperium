@@ -15,10 +15,14 @@ const setGameId = (context) => {
   const lobbyId = getCookie(context, "lobbyId");
   const lobbies = context.get("lobbies");
   const lobby = lobbies.get(Number(lobbyId));
+  if (lobby.status === "waiting") {
+    return { ok: false, lobby };
+  }
   const gamesRepo = context.get("gamesRepo");
   const game = createGame(lobby.players);
   gamesRepo.set(lobby.id, game);
-  return { lobby, lobbyId };
+  setCookie(context, "gameId", lobbyId);
+  return { ok: true, lobby };
 };
 
 const createPlayer = (context) => {
@@ -33,11 +37,11 @@ const createPlayer = (context) => {
 const isRoomFilled = (lobby) => lobby.players.length === 3;
 
 export const startGame = (context) => {
-  const { lobby, lobbyId } = setGameId(context);
-
-  lobby.status = "game-started";
-  setCookie(context, "gameId", lobbyId);
-  return context.json(lobby);
+  const game = setGameId(context);
+  if (game.ok) {
+    game.lobby.status = "game-started";
+  }
+  return context.json(game);
 };
 
 export const joinRoom = async (context) => {
@@ -110,6 +114,7 @@ export const moveToLobby = (context) => {
 
 export const sendLobbyData = (context) => {
   const lobbies = context.get("lobbies");
+  const playerId = Number(getCookie(context, "playerId"));
   const lobbyId = getCookie(context, "lobbyId");
   const lobby = lobbies.get(Number(lobbyId));
 
@@ -123,6 +128,7 @@ export const sendLobbyData = (context) => {
   const data = {
     playerDetails: lobby.players.map((p) => p.name),
     data: lobby,
+    isHost: playerId === lobby.host,
   };
 
   return context.json(data);
@@ -135,11 +141,15 @@ export const leaveLobbyHandler = (context) => {
   const lobby = lobbies.get(Number(lobbyId));
   const playerId = Number(getCookie(context, "playerId"));
   const response = { data: {} };
-  if (lobby.status === "waiting") {
+  if (
+    lobby.status === "waiting" ||
+    (lobby.roomType === "private" && lobby.status === "in-game")
+  ) {
     const playerIdx = lobby.players.findIndex((player) =>
       player.id === playerId
     );
     lobby.players.splice(playerIdx, 1);
+    lobby.status = "waiting";
     response.action = "LEAVE";
     response.data = { success: true };
     deleteCookie(context, "lobbyId");

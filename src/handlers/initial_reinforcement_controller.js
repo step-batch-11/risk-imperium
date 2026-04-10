@@ -22,13 +22,13 @@ export class InitialReinforcementController {
     return this.#troops - Math.ceil(deployedTroopsPerPlayer);
   }
 
-  get isDone() {
-    return this.#isDone;
-  }
-
   get remainingTroop() {
     const deployedTroopsPerPlayer = this.#round / this.#playersCount;
     return this.#troops - Math.floor(deployedTroopsPerPlayer);
+  }
+
+  get isDone() {
+    return this.#isDone;
   }
 
   saveableState() {

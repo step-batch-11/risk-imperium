@@ -84,6 +84,7 @@ export class TerritoriesHandler {
 
   updateOwner(id, newOwnerId) {
     this.#territories[id].ownerId = newOwnerId;
+
     return newOwnerId;
   }
 

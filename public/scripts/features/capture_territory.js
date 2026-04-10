@@ -34,7 +34,7 @@ const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
     gameState.territories,
     defenderTerritoryId,
   );
-  territoryElement.dataset.player = gameState.player.id;
+  territoryElement.dataset.player = gameState.player.colorId;
 };
 
 const showCapturedMsg = (gameState, defenderTerritoryId) => {
@@ -42,7 +42,7 @@ const showCapturedMsg = (gameState, defenderTerritoryId) => {
   showNotification(msg, NOTIFICATION_TYPES.SUCCESS);
 };
 
-const handleElimination = (defender, gameState, combatResult) => {
+const handlePostElimination = (defender, gameState, combatResult) => {
   gameState.player.cards = combatResult.newCards;
   updateCards(gameState.player.cards);
   addCardAlert();
@@ -55,11 +55,12 @@ const handleElimination = (defender, gameState, combatResult) => {
 
 const handlePostCapture = async (gameState, defender, troopCount) => {
   const { action, data } = await sendCaptureRequest(troopCount);
+
   updateTroopsInTerritories(gameState, data.updatedTerritories);
   setUpNextPhase(gameState, action);
 
   if (data.hasEliminated) {
-    return handleElimination(defender, gameState, data);
+    handlePostElimination(defender, gameState, data);
   }
 
   renderPlayersDetails(gameState);
@@ -84,6 +85,7 @@ export const captureTerritory = (
   updatePlayerTerritories(defender, defenderTerritoryId, gameState);
   addPlayerIdToTerritory(gameState, defenderTerritoryId);
   showCapturedMsg(gameState, defenderTerritoryId);
+
   const maxLimit = gameState.territories[attackerTerritoryId].troopCount - 1;
 
   if (maxLimit <= 0) return handlePostCapture(gameState, defender, maxLimit);

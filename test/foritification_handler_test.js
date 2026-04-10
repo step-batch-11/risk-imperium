@@ -8,9 +8,9 @@ import { assertEquals } from "@std/assert/equals";
 import { assertThrows } from "@std/assert/throws";
 import { TerritoriesHandler } from "../src/models/territoryHandler.js";
 import { loadGameStateForTest } from "./utilities.js";
-import { fortificationHandler } from "../src/models/fortification_handler.js";
 import { Game } from "../src/game.js";
 import { STATES } from "../src/config.js";
+import { fortificationService } from "../src/services/fortification.js";
 
 describe("FORTIFICATION ", () => {
   let fortificationController;
@@ -78,7 +78,7 @@ describe("FORTIFICATION ", () => {
 
       loadGameStateForTest(game, fortification);
 
-      const data = fortificationHandler(
+      const data = fortificationService(
         game,
         { from: 18, to: 19, count: 7 },
         1,
@@ -89,31 +89,31 @@ describe("FORTIFICATION ", () => {
     });
 
     it("Should not return the new phase and shouldn't updated territory when from territory is invalid", () => {
-      const expectedData = [];
       loadGameStateForTest(game, fortification);
-      const data = fortificationHandler(game, { from: 18, to: 1, count: 7 });
-      assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
+      assertThrows(() =>
+        fortificationService(game, { from: 18, to: 1, count: 7 })
+      );
     });
 
     it("Should not return the new phase and shouldn't updated territory when to territory is invalid", () => {
-      const expectedData = [];
       loadGameStateForTest(game, fortification);
-      const data = fortificationHandler(game, { from: 1, to: 19, count: 7 });
-      assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
+      assertThrows(() =>
+        fortificationService(game, { from: 1, to: 19, count: 7 })
+      );
     });
 
     it("Should not return the new phase and shouldn't updated territory when both territory id are same", () => {
-      const expectedData = [];
       loadGameStateForTest(game, fortification);
-      const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
-      assertEquals(data, { action: STATES.FORTIFICATION, data: expectedData });
+      assertThrows(() =>
+        fortificationService(game, { from: 22, to: 22, count: 9 })
+      );
     });
 
     it("Should return the previous phase when called without fortification phase", () => {
-      const expectedData = [];
-      game;
-      const data = fortificationHandler(game, { from: 22, to: 22, count: 9 });
-      assertEquals(data, { action: STATES.SETUP, data: expectedData });
+      loadGameStateForTest(game, fortification);
+      assertThrows(() =>
+        fortificationService(game, { from: 22, to: 22, count: 9 })
+      );
     });
   });
 });

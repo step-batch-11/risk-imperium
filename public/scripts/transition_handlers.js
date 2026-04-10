@@ -47,6 +47,7 @@ const setupInitialReinforcementPhase = async (gameState) => {
   });
 
   const territories = gameState.player.territories;
+
   renderRemainingTroopsToDeploy(data.troopsToReinforce);
   highlightTerritories(territories);
 };
@@ -57,6 +58,7 @@ const setupReinforcePhase = async (gameState) => {
   });
 
   const territories = gameState.player.territories;
+
   setTroopLimit(data.troopsToReinforce);
   renderRemainingTroopsToDeploy(data.troopsToReinforce);
   highlightTerritories(territories);
@@ -198,6 +200,7 @@ const handleWaiting = async (gameState) => {
 
 const handleMoveIn = async (gameState) => {
   const { data: lastUpdate } = await getMoveInData();
+
   captureTerritory(
     gameState,
     lastUpdate.data.invadeDetails,

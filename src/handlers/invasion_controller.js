@@ -12,6 +12,7 @@ export class InvasionController {
   #isAttackSuccessful;
   #attackerDice;
   #defenderDice;
+  #defenderId;
 
   constructor(territoriesHandler, randomFunction = Math.random) {
     this.#territoriesHandler = territoriesHandler;
@@ -127,6 +128,7 @@ export class InvasionController {
       throw new Error("Invalid Defender Territory");
     }
 
+    this.#defenderId = this.#territoriesHandler.getOwnerOf(to);
     this.#isDone = false;
     this.#attackerId = attackerId;
     this.#attackFrom = from;
@@ -191,6 +193,7 @@ export class InvasionController {
       defenderTerritoryId: this.#attackTo,
       attackerTroops: this.#attackerTroopsCount,
       defenderTroops: this.#defenderTroopsCount,
+      defenderId: this.#defenderId,
     };
   }
 
