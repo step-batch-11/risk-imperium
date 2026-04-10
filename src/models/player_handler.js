@@ -6,7 +6,7 @@ export class Player {
   #colorId;
   #avatar;
 
-  constructor(id, name, cards = [], avatar) {
+  constructor(id, name, avatar, cards = []) {
     this.#id = id;
     this.#name = name;
     this.#cards = cards;
@@ -33,7 +33,12 @@ export class Player {
   }
 
   getBasicDetails() {
-    return { id: this.#id, name: this.#name, colorId: this.#colorId };
+    return {
+      id: this.#id,
+      name: this.#name,
+      colorId: this.#colorId,
+      avatar: this.#avatar,
+    };
   }
 
   set resolve(resolve) {

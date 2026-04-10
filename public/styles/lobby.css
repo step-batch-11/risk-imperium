@@ -104,7 +104,7 @@ main {
   cursor: pointer;
 }
 
-playful-avatar {
+.player-profile {
   width: 10em;
   height: 10em;
   border-radius: 50%;

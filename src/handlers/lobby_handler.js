@@ -128,7 +128,10 @@ export const sendLobbyData = (context) => {
   }
 
   const data = {
-    playerDetails: lobby.players.map((p) => p.name),
+    playerDetails: lobby.players.map((p) => ({
+      name: p.name,
+      avatar: p.avatar,
+    })),
     data: lobby,
     isHost: playerId === lobby.host,
   };

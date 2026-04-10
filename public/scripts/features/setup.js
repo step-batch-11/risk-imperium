@@ -22,7 +22,7 @@ const renderPlayerDetails = (player, continents) => {
 
   const nameElement = clone.querySelector(".name");
   const avatarElement = clone.querySelector(".avatar");
-  const avatar = renderAvatar(player.name);
+  const avatar = renderAvatar(player.avatar);
   avatarElement.appendChild(avatar);
   nameElement.textContent = player.name;
 

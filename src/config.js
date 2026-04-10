@@ -176,4 +176,11 @@ export const STATES = {
 
 export const TIMEOUT = 10000;
 
-export const AVATARS = ["A1", "A2", "A3"];
+export const AVATARS = [
+  { img: "./assets/avatar3.png" },
+  { img: "./assets/avatar3.png" },
+  { img: "./assets/avatar3.png" },
+  { img: "./assets/avatar1.png" },
+  { img: "./assets/avatar1.png" },
+  { img: "./assets/avatar1.png" },
+];
