@@ -1,10 +1,11 @@
 import { STATES } from "../config.js";
+import { ERROR_MESSAGE } from "../config/error_message.js";
 
 export const skipInvasionService = (game) => {
   const state = game.getGameState();
 
   if (state !== STATES.INVASION) {
-    return { action: state, data: [] };
+    throw new Error(ERROR_MESSAGE.INVALID_ACTION);
   }
 
   game.setNewState(STATES.FORTIFICATION);

@@ -1,6 +1,5 @@
 import { CONFIG } from "./config.js";
 import { Game } from "./game.js";
-import { FortificationController } from "./handlers/fortification_controller.js";
 import { InvasionController } from "./handlers/invasion_controller.js";
 import { mockPlayers } from "./mock_data.js";
 import { Cards } from "./models/cards.js";
@@ -19,7 +18,6 @@ export const createGame = (players = mockPlayers()) => {
   };
 
   const controllers = {
-    fortificationController: new FortificationController({ ...territories }),
     invasionController: new InvasionController(
       handlers.territoriesHandler,
       utilities.random,
@@ -28,7 +26,7 @@ export const createGame = (players = mockPlayers()) => {
 
   players.forEach((player, index) => (player.color = index + 1));
 
-  const game = new Game(players, handlers, controllers, utilities);
+  const game = new Game(players, handlers, controllers, utilities, 13);
   game.initTerritories();
   return game;
 };

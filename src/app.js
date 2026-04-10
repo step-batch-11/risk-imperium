@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
-import { gameController, handleWaiting } from "./handlers/user_actions.js";
+import { gameController } from "./handlers/user_actions.js";
+import { handleWaiting } from "./handlers/passivePlayers.js";
 import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";

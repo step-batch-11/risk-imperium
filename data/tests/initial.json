@@ -562,7 +562,7 @@
       "armies": 2
     }
   },
-  "state": "FORTIFICATION",
+  "state": "REINFORCEMENT",
   "initReinforce": {
     "round": 0,
     "troops": 13,

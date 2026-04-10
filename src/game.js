@@ -10,7 +10,6 @@ export class Game {
   #state;
   #randomFunction;
   #cards;
-  #fortificationController;
   #cavalry;
   #territories;
   #invasionController;
@@ -27,6 +26,7 @@ export class Game {
     handlers = {},
     controllers = {},
     utilities = {},
+    initTroops = 2,
   ) {
     this.#randomFunction = utilities.random;
     this.#activePlayerIndex = 0;
@@ -38,14 +38,13 @@ export class Game {
     this.#cavalry = handlers.cavalry;
     this.#state = STATES.SETUP;
     this.#hasCaptured = false;
-    this.#fortificationController = controllers.fortificationController;
 
     this.#invasionController = controllers.invasionController;
     this.#versionId = 0;
     this.#lastUpdate = {};
 
     this.#round = 0;
-    this.#troops = 2;
+    this.#troops = initTroops;
     this.#playersCount = players.length;
 
     this.stateDetails = { remainingTroopsCount: 0, hasCaptured: false };
@@ -300,43 +299,6 @@ export class Game {
 
   moveTroops(from, to, count) {
     return this.#territories.moveTroops(from, to, count);
-  }
-  fortification(from, to, count) {
-    try {
-      const playerTerritories = this.#territories.getTerritoriesOf(
-        this.#activePlayerId,
-      );
-
-      this.#fortificationController.moveTroops(
-        from,
-        to,
-        count,
-        playerTerritories,
-      );
-
-      const updatedTerritories = this.#territories.moveTroops(
-        from,
-        to,
-        count,
-      );
-      this.updateGame(
-        STATES.FORTIFICATION,
-        {
-          from,
-          to,
-          troopCount: count,
-        },
-        this.#activePlayerId,
-      );
-
-      this.#updateState(STATES.GET_CARD);
-
-      return updatedTerritories;
-    } catch (e) {
-      console.log(e);
-
-      return [];
-    }
   }
 
   skipInvasion() {
@@ -640,8 +602,6 @@ export class Game {
     this.#cavalry = handlers.cavalry;
     this.#cards = handlers.cardsHandler;
     this.#hasCaptured = gameState.hasCaptured;
-    this.#fortificationController = handlers.fortificationHandler;
-
     this.#round = gameState.round;
     this.#troops = gameState.troops;
     this.#playersCount = gameState.playersCount;

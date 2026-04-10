@@ -2,7 +2,6 @@ import { Cards } from "../models/cards.js";
 import { Cavalry } from "../models/cavalry.js";
 import { Continents } from "../models/continents.js";
 import { Territories } from "../models/territory.js";
-import { FortificationController } from "./fortification_controller.js";
 import { InvasionController } from "./invasion_controller.js";
 
 export const handleLoadGameState = async (c, readTextFile) => {
@@ -15,9 +14,6 @@ export const handleLoadGameState = async (c, readTextFile) => {
       const handlers = {
         cavalry: new Cavalry(savedState.cavalry),
         territoriesHandler: new Territories(savedState.territories),
-        fortificationHandler: new FortificationController(
-          savedState.territories,
-        ),
         continentsHandler: new Continents(),
         cardsHandler: new Cards(),
       };

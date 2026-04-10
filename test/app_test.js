@@ -7,7 +7,7 @@ import { CONFIG, STATES } from "../src/config.js";
 import { Continents } from "../src/models/continents.js";
 import { mockPlayers } from "../src/mock_data.js";
 import { Cavalry } from "../src/models/cavalry.js";
-import { FortificationController } from "../src/handlers/fortification_controller.js";
+
 import { Cards } from "../src/models/cards.js";
 import { Territories } from "../src/models/territory.js";
 import { InvasionController } from "../src/handlers/invasion_controller.js";
@@ -17,7 +17,6 @@ import reinforceState from "../data/tests/reinforce.json" with { type: "json" };
 
 const createGame = () => {
   const handlers = {
-    fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
     continentsHandler: new Continents(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
