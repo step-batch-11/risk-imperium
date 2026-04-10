@@ -1,6 +1,7 @@
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { Player } from "../models/player_handler.js";
+import { Player } from "../models/player.js";
 import { createGame } from "../create_game.js";
+import { AVATARS } from "../config.js";
 
 const createLobby = (id, roomType = "public") => {
   return {
@@ -30,7 +31,8 @@ const createPlayer = (context) => {
 
   const playerId = Number(getCookie(context, "playerId"));
   const username = players[playerId];
-  const player = new Player(playerId, username);
+  const playerAvatar = AVATARS.pop();
+  const player = new Player(playerId, username, playerAvatar);
   return player;
 };
 
@@ -89,8 +91,8 @@ export const moveToLobby = (context) => {
   const lobbies = context.get("lobbies");
 
   const player = createPlayer(context);
-  let lobby = [...lobbies.values()].find((l) =>
-    l.players.length < 3 && l.status === "waiting"
+  let lobby = [...lobbies.values()].find(
+    (l) => l.players.length < 3 && l.status === "waiting",
   );
 
   if (!lobby) {
@@ -126,7 +128,10 @@ export const sendLobbyData = (context) => {
   }
 
   const data = {
-    playerDetails: lobby.players.map((p) => p.name),
+    playerDetails: lobby.players.map((p) => ({
+      name: p.name,
+      avatar: p.avatar,
+    })),
     data: lobby,
     isHost: playerId === lobby.host,
   };
@@ -145,8 +150,8 @@ export const leaveLobbyHandler = (context) => {
     lobby.status === "waiting" ||
     (lobby.roomType === "private" && lobby.status === "in-game")
   ) {
-    const playerIdx = lobby.players.findIndex((player) =>
-      player.id === playerId
+    const playerIdx = lobby.players.findIndex(
+      (player) => player.id === playerId,
     );
     lobby.players.splice(playerIdx, 1);
     lobby.status = "waiting";

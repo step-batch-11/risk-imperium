@@ -1,4 +1,4 @@
-import { Player } from "./models/player_handler.js";
+import { Player } from "./models/player.js";
 
 export const mockPlayers = () => {
   const players = [

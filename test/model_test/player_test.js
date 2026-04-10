@@ -1,6 +1,6 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertEquals } from "@std/assert/equals";
-import { Player } from "../../src/models/player_handler.js";
+import { Player } from "../../src/models/player.js";
 
 describe("Player", () => {
   const name = "RAJ";

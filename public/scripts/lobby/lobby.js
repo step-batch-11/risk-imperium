@@ -1,8 +1,7 @@
 export const renderAvatar = (name) => {
-  const avatar = document.createElement("playful-avatar");
-  avatar.setAttribute("name", name);
-  avatar.setAttribute("variant", "bauhaus");
-  avatar.setAttribute("color", "#e8d5b7,#0e2430,#fc3a51,#f5b349,#e8d5b9");
+  const avatar = document.createElement("img");
+  avatar.setAttribute("src", name.img);
+  avatar.className = "player-profile";
   return avatar;
 };
 
@@ -41,31 +40,31 @@ const startHostGame = (id) => {
   }
 };
 
-const renderPlayerCard = (name, id) => {
+const renderPlayerCard = ({ name, avatar }, id) => {
   const playerContainer = document.querySelector(`#player-${id + 1}`);
   const avatarContainer = playerContainer.querySelector(".player-avatar");
   const playerNameContainer = playerContainer.querySelector(
     ".player-name-container",
   );
-  const avatar = renderAvatar(name);
+  const playerAvatarElement = renderAvatar(avatar);
 
   avatarContainer.style.animation = "none";
   avatarContainer.innerHTML = "";
-  avatarContainer.appendChild(avatar);
+  avatarContainer.appendChild(playerAvatarElement);
   playerNameContainer.textContent = name;
   playerNameContainer.style.color = "black";
 };
 
 const updatePlayers = (players, lobbyId) => {
   displayRoomId(lobbyId);
-
   players.forEach(renderPlayerCard);
 };
 
-const updateLobby = async (id, nav) => {
+const updateLobby = async (id) => {
   const response = await fetch("/get-lobby-data");
 
   const { playerDetails, data, isHost } = await response.json();
+
   if (response.status === 200) {
     updatePlayers(playerDetails, data.id);
   }
@@ -79,9 +78,6 @@ const updateLobby = async (id, nav) => {
 
   if (data.status === "in-game" && isHost) {
     return startHostGame(id);
-  }
-  if (data.status !== "in-game" && isHost) {
-    return nav.textContent = "";
   }
 };
 
@@ -99,10 +95,9 @@ const addListenerToLeave = () => {
 };
 
 const main = () => {
-  const nav = document.querySelector("#navigations");
-  updateLobby("", nav);
+  updateLobby("");
   const id = setInterval(() => {
-    updateLobby(id, nav);
+    updateLobby(id);
   }, 2000);
 
   addListenerToLeave();

@@ -4,14 +4,12 @@ import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { Game } from "../src/game.js";
 import { CONFIG, STATES } from "../src/config.js";
-import { ContinentsHandler } from "../src/models/continents_handler.js";
+import { Continents } from "../src/models/continents.js";
 import { mockPlayers } from "../src/mock_data.js";
 import { Cavalry } from "../src/models/cavalry.js";
 import { FortificationController } from "../src/handlers/fortification_controller.js";
 import { Cards } from "../src/models/cards.js";
-import { TerritoriesHandler } from "../src/models/territoryHandler.js";
-import { InitialReinforcementController } from "../src/handlers/initial_reinforcement_controller.js";
-import { ReinforcementController } from "../src/handlers/reinforcement_controller.js";
+import { Territories } from "../src/models/territory.js";
 import { InvasionController } from "../src/handlers/invasion_controller.js";
 import { loadGameStateForTest } from "./utilities.js";
 import defendState from "../data/tests/defend.json" with { type: "json" };
@@ -20,23 +18,15 @@ import reinforceState from "../data/tests/reinforce.json" with { type: "json" };
 const createGame = () => {
   const handlers = {
     fortificationHandler: new FortificationController(CONFIG.TERRITORIES),
-    continentsHandler: new ContinentsHandler(),
+    continentsHandler: new Continents(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
-    territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+    territoriesHandler: new Territories(CONFIG.TERRITORIES),
   };
 
   const utilities = { random: Math.random };
 
   const controllers = {
-    initialReinforcementController: new InitialReinforcementController(
-      1,
-      handlers.territoriesHandler,
-    ),
-    reinforcementController: new ReinforcementController(
-      handlers.territoriesHandler,
-      handlers.continentsHandler,
-    ),
     invasionController: new InvasionController(
       handlers.territoriesHandler,
       utilities.random,
@@ -105,7 +95,7 @@ describe("App Handler", () => {
         method: "POST",
         headers: {
           "content-type": "applications/json",
-          "cookie": "playerId=1;gameId=1",
+          cookie: "playerId=1;gameId=1",
         },
         body: JSON.stringify({
           userActions: "REINFORCE",
@@ -129,7 +119,7 @@ describe("App Handler", () => {
         method: "POST",
         headers: {
           "content-type": "applications/json",
-          "cookie": "playerId=1;gameId=1",
+          cookie: "playerId=1;gameId=1",
         },
         body: JSON.stringify({
           userActions: "DEFEND",
@@ -145,43 +135,46 @@ describe("App Handler", () => {
       assertEquals(result.action, STATES.WAITING);
     });
 
-    it.ignore("RESOLVE_COMBAT should resolve and update territories", async () => {
-      loadGameStateForTest(game, invasionState);
-      await app.request("/user-actions", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          userActions: "INVADE",
-          data: {
-            attackerTerritoryId: 35,
-            defenderTerritoryId: 16,
-            attackerTroops: 3,
-          },
-        }),
-      });
+    it.ignore(
+      "RESOLVE_COMBAT should resolve and update territories",
+      async () => {
+        loadGameStateForTest(game, invasionState);
+        await app.request("/user-actions", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            userActions: "INVADE",
+            data: {
+              attackerTerritoryId: 35,
+              defenderTerritoryId: 16,
+              attackerTroops: 3,
+            },
+          }),
+        });
 
-      await app.request("/user-actions", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          userActions: STATES.DEFEND,
-          data: { troopCount: 3 },
-        }),
-      });
+        await app.request("/user-actions", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            userActions: STATES.DEFEND,
+            data: { troopCount: 3 },
+          }),
+        });
 
-      const response = await app.request("/user-actions", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          userActions: STATES.RESOLVE_COMBAT,
-          data: {},
-        }),
-      });
+        const response = await app.request("/user-actions", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            userActions: STATES.RESOLVE_COMBAT,
+            data: {},
+          }),
+        });
 
-      const result = await response.json();
-      assertEquals(response.status, 200);
-      assertEquals(result.data.notifyMsg.status, "fail");
-    });
+        const result = await response.json();
+        assertEquals(response.status, 200);
+        assertEquals(result.data.notifyMsg.status, "fail");
+      },
+    );
   });
 
   describe("Logger", () => {

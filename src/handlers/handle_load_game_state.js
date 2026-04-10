@@ -1,42 +1,36 @@
 import { Cards } from "../models/cards.js";
 import { Cavalry } from "../models/cavalry.js";
-import { ContinentsHandler } from "../models/continents_handler.js";
-import { TerritoriesHandler } from "../models/territoryHandler.js";
+import { Continents } from "../models/continents.js";
+import { Territories } from "../models/territory.js";
 import { FortificationController } from "./fortification_controller.js";
-import { InitialReinforcementController } from "./initial_reinforcement_controller.js";
 import { InvasionController } from "./invasion_controller.js";
-import { ReinforcementController } from "./reinforcement_controller.js";
 
 export const handleLoadGameState = async (c, readTextFile) => {
   const game = c.get("game");
   const { state } = c.req.param();
-  return await readTextFile(`./data/states/${state}.json`).then((data) => {
-    const savedState = JSON.parse(data);
+  return await readTextFile(`./data/states/${state}.json`)
+    .then((data) => {
+      const savedState = JSON.parse(data);
 
-    const handlers = {
-      cavalry: new Cavalry(savedState.cavalry),
-      territoriesHandler: new TerritoriesHandler(savedState.territories),
-      fortificationHandler: new FortificationController(savedState.territories),
-      continentsHandler: new ContinentsHandler(),
-      cardsHandler: new Cards(),
-    };
+      const handlers = {
+        cavalry: new Cavalry(savedState.cavalry),
+        territoriesHandler: new Territories(savedState.territories),
+        fortificationHandler: new FortificationController(
+          savedState.territories,
+        ),
+        continentsHandler: new Continents(),
+        cardsHandler: new Cards(),
+      };
 
-    const controllers = {
-      initialReinforcementController: new InitialReinforcementController(
-        1,
-        handlers.territoriesHandler,
-      ),
-      reinforcementController: new ReinforcementController(
-        handlers.territoriesHandler,
-        handlers.continentsHandler,
-      ),
-      invasionController: new InvasionController(handlers.territoriesHandler),
-    };
+      const controllers = {
+        invasionController: new InvasionController(handlers.territoriesHandler),
+      };
 
-    game.loadGameState(savedState, handlers, controllers);
+      game.loadGameState(savedState, handlers, controllers);
 
-    return c.redirect("/");
-  }).catch((_) => {
-    return c.body("Bad Request", 404);
-  });
+      return c.redirect("/");
+    })
+    .catch((_) => {
+      return c.body("Bad Request", 404);
+    });
 };

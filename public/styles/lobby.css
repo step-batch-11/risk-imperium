@@ -87,12 +87,6 @@ main {
   }
 }
 
-playful-avatar {
-  width: 6em;
-  height: 6em;
-  box-shadow: rgba(0, 0, 0, 0.3) 0px 6px 12px 0px;
-}
-
 .player-avatar rect {
   height: 1em;
 }
@@ -198,4 +192,12 @@ playful-avatar {
   100% {
     transform: scale(1);
   }
+}
+
+.player-profile {
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  border: 2px black;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;
 }

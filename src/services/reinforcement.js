@@ -22,12 +22,12 @@ export const initialReinforceService = (game, { territoryId }) => {
   };
 };
 
-const reinforceService = (game, data) => {
+export const reinforceService = (game, data) => {
   const { territoryId, troopCount } = data;
   const remainingTroop = game.stateDetails.remainingTroopsCount;
 
   if (troopCount > remainingTroop) {
-    throw ERROR_MESSAGE.INVALID_PARAMETERS;
+    throw new Error(ERROR_MESSAGE.INVALID_PARAMETERS);
   }
 
   game.addTroops(territoryId, troopCount);
@@ -61,8 +61,10 @@ export const reinforcementsServices = (game, data) => {
   if (state === STATES.INITIAL_REINFORCEMENT) {
     return initialReinforceService(game, data);
   }
+
   if (state === STATES.REINFORCE) {
     return reinforceService(game, data);
   }
-  throw ERROR_MESSAGE.INVALID_PARAMETERS;
+
+  throw new Error(ERROR_MESSAGE.INVALID_STATE);
 };

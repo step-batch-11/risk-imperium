@@ -70,9 +70,9 @@
   background-color: var(--color-bg-avatar);
 }
 
-playful-avatar {
-  width: 2.5em;
-  aspect-ratio: 1;
+.player-profile {
+  width: 4em;
+  height: 4em;
   border-radius: 50%;
   border: 2px black;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;

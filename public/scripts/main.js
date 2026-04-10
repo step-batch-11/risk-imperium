@@ -18,10 +18,7 @@ globalThis.onload = async () => {
   gameState.selectedCards = {};
   const players = getAllPlayersDetail(gameState.player, gameState.opponents);
 
-  renderTerritoriesAndTroops(
-    players,
-    gameState.territories,
-  );
+  renderTerritoriesAndTroops(players, gameState.territories);
 
   setupListeners(gameState);
   renderCurrentPlayerName(gameState);
