@@ -72,9 +72,7 @@ const deployTroops = (_event, gameState, territoryId, troopCount = 1) => {
   removeCardAreaListener(gameState);
   return sendReinforceRequest({ territoryId, troopCount })
     .then((res) => updateAfterDeploy(gameState, res, troopCount))
-    .catch((e) => {
-      console.log(e);
-
+    .catch((_) => {
       showNotification(NOTIFICATION_MESSAGES.ERROR, NOTIFICATION_TYPES.WARNING);
     });
 };

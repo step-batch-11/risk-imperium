@@ -117,7 +117,6 @@ export const sendLobbyData = (context) => {
   const playerId = Number(getCookie(context, "playerId"));
   const lobbyId = getCookie(context, "lobbyId");
   const lobby = lobbies.get(Number(lobbyId));
-  console.log(playerId);
 
   if (lobby.status === "in-game" && lobby.roomType === "public") {
     setCookie(context, "gameId", lobby.id);

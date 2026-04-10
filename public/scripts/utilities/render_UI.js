@@ -47,6 +47,7 @@ export const renderCurrentPlayerName = (gameState) => {
 export const renderGameState = (gameState) => {
   updateCavalry(gameState.cavalryPositions);
   const stateNameElement = document.querySelector("#game-state-name");
+
   const phase = gameState.state.replaceAll("_", " ");
   stateNameElement.textContent = `Phase: ${phase}`;
 };

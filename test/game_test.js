@@ -104,6 +104,10 @@ describe("Game", () => {
         "invasion",
         "cavalry",
         "hasCaptured",
+        "round",
+        "troops",
+        "playersCount",
+        "stateDetails",
       ];
 
       const parameters = Object.keys(gameState);
@@ -127,6 +131,10 @@ describe("Game", () => {
         "invasion",
         "cavalry",
         "hasCaptured",
+        "round",
+        "troops",
+        "playersCount",
+        "stateDetails",
       ];
       const setupDataProperties = Object.keys(gameState);
       assertEquals(expectedParameters.length, setupDataProperties.length);

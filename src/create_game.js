@@ -12,15 +12,16 @@ import { TerritoriesHandler } from "./models/territoryHandler.js";
 
 export const createGame = (players = mockPlayers()) => {
   const utilities = { random: Math.random };
+  const territories = { ...CONFIG.TERRITORIES };
   const handlers = {
     continentsHandler: new ContinentsHandler(),
     cardsHandler: new Cards(),
     cavalry: new Cavalry(),
-    territoriesHandler: new TerritoriesHandler(CONFIG.TERRITORIES),
+    territoriesHandler: new TerritoriesHandler({ ...territories }),
   };
 
   const controllers = {
-    fortificationController: new FortificationController(CONFIG.TERRITORIES),
+    fortificationController: new FortificationController({ ...territories }),
     initialReinforcementController: new InitialReinforcementController(
       players.length,
       handlers.territoriesHandler,

@@ -609,5 +609,11 @@
       4
     ]
   },
-  "cavalry": 0
+  "cavalry": 0,
+  "stateDetails": {
+    "attackerTerritoryId": 16,
+    "defenderTerritoryId": 35,
+    "attackerTroopsCount": 3,
+    "defenderTroopsCount": 1
+  }
 }

@@ -64,7 +64,7 @@ const updatePlayers = (container, players, lobbyId) => {
   container.replaceChildren(fragment);
 };
 
-const updateLobby = async (playerContainer, id, nav) => {
+const updateLobby = async (playerContainer, id) => {
   const response = await fetch("/get-lobby-data");
 
   const { playerDetails, data, isHost } = await response.json();

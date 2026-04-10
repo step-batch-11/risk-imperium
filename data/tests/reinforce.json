@@ -603,5 +603,9 @@
     "attackerDice": null,
     "defenderDice": null
   },
-  "cavalry": 0
+  "cavalry": 0,
+  "stateDetails": {
+    "remainingTroopsCount": 3,
+    "remainingTroops": 0
+  }
 }

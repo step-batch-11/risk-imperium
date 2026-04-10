@@ -1,4 +1,5 @@
 import { STATES } from "./config.js";
+import { ERROR_MESSAGE } from "./config/error_message.js";
 
 import { mockPlayers } from "./mock_data.js";
 
@@ -19,6 +20,10 @@ export class Game {
   #hasCaptured;
   #versionId;
   #lastUpdate;
+
+  #round;
+  #troops;
+  #playersCount;
 
   constructor(
     players = mockPlayers(),
@@ -44,6 +49,150 @@ export class Game {
     this.#invasionController = controllers.invasionController;
     this.#versionId = 0;
     this.#lastUpdate = {};
+
+    this.#round = 0;
+    this.#troops = 2;
+    this.#playersCount = players.length;
+
+    this.stateDetails = { remainingTroopsCount: 0, hasCaptured: false };
+    this.hasCaptured = false;
+  }
+
+  dropOneTroop(territoryId) {
+    this.#territoriesHandler.addTroops(territoryId, 1);
+    this.#round++;
+
+    const deployedTroopsPerPlayer = this.#round / this.#playersCount;
+    const isDone = deployedTroopsPerPlayer === this.#troops;
+    if (isDone) {
+      this.#updateState(STATES.REINFORCE);
+    }
+
+    return this.#troops - Math.ceil(deployedTroopsPerPlayer);
+  }
+
+  resetStateDetails() {
+    const isCaptured = this.stateDetails.hasCaptured;
+    const remainingTroops = this.stateDetails.remainingTroops;
+    const remainingTroopsCount = this.stateDetails.remainingTroopsCount;
+    this.stateDetails = {
+      isCaptured,
+      remainingTroops,
+      remainingTroopsCount,
+    };
+  }
+  get remainingTroop() {
+    const deployedTroopsPerPlayer = this.#round / this.#playersCount;
+    return this.#troops - Math.floor(deployedTroopsPerPlayer);
+  }
+
+  get activePlayerTerritory() {
+    return this.#territoriesHandler.getTerritoriesOf(this.#activePlayerId);
+  }
+  setTroops(territoryId, count) {
+    return this.#territoriesHandler.setTroops(
+      territoryId,
+      count,
+    );
+  }
+
+  moveCavalry() {
+    this.#cavalry.moveCavalry();
+  }
+
+  get cavalryPositions() {
+    return this.#cavalry.getPositions();
+  }
+
+  //     const positions = this.#cavalry.getPositions();{}
+  updateOwner(territoryId, ownerId) {
+    this.#territoriesHandler.updateOwner(territoryId, ownerId);
+  }
+
+  getAllTerritories() {
+    return this.#territoriesHandler.territories;
+  }
+  setNewState(state) {
+    this.#state = state;
+  }
+
+  isTerritoryBarren(territoryId) {
+    return this.#territoriesHandler.isBarren(territoryId);
+  }
+
+  addTroops(territoryId, troopCount) {
+    this.#territoriesHandler.addTroops(territoryId, troopCount);
+  }
+
+  decreaseTroops(territoryId, troopCount) {
+    this.#territoriesHandler.decreaseTroops(territoryId, troopCount);
+  }
+
+  getTerritoriesDetails(...territoryIds) {
+    return this.#territoriesHandler.getTerritoryAndTroopsCount(...territoryIds);
+  }
+
+  getPlayerTerritory(playerId) {
+    if (!playerId) {
+      throw ERROR_MESSAGE.INVALID_PARAMETERS;
+    }
+
+    return this.#territoriesHandler.getTerritoriesOf(playerId);
+  }
+
+  getOwnerOfTerritory(territoryId) {
+    return this.#territoriesHandler.getOwnerOf(territoryId);
+  }
+
+  updateRemainingTroopCount(troopCount) {
+    this.stateDetails.remainingTroopsCount = troopCount;
+  }
+
+  addReinforcementTroops(troopCount) {
+    this.stateDetails.remainingTroopsCount ||= 0;
+    this.stateDetails.remainingTroopsCount += troopCount;
+  }
+
+  isTerritoryOwnBy(territoryId, ownerId) {
+    return this.#territoriesHandler.isTerritoryOwnBy(territoryId, ownerId);
+  }
+
+  troopCountAtTerritory(territoryId) {
+    return this.#territoriesHandler.getTroopsCount(territoryId);
+  }
+
+  isNeighbouringTerritory(territoryId1, territoryId2) {
+    const neighbours = this.#territoriesHandler.getNeighbours(
+      territoryId1,
+    );
+
+    return neighbours.includes(territoryId2);
+  }
+
+  isEliminated(playerId) {
+    const territoryCount =
+      this.#territoriesHandler.getTerritoriesOf(playerId).length;
+
+    return territoryCount <= 0;
+  }
+
+  eliminatePlayer(defenderId) {
+    const index = this.#players.findIndex((player) => player.id === defenderId);
+    const defender = this.#players[index];
+    const attacker = this.#activePlayer;
+    this.#getDefenderCards(attacker, defender);
+    this.#players.splice(index, 1);
+    if (index < this.#activePlayerIndex) {
+      this.#activePlayerIndex -= 1;
+    }
+  }
+
+  hasPlayerWon() {
+    return this.#territoriesHandler.isConquered;
+  }
+
+  changeTurn() {
+    this.#changeTurn();
   }
 
   get #activePlayerId() {
@@ -70,6 +219,10 @@ export class Game {
     return this.#activePlayerId;
   }
 
+  get activePlayer() {
+    return this.#activePlayer;
+  }
+
   get players() {
     return this.#players;
   }
@@ -83,15 +236,15 @@ export class Game {
   }
 
   get invadeDetail() {
-    return this.#invasionController.invadeDetails;
+    return this.stateDetails;
   }
 
   isPlayerDefending(playerId) {
     if (this.#state !== STATES.DEFEND) {
       return false;
     }
-    const defenderTerritoryId =
-      this.#invasionController.invadeDetails.defenderTerritoryId;
+    const defenderTerritoryId = this.stateDetails.defenderTerritoryId;
+
     const defenderId = this.#territoriesHandler.getOwnerOf(defenderTerritoryId);
 
     return defenderId === playerId;
@@ -144,7 +297,6 @@ export class Game {
       this.#activePlayerIndex -= 1;
     }
   }
-
   #isEliminated(playerId) {
     const territoryCount =
       this.#territoriesHandler.getTerritoriesOf(playerId).length;
@@ -170,6 +322,13 @@ export class Game {
     this.updateGame(STATES.SKIP_FORTIFICATION, {}, this.#activePlayerId);
   }
 
+  moveTroops(from, to, count) {
+    return this.#territoriesHandler.moveTroops(
+      from,
+      to,
+      count,
+    );
+  }
   fortification(from, to, count) {
     try {
       const playerTerritories = this.#territoriesHandler.getTerritoriesOf(
@@ -201,7 +360,9 @@ export class Game {
       this.#updateState(STATES.GET_CARD);
 
       return updatedTerritories;
-    } catch {
+    } catch (e) {
+      console.log(e);
+
       return [];
     }
   }
@@ -329,7 +490,8 @@ export class Game {
           currentPlayerId: this.#activePlayerId,
         },
       };
-    } catch {
+    } catch (e) {
+      console.log(e);
       return {
         action: this.#state,
         data: {
@@ -388,7 +550,8 @@ export class Game {
 
       this.#state = STATES.DEFEND;
       return { newState: STATES.WAITING, data: {} };
-    } catch {
+    } catch (e) {
+      console.log(e);
       throw new Error("Invalid Attack");
     }
   }
@@ -413,7 +576,8 @@ export class Game {
         action: STATES.WAITING,
         data: this.#invasionController.invadeDetails,
       };
-    } catch {
+    } catch (e) {
+      console.log(e);
       return {
         action: STATES.DEFEND,
         data: this.#invasionController.invadeDetails,
@@ -498,7 +662,7 @@ export class Game {
       this.#invasionController.invadeDetails;
 
     const hasEliminated = this.#isEliminated(defenderId);
-    console.log({ hasEliminated, defenderId });
+
     const updatedTerritories = this.#territoriesHandler
       .getTerritoryAndTroopsCount(
         ...updatedTerritoriesId,
@@ -559,6 +723,17 @@ export class Game {
     }
   }
 
+  isValidCombination(cards) {
+    return this.#cards.isValidCombination(cards);
+  }
+
+  isPlayerCards(cards) {
+    return this.#isPlayerCards(cards);
+  }
+
+  getCavalryTroops() {
+    return this.#cavalry.getCurrentCount();
+  }
   tradeCard(cards) {
     const isValidCombo = this.#cards.isValidCombination(cards);
     const isPlayerCards = this.#isPlayerCards(cards);
@@ -609,6 +784,12 @@ export class Game {
       invasion: this.#invasionController.saveableState(),
       cavalry: this.#cavalry.lastPos,
       hasCaptured: this.#hasCaptured,
+
+      round: this.#round,
+      troops: this.#troops,
+      playersCount: this.#playersCount,
+
+      stateDetails: this.stateDetails,
     };
   }
 
@@ -640,5 +821,10 @@ export class Game {
     this.#cards = handlers.cardsHandler;
     this.#hasCaptured = gameState.hasCaptured;
     this.#fortificationController = handlers.fortificationHandler;
+
+    this.#round = gameState.round;
+    this.#troops = gameState.troops;
+    this.#playersCount = gameState.playersCount;
+    this.stateDetails = gameState.stateDetails;
   }
 }
