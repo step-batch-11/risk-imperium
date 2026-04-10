@@ -1,6 +1,7 @@
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { Player } from "../models/player_handler.js";
 import { createGame } from "../create_game.js";
+import { AVATARS } from "../config.js";
 
 const createLobby = (id, roomType = "public") => {
   return {
@@ -30,7 +31,8 @@ const createPlayer = (context) => {
 
   const playerId = Number(getCookie(context, "playerId"));
   const username = players[playerId];
-  const player = new Player(playerId, username);
+  const playerAvatar = AVATARS.pop();
+  const player = new Player(playerId, username, playerAvatar);
   return player;
 };
 

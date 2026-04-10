@@ -175,3 +175,5 @@ export const STATES = {
 };
 
 export const TIMEOUT = 10000;
+
+export const AVATARS = ["A1", "A2", "A3"];
