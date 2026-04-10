@@ -7,12 +7,8 @@ export const renderAvatar = (name) => {
 };
 
 const displayRoomId = (lobbyId) => {
-  const template = document.querySelector("#room-id-template");
-  const clone = template.content.cloneNode("true");
-  const roomContainer = document.querySelector("#room-id-container");
-  const roomElement = clone.querySelector("#room-id");
-  roomElement.textContent = `RoomId : ${lobbyId}`;
-  roomContainer.replaceChildren(clone);
+  const roomId = document.querySelector("#room-id");
+  roomId.textContent = lobbyId;
 };
 
 const startQuickGame = (id) => {
@@ -20,56 +16,58 @@ const startQuickGame = (id) => {
   globalThis.location = "/game.html";
 };
 
-const startHostGame = (id) => {
-  const startBtn = renderStartButton();
-  startBtn.addEventListener("click", async () => {
-    const res = await fetch("/start-game").then((x) => x.json());
-    if (!res.ok) return;
-    globalThis.location = "/game.html";
-    clearInterval(id);
-    return;
-  });
-};
-
 const renderStartButton = () => {
-  const template = document.querySelector("#game-start-btn");
-  const clone = template.content.cloneNode("true");
-  const navigationsContainer = document.querySelector("#navigations");
+  const navContainer = document.querySelector("#nav-container");
   const startBtn = document.createElement("button");
-  startBtn.className = "startBtn";
+  startBtn.id = "start-btn";
   startBtn.textContent = "Start";
-  clone.appendChild(startBtn);
-  navigationsContainer.replaceChildren(clone);
+  navContainer.prepend(startBtn);
+
   return startBtn;
 };
-const createPlayerElement = (name, playerTemplate) => {
-  const clone = playerTemplate.content.cloneNode(true);
-  const playerNameContainer = clone.querySelector(".player-name-container");
-  const avatarContainer = clone.querySelector(".player-avatar");
+
+const startHostGame = (id) => {
+  const startButton = document.querySelector("#start-btn");
+
+  if (!startButton) {
+    const startBtn = renderStartButton();
+    startBtn.addEventListener("click", async () => {
+      const res = await fetch("/start-game").then((x) => x.json());
+      if (!res.ok) return;
+      globalThis.location = "/game.html";
+      clearInterval(id);
+      return;
+    });
+  }
+};
+
+const renderPlayerCard = (name, id) => {
+  const playerContainer = document.querySelector(`#player-${id + 1}`);
+  const avatarContainer = playerContainer.querySelector(".player-avatar");
+  const playerNameContainer = playerContainer.querySelector(
+    ".player-name-container",
+  );
   const avatar = renderAvatar(name);
+
+  avatarContainer.style.animation = "none";
   avatarContainer.innerHTML = "";
   avatarContainer.appendChild(avatar);
   playerNameContainer.textContent = name;
-  return clone;
+  playerNameContainer.style.color = "black";
 };
 
-const updatePlayers = (container, players, lobbyId) => {
+const updatePlayers = (players, lobbyId) => {
   displayRoomId(lobbyId);
-  const fragment = document.createDocumentFragment();
-  const playerTemplate = document.querySelector("#player-template");
 
-  players.forEach((player) => {
-    return fragment.appendChild(createPlayerElement(player, playerTemplate));
-  });
-  container.replaceChildren(fragment);
+  players.forEach(renderPlayerCard);
 };
 
-const updateLobby = async (playerContainer, id) => {
+const updateLobby = async (id, nav) => {
   const response = await fetch("/get-lobby-data");
 
   const { playerDetails, data, isHost } = await response.json();
   if (response.status === 200) {
-    updatePlayers(playerContainer, playerDetails, data.id);
+    updatePlayers(playerDetails, data.id);
   }
 
   if (
@@ -101,11 +99,10 @@ const addListenerToLeave = () => {
 };
 
 const main = () => {
-  const playersContainer = document.querySelector("#players-container");
   const nav = document.querySelector("#navigations");
-  updateLobby(playersContainer, "", nav);
+  updateLobby("", nav);
   const id = setInterval(() => {
-    updateLobby(playersContainer, id, nav);
+    updateLobby(id, nav);
   }, 2000);
 
   addListenerToLeave();

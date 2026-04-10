@@ -66,8 +66,6 @@
 
 .avatar {
   border: var(--avatar-border);
-  /* width: 2.5em;
-  height: 2.5em; */
   border-radius: 50%;
   background-color: var(--color-bg-avatar);
 }

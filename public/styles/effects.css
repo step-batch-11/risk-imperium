@@ -78,18 +78,6 @@
   filter: brightness(1.25) drop-shadow(0 0 6px rgba(245, 245, 245, 0.5));
 }
 
-@keyframes friendly-breathe {
-  0% {
-    filter: drop-shadow(0px 0px 0px rgba(255, 255, 255, 0));
-  }
-  50% {
-    filter: drop-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
-  }
-  100% {
-    filter: drop-shadow(0px 0px 0px rgba(255, 255, 255, 0));
-  }
-}
-
 .territory > .territory-outline {
   transition:
     filter 0.8s ease,
@@ -99,7 +87,7 @@
 }
 
 #map-svg.intro-dim .territory.intro-flash > .territory-outline {
-  filter: saturate(200%) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
   stroke: #f9f9f9;
   stroke-width: 2.5;
 }

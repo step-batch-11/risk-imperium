@@ -254,7 +254,7 @@ export const playIntroReveal = async (gameState) => {
   showNotification(
     NOTIFICATION_MESSAGES.TERRITORY_ALLOCATED,
     NOTIFICATION_TYPES.INFO,
-    3000,
+    2500,
   );
 
   mapSvg.classList.add("intro-dim");
@@ -264,7 +264,6 @@ export const playIntroReveal = async (gameState) => {
 
   mapSvg.classList.remove("intro-dim");
   removeHighlights("intro-flash");
-  await sleep(800);
 };
 
 export const setUpNextPhase = (gameState, nextState) => {

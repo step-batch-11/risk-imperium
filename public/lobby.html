@@ -16,14 +16,44 @@
 
   <body>
     <main>
-      <div id="players-container"></div>
+      <div id="players-container">
+        <div id="player-1" class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container"></div>
+        </div>
+
+        <div id="player-2" class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container">----</div>
+        </div>
+
+        <div id="player-3" class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container">----</div>
+        </div>
+
+        <div id="player-4" class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container">----</div>
+        </div>
+
+        <div id="player-5" class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container">----</div>
+        </div>
+
+        <div id="player-6" class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container">----</div>
+        </div>
+      </div>
       <div id="lobby-details">
-        <template id="room-id-template">
-          <span id="room-id">RoomId : </span>
-        </template>
-        <div id="room-id-container"></div>
-        <div id="message">
-          Waiting for players ...
+        <div id="room-id-container">
+          <h3>Room Id : <span id="room-id"></span></h3>
+          <div id="message">
+            <p id="waiting">Waiting for players</p>
+            <p id="dots"></p>
+          </div>
         </div>
 
         <template id="join-room-template">
@@ -35,10 +65,7 @@
           </div>
         </template>
 
-        <template id="game-start-btn"></template>
-
         <div id="nav-container">
-          <div id="navigations"></div>
           <button id="leave-button" type="button">Leave</button>
         </div>
       </div>

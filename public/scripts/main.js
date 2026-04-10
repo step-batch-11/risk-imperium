@@ -27,11 +27,11 @@ globalThis.onload = async () => {
   renderCurrentPlayerName(gameState);
   renderGameState(gameState);
 
-  await playIntroReveal(gameState);
-
   setup(gameState);
   addListenerToTrade(gameState);
   addListenerToCardIcon(gameState.player);
+
+  await playIntroReveal(gameState);
 
   if (gameState.state in SETUP_TRANSITION) {
     SETUP_TRANSITION[gameState.state](gameState);
