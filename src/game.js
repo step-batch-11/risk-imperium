@@ -498,6 +498,7 @@ export class Game {
       this.#invasionController.invadeDetails;
 
     const hasEliminated = this.#isEliminated(defenderId);
+    console.log({ hasEliminated, defenderId });
     const updatedTerritories = this.#territoriesHandler
       .getTerritoryAndTroopsCount(
         ...updatedTerritoriesId,
