@@ -8,10 +8,16 @@
 
 body {
   font-family: var(--primary-font);
-  background: var(--color-bg-main);
   overflow: hidden;
 }
+/* 
+#bottom-panel,.sidebar-left ,#top-layer{
+  filter: blur(40px);
+}
 
+.blur-effect {
+  filter: blur(2px);
+} */
 #map-svg {
   width: 100vw;
   height: 100vh;

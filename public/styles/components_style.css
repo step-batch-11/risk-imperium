@@ -179,13 +179,10 @@
   width: 40em;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(7px);
-
   border: 1px solid rgba(255, 255, 255, 0.2);
-
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.2),
     inset 0 0 10px rgba(255, 255, 255, 0.1);
-
   border-radius: 12px;
   transition: all 0.6s ease-in;
 }
@@ -275,11 +272,9 @@
   top: 82%;
   height: auto;
   padding: 15px 30px;
-
   border-radius: 8px;
   border: 2px solid var(--text-primary);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-
   opacity: 0;
   transition:
     transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -330,34 +325,26 @@
   position: fixed;
   right: 3%;
   bottom: 20%;
-
   padding: 12px 22px;
   font-size: 16px;
   font-family: var(--primary-font);
-
   color: #3e3326;
-
   background: linear-gradient(to bottom, #f4e7c5, #e0cfa3);
-
   border: 2px solid #8b7d6a;
   border-radius: 8px;
-
   box-shadow:
     0 3px 6px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
-
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 #skip-button:hover {
   background: linear-gradient(to bottom, #f8edcf, #e8d8b5);
-
   border-color: #c4a75c;
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.4),
     0 0 6px rgba(196, 167, 92, 0.6);
-
   transform: translateY(-2px);
 }
 
@@ -472,13 +459,172 @@ input[type="number"]::-webkit-inner-spin-button {
   transform: scale(0.9);
 }
 
-.glass-box,
-#glass-box {
+.intro-text {
   position: absolute;
-  background: var(--color-bg-glass-box);
+  font-size: 32px;
+  text-align: center;
+  opacity: 0;
+  animation: fadeInOut 4s ease forwards;
+}
+
+#winner-name {
+  margin-top : 10px;
+  margin-bottom : 10px;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.winning-screen {
+  height: 100vh;
+  width: 100vw;
+  padding : 0px;
+  margin : 0px;
+  background: rgba(8, 8, 8, 0.88);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: absolute;
+  top : 0px;
+  left : 0px;
+  line-height: 2em;
+  color: rgb(183, 183, 183);
+  font-family: "Georgia", serif;
+}
+
+.hide-screen {
+  display: none !important;
+}
+/* 
+.winning-screen.show {
+  opacity: 1;
+  pointer-events: auto;
+} */
+
+.conquerors-scroll {
+  position: absolute;
+  top: 100%; /* start below screen */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  transition: opacity 1s ease;
+  padding-top: 50vh;
+  padding-bottom: 50vh;
+}
+
+/* .conquerors-scroll.show {
+  
+} */
+
+.conqueror {
+  /* position: absolute; */
+  text-align: center;
+  /* opacity: 0;
+  transform: scale(0.8);
+  transition: all 1s ease; */
+}
+
+.conquerors-scroll.show {
+  animation: scroll 24s ease-out forwards;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.conqueror img {
+  width: 180px !important;
+  height: 180px !important;
+  object-fit: cover !important;
+
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.conqueror h2 {
+  margin: 10px 0;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.conqueror p {
+  font-size: 18px;
+  font-style: italic;
+  color: rgb(183, 183, 183);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.final-winner {
+  transform: scale(1.4);
+}
+.final-winner img {
+  margin-top: 30px;
+  width: 240px;
+  height: 240px;
+   border: 2px solid gold;
+  box-shadow: 0 0 5px gold, 0 0 10px gold(0, 57%, 35%, 0.706); 
+}
+
+.final-winner h3 {
+  font-size: 36px;
+  color: #8b2626;
+}
+
+.final-winner p {
+  font-size: 22px;
+  color: #fff;
+}
+
+.fade-out {
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity 1s ease, filter 1s ease;
+}
+
+@keyframes winnerGlow {
+  0% {
+    box-shadow: 0 0 20px gold;
+  }
+  50% {
+    box-shadow: 0 0 60px gold;
+  }
+  100% {
+    box-shadow: 0 0 20px gold;
+  }
+}
+
+.final-winner img {
+  animation: winnerGlow 2s infinite;
+}
+
+.glass-box {
+  position: absolute;
   margin: 0 auto;
   z-index: 10;
-  height: 20em;
+  height: 40em;
   width: 40em;
   border-radius: 10px;
   display: flex;
@@ -487,9 +633,9 @@ input[type="number"]::-webkit-inner-spin-button {
   justify-content: center;
   align-items: center;
   color: var(--color-glass-box);
-  inset: 30%;
+  inset: 8%;
   transition: all 0.6s ease-in;
-  box-shadow: 0 0 5px 4px rgba(15, 110, 194, 0.437);
+  /* box-shadow: 0 0 5px 4px rgba(15, 110, 194, 0.437); */
 }
 
 .d-none {
@@ -517,7 +663,28 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 30px;
 }
 
-#joinBtn-container button {
+#winner-name {
+  height: 20px;
+  font-size: 20px;
+}
+
+#winner-quote {
+  margin-bottom : 10px;
+}
+
+#hom-btn {
+margin-top: 50px;
+}
+
+#home-btn a {
+  text-decoration: none;
+  color: rgb(249, 246, 246);
+  background-color: #2f2e2e;
+  font-size: 20px;
+}
+
+#joinBtn-container button,
+#home-btn a {
   padding: 0.3em;
   width: 35%;
   color: var(--text-inverse);
@@ -544,7 +711,6 @@ input[type="number"]::-webkit-inner-spin-button {
   left: calc(anchor(--theme-anchor left) - 2em);
   margin-bottom: 8px;
   padding: 8px;
-
   background-color: var(--color-surface);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -572,7 +738,6 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-bottom: 2px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-
   color: var(--text-primary);
   background-color: transparent;
   font-family: var(--primary-font);

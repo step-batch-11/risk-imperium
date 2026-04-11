@@ -1,29 +1,16 @@
 :root {
   --color-bg-main: #f0f0f0;
-  --color-bg-hover-light: #ddd;
-
   --text-primary: #171717;
   --text-secondary: #555;
-  --text-dark: #222;
   --text-inverse: #ffffff;
-
   --color-accent: #ff4c4c;
   --color-accent-hover: #ff1a1a;
-
-  --color-glass: rgba(255, 255, 255, 0.1);
-  --color-glass-border: rgba(255, 255, 255, 0.2);
-
-  --color-input-border: #ddd;
   --color-input-focus: var(--color-accent);
-  --color-input-focus-shadow: rgba(255, 76, 76, 0.4);
-
   --color-button-text: #222;
   --color-button-hover-bg: #ddd;
-
   --color-icon-default: #222;
   --color-icon-hover-bg: #222;
   --color-icon-hover-text: #fff;
-
   --button-light-shadow: 1px 2px 3px rgba(0, 0, 0, 0.3);
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-strong: 0 8px 20px rgba(255, 26, 26, 0.5);
@@ -43,7 +30,6 @@ html {
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
-  backdrop-filter: blur(4px);
 }
 
 main {
@@ -202,29 +188,6 @@ header h2 {
 #join-room-btn:hover {
   background-color: var(--color-button-hover-bg);
   transform: translateY(-3px);
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 #game-information {

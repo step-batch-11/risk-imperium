@@ -36,6 +36,7 @@ import { handleCombat } from "./features/resolve_combat.js";
 import { captureTerritory } from "./features/capture_territory.js";
 import { showNotification } from "./utilities/notifications.js";
 import { SPECTATOR_MSGs } from "./configs/spectator_messages.js";
+import { renderAvatar } from "./lobby/lobby.js";
 import {
   NOTIFICATION_MESSAGES,
   NOTIFICATION_TYPES,
@@ -226,9 +227,16 @@ const handleElimination = (_gameState) => {
   }, 1500);
 };
 
-const handleWin = (_gameState) => {
-  const dialoge = document.querySelector("#glass-box");
-  dialoge.classList.toggle("d-none");
+const handleWin = (gameState) => {
+  const dialoge = document.querySelector(".winning-screen");
+  dialoge.classList.toggle("hide-screen");
+  console.log(dialoge);
+  // dialoge.removeAttribute("hide-win-screen")
+  const nameContainer = dialoge.querySelector("#winner-name");
+  const avatarContainer = dialoge.querySelector("#winner-container");
+  const avatar = renderAvatar(gameState.player.avatar);
+  avatarContainer.prepend(avatar);
+  nameContainer.textContent = gameState.player.name;
 };
 
 export const SETUP_TRANSITION = {

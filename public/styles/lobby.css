@@ -1,25 +1,11 @@
 :root {
-  --primary-font: sans-serif;
   --secondary-font: "MedievalSharp", serif;
-  --color-bg-main: rgb(240, 241, 245);
-
   --color-accent: #ff4c4c;
   --color-accent-hover: #ff1a1a;
-
   --color-start: #10b981;
   --color-start-hover: #059669;
-
-  --color-player-card: rgb(237, 239, 242);
-
-  --text-primary: #171717;
   --text-inverse: #ffffff;
-
-  --color-border-dark: #222;
   --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.4);
-
-  --color-button-text: #222;
-  --color-button-hover-bg: #ddd;
-  --button-light-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -146,36 +132,6 @@ main {
   animation: dots 1s infinite;
 }
 
-@keyframes dots {
-  0% {
-    content: ".";
-  }
-  25% {
-    content: "..";
-  }
-  50% {
-    content: "...";
-  }
-  75% {
-    content: "....";
-  }
-  100% {
-    content: ".....";
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 .player-profile {
   width: 5em;
   height: 5em;
@@ -257,15 +213,6 @@ main {
   background: linear-gradient(120deg, #adb1b9 25%, #878fa0 50%, #adb0b7 75%);
   background-size: 200% 100%;
   animation: shimmerMove 1.6s infinite linear;
-}
-
-@keyframes shimmerMove {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
 }
 
 .player-container:not(.empty):hover {
