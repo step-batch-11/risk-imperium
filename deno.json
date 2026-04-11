@@ -17,5 +17,14 @@
     "@std/assert": "jsr:@std/assert@^1.0.19",
     "@std/testing": "jsr:@std/testing@^1.0.17",
     "hono": "npm:hono@^4.12.12"
+  },
+  "fmt": {
+    "exclude": [
+      "public/**/*.html",
+      "public/**/*.css",
+      "deno.*",
+      "public/assets/*",
+      "*.json"
+    ]
   }
 }

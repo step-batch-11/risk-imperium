@@ -4,7 +4,8 @@
     id="SVGRepo_tracerCarrier"
     stroke-linecap="round"
     stroke-linejoin="round"
-  ></g>
+  >
+  </g>
   <g id="SVGRepo_iconCarrier">
     <path
       d="M21 12L13 12"
@@ -12,7 +13,8 @@
       stroke-width="0.21600000000000003"
       stroke-linecap="round"
       stroke-linejoin="round"
-    ></path>
+    >
+    </path>
     <path
       d="M18 15L20.913 12.087V12.087C20.961 12.039 20.961 11.961 20.913 11.913V11.913L18 9"
       stroke="#323232"
