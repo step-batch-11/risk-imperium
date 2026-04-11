@@ -232,26 +232,26 @@
 }
 
 [data-card-type="canon"] {
-  background-image: url(../assets/artillary.png);
+  background-image: url(../assets/canon.png);
   background-position: center;
   background-size: cover;
 }
 
 [data-card-type="soldier"] {
-  background-image: url(../assets/infantry.png);
+  background-image: url(../assets/knight.png);
   background-size: cover;
   background-position: center;
 }
 
 [data-card-type="knight"] {
   background-size: cover;
-  background-image: url(../assets/artillary.png);
+  background-image: url(../assets/knight_on_horse.png);
   background-position: center;
 }
 
 [data-card-type="wild"] {
   background-size: cover;
-  background-image: url(../assets/wild_card.png);
+  background-image: url(../assets/wild_card.jpeg);
   background-position: center;
 }
 

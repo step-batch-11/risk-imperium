@@ -37,7 +37,7 @@
   font-weight: 800;
   color: var(--text-secondary);
   gap: 10px;
-  border-radius: 10px;
+  border: none;
   padding: 0.4em 0.7em;
 }
 
