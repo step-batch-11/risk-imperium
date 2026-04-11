@@ -935,12 +935,12 @@
           </div>
 
           <div class="continent-list">
-            <div class="continent-pill pill-na">N. America | 12</div>
-            <div class="continent-pill pill-sa">S. America | 8</div>
-            <div class="continent-pill pill-eu">Europe | 4</div>
-            <div class="continent-pill pill-af">Africa | 8</div>
-            <div class="continent-pill pill-as">Asia | 8</div>
-            <div class="continent-pill pill-au">Australia | 8</div>
+            <div class="continent-pill pill-na">N. America | 5</div>
+            <div class="continent-pill pill-sa">S. America | 2</div>
+            <div class="continent-pill pill-eu">Europe | 5</div>
+            <div class="continent-pill pill-af">Africa | 3</div>
+            <div class="continent-pill pill-as">Asia | 7</div>
+            <div class="continent-pill pill-au">Australia | 2</div>
           </div>
         </section>
 
@@ -1027,14 +1027,58 @@
             </div>
           </div>
 
-          <div id="glass-box" class="d-none">
-            <h2>You conquered the world</h2>
-            <button><a href="/">Go To Home</a></button>
+          <div class="hide-win-screen winning-screen">
+            <div class="intro-text">History remembers the conquerors…</div>
+
+            <div class="conquerors-scroll show">
+              <div class="conqueror">
+                <img src="./assets/image.png" alt="alexander" />
+                <h3>Alexander the Great</h3>
+                <p>"There is nothing impossible to him who will try."</p>
+              </div>
+
+              <div class="conqueror">
+                <img src="./assets/image.png" alt="alexander" />
+                <h3>Napoleon Bonaparte</h3>
+                <p>"Victory belongs to the most persevering."</p>
+              </div>
+
+              <div class="conqueror">
+                <img src="./assets/image.png" alt="alexander" />
+                <h3>Genghis Khan</h3>
+                <p>
+                  “If you’re scared, don’t start. If you’ve started… well, too
+                  late now.”
+                </p>
+              </div>
+
+              <div class="conqueror">
+                <img src="./assets/image.png" alt="alexander" />
+                <h3>Julius Caesar</h3>
+                <p>" I came, I saw, I conquered."</p>
+              </div>
+
+              <div class="conqueror final-winner" id="winner-container">
+                <h1 id="winner-name"></h1>
+                <p id="winner-quote">
+                  History remembers conquerors… Today, it remembers you.
+                </p>
+                <button id="home-btn"><a href="/">Home</a></button>
+              </div>
+
+              <!-- Repeat for others -->
+            </div>
           </div>
+          <!-- <div id="win-box" class="d-none">
+            <div class="avatar-container">  
+            </div>
+            <h2 id="winner-msg">CONQUERER</h2>
+            <h3 id="winner-name"></h3>
+            <button id="home-btn"><a href="/">Home</a></button>
+          </div> -->
           <div id="elimination-box" class="d-none">
-            <!-- <h1 id="winner-name"></h1> -->
             <h2>YOU LOST</h2>
-            <button><a href="/">Go To Home</a></button>
+            <button id="home-btn"><a href="/">Home</a></button>
           </div>
 
           <dialog id="force-trade">

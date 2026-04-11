@@ -57,9 +57,10 @@ main {
   justify-content: center;
   align-items: center;
 }
+/* 
 .player-avatar rect {
   height: 10em;
-}
+} */
 
 .player-name-container {
   font-size: 40px;

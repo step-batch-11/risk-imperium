@@ -43,7 +43,6 @@ html {
   background-repeat: no-repeat;
   background-size: cover;
   overflow: hidden;
-  backdrop-filter: blur(4px);
 }
 
 main {
