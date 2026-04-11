@@ -4,9 +4,11 @@ import { STATES, TIMEOUT } from "../config.js";
 export const broadCastNewUpdates = (players) => {
   players.forEach((player) => {
     const resolver = player.resolve;
+
     if (resolver) {
       resolver();
     }
+
     player.resolve = null;
   });
 };
@@ -46,24 +48,37 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
 
   return { action: STATES.WAITING, data, lastAction: game.lastUpdate };
 };
-const serveUpdatesToPlayer = (c, game, playerId, gameVersionId) => {
+
+const serveUpdatesToPlayer = (
+  context,
+  game,
+  playerId,
+  gameVersionId,
+  setCookieFn = setCookie,
+) => {
   const gameVersion = game.version;
   const result = handleDifferentGameVersionId(game, playerId, gameVersionId);
-  setCookie(c, "game-version", gameVersion);
+  setCookieFn(context, "game-version", gameVersion);
   return result;
 };
 
-export const handleWaiting = async (c) => {
-  const gameVersionId = Number(getCookie(c, "game-version"));
-  const game = c.get("game");
-  const playerId = Number(getCookie(c, "playerId"));
+export const handleWaiting = async (
+  context,
+  _next,
+  getCookieFn = getCookie,
+  deleteCookieFn = deleteCookie,
+  setCookieFn = setCookie,
+  timeout = TIMEOUT,
+) => {
+  const gameVersionId = Number(getCookieFn(context, "game-version"));
+  const game = context.get("game");
+  const playerId = Number(getCookieFn(context, "playerId"));
   const player = game.players.find((player) => player.id === playerId);
 
   if (!player) {
-    deleteCookie(c, "gameId");
-    deleteCookie(c, "lobbyId");
-    deleteCookie(c, "gameId");
-    return c.json({
+    deleteCookieFn(context, "gameId");
+    deleteCookieFn(context, "lobbyId");
+    return context.json({
       action: STATES.ELIMINATED,
       data: game.getUpdates(gameVersionId),
       lastAction: game.lastUpdate,
@@ -71,25 +86,37 @@ export const handleWaiting = async (c) => {
   }
 
   if (!game.isLatestId(gameVersionId)) {
-    const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
-    return c.json(result);
+    const result = serveUpdatesToPlayer(
+      context,
+      game,
+      playerId,
+      gameVersionId,
+      setCookieFn,
+    );
+    return context.json(result);
   }
 
   const response = await new Promise((resolve, reject) => {
     player.resolve = resolve;
     setTimeout(() => {
       reject(1);
-    }, TIMEOUT);
+    }, timeout);
   })
     .then(() => {
       if (gameVersionId === game.version) {
-        return c.text(null, 204);
+        return context.text(null, 204);
       }
-      const result = serveUpdatesToPlayer(c, game, playerId, gameVersionId);
-      return c.json(result);
+      const result = serveUpdatesToPlayer(
+        context,
+        game,
+        playerId,
+        gameVersionId,
+        setCookieFn,
+      );
+      return context.json(result);
     })
     .catch(() => {
-      return c.text(null, 204);
+      return context.text(null, 204);
     });
 
   return response;

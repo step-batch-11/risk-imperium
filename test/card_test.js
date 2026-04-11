@@ -13,9 +13,17 @@ describe("card tests", () => {
     const result = cards.isValidCombination(combo);
     assertEquals(result, true);
   });
+
   it("should return false for invalid set", () => {
     const combo = ["1", "1", "2"];
     const result = cards.isValidCombination(combo);
     assertEquals(result, false);
+  });
+
+  it("draw card should select a card from the list and return it", () => {
+    assertEquals(
+      cards.drawCard(() => 1),
+      "4",
+    );
   });
 });

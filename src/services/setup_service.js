@@ -6,7 +6,6 @@ export const setupService = (game) => {
 
   if (game.getGameState() === STATES.INITIAL_REINFORCEMENT) {
     const troopsToReinforce = game.remainingTroop;
-    console.log({ troopsToReinforce });
 
     return {
       action: game.getGameState(),

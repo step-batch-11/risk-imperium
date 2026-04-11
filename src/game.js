@@ -73,8 +73,6 @@ export class Game {
   }
 
   get remainingTroop() {
-    console.log(this.#round, this.#playersCount, this.#troops);
-
     const deployedTroopsPerPlayer = this.#round / this.#playersCount;
     return this.#troops - Math.floor(deployedTroopsPerPlayer);
   }
@@ -283,9 +281,7 @@ export class Game {
   #getOpponentsDetail(playerId) {
     return this.#players.reduce((opponents, player) => {
       if (player.id !== playerId) {
-        const playerTerritories = this.#territories.getTerritoriesOf(
-          player.id,
-        );
+        const playerTerritories = this.#territories.getTerritoriesOf(player.id);
         const playerBasicDetails = player.getBasicDetails();
         const opponentDetails = {
           ...playerBasicDetails,
