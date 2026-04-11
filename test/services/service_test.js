@@ -47,14 +47,3 @@ describe("Setup Service", () => {
     assertThrows(error.message, ERROR_MESSAGE.INVALID_PARAMETERS);
   });
 });
-//  if (game.getGameState() === STATES.REINFORCE) {
-//   15 |     const troopsToDeploy = getReinforcementCount(playerTerritory);
-//   16 |     if (!(game.stateDetails.remainingTroopsCount)) {
-//   17 |       game.addReinforcementTroops(troopsToDeploy);
-//   18 |     }
-// -----|-----
-//   20 |     return {
-//   21 |       action: game.getGameState(),
-//   22 |       data: { troopsToReinforce: game.stateDetails.remainingTroopsCount },
-//   23 |     };
-//   24 |   }

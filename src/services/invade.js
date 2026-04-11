@@ -62,17 +62,13 @@ export const invadeService = (game, data) => {
   const defenderId = game.getOwnerOfTerritory(defenderTerritoryId);
   game.stateDetails.defenderId = defenderId;
 
-  game.updateGame(
-    STATES.INVASION,
-    {
-      attackerId,
-      defenderId,
-      attackerTerritoryId,
-      defenderTerritoryId,
-      attackerTroops,
-    },
-    game.activePlayerId,
-  );
+  game.updateGame(STATES.INVASION, {
+    attackerId,
+    defenderId,
+    attackerTerritoryId,
+    defenderTerritoryId,
+    attackerTroops,
+  }, game.activePlayerId);
 
   game.setNewState(STATES.DEFEND);
 

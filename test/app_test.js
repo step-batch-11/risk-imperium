@@ -2,39 +2,13 @@ import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assert, assertEquals } from "@std/assert";
 import { createApp } from "../src/app.js";
 import { Hono } from "hono";
-import { Game } from "../src/game.js";
-import { CONFIG, STATES } from "../src/config.js";
-import { Continents } from "../src/models/continents.js";
-import { mockPlayers } from "../src/mock_data.js";
-import { Cavalry } from "../src/models/cavalry.js";
+import { createGame } from "../src/create_game.js";
 
-import { Cards } from "../src/models/cards.js";
-import { Territories } from "../src/models/territory.js";
-import { InvasionController } from "../src/handlers/invasion_controller.js";
 import { loadGameStateForTest } from "./utilities.js";
 import defendState from "../data/tests/defend.json" with { type: "json" };
 import reinforceState from "../data/tests/reinforce.json" with { type: "json" };
+import { STATES } from "../src/config.js";
 
-const createGame = () => {
-  const handlers = {
-    continentsHandler: new Continents(),
-    cardsHandler: new Cards(),
-    cavalry: new Cavalry(),
-    territoriesHandler: new Territories(CONFIG.TERRITORIES),
-  };
-
-  const utilities = { random: Math.random };
-
-  const controllers = {
-    invasionController: new InvasionController(
-      handlers.territoriesHandler,
-      utilities.random,
-    ),
-  };
-
-  const game = new Game(mockPlayers(), handlers, controllers, utilities);
-  return game;
-};
 let app;
 
 it("Create app should return the instance of the Hono class", () => {
@@ -201,7 +175,7 @@ describe("App Handler", () => {
     });
 
     it("Should not throw error when no logger passed", async () => {
-      const game = new Game();
+      const game = createGame();
       app = createApp(game, false);
       const res = await app.request("/");
       await res.text();

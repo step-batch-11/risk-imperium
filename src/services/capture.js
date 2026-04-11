@@ -1,8 +1,21 @@
 import { STATES } from "../config.js";
 
+const validateTroopCount = (troopCount, attackerTerritoryTroops) => {
+  if (troopCount >= attackerTerritoryTroops || troopCount < 0) {
+    throw new Error("Invalid troop count");
+  }
+};
+
 export const captureService = (game, data) => {
   const troopCount = data;
   const { attackerTerritoryId, defenderTerritoryId } = game.stateDetails;
+
+  const attackerTerritoryTroops = game.troopCountAtTerritory(
+    attackerTerritoryId,
+  );
+
+  validateTroopCount(troopCount, attackerTerritoryTroops);
+
   game.decreaseTroops(attackerTerritoryId, troopCount);
   game.addTroops(defenderTerritoryId, troopCount);
 

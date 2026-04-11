@@ -1,5 +1,5 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { Game } from "../../src/game.js";
+
 import {
   continuousNeighbour,
   fortificationService,
@@ -11,17 +11,18 @@ import fortificationState from "../../data/tests/fortification.json" with {
 import { assertEquals } from "@std/assert/equals";
 import { STATES } from "../../src/config.js";
 import { assertThrows } from "@std/assert/throws";
+import { createGame } from "../../src/create_game.js";
 
 describe("Fortification", () => {
   let game;
   beforeEach(() => {
-    game = new Game();
+    game = createGame();
     loadGameStateForTest(game, fortificationState);
   });
 
   describe("Service", () => {
     beforeEach(() => {
-      game = new Game();
+      game = createGame();
       loadGameStateForTest(game, fortificationState);
     });
     it("should update troops in territories when from, to and troop count provided", () => {
