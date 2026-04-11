@@ -1,26 +1,15 @@
 :root {
-  --color-bg-overlay-dark: rgba(0, 0, 0, 0.8);
-  --color-bg-overlay-light: rgba(0, 0, 0, 0.5);
-
-  --color-bg-main: #f0f0f0;
-  --color-bg-hover-light: #ddd;
-
   --color-glass: rgba(255, 255, 255, 0.1);
   --color-glass-border: rgba(255, 255, 255, 0.2);
-
   --text-primary: #e4e4e4;
   --text-inverse: #ffffff;
-
   --color-input-border: #ddd;
   --color-input-focus: #ff7e5f;
   --color-input-focus-shadow: rgba(255, 126, 95, 0.4);
-
   --color-accent-start: #f62c2c;
   --color-accent-end: #df0808;
-
   --color-accent-hover-start: #f23c3c;
   --color-accent-hover-end: #ef2f2f;
-
   --shadow-soft: 0 8px 20px rgba(0, 0, 0, 0.37);
   --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
@@ -54,7 +43,9 @@ form {
   border: 1px solid var(--color-glass-border);
   width: 350px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 form:hover {
@@ -99,7 +90,9 @@ button {
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition:
+    background 0.3s,
+    transform 0.2s;
 }
 
 button:hover {

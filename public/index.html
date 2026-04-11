@@ -1,141 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Home</title>
-    <script type="module" src="./scripts/home.js"></script>
-    <link rel="stylesheet" href="./styles/home.css" />
-    <link rel="stylesheet" href="./styles/components_style.css">
-    <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon" />
-    <script type="module" src="./scripts/home_page/home.js"></script>
-  </head>
 
-  <body>
-    <main>
-      <section id="image-container">
-        <img
-          src="./assets/risk_logo.png"
-          alt="risk_logo.png"
-          id="risk-logo-img"
-        />
-      </section>
+<head>
+  <title>Home</title>
+  <script type="module" src="./scripts/home.js"></script>
+  <link rel="stylesheet" href="./styles/home.css" />
+  <link rel="stylesheet" href="./styles/components_style.css">
+  <link rel="stylesheet" href="./styles/animations.css">
+  <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon" />
+  <script type="module" src="./scripts/home_page/home.js"></script>
+</head>
 
-      <div id="notification-container" class="notification">
-        <p id="notification-text"></p>
+<body>
+  <main>
+    <section id="image-container">
+      <img src="./assets/risk_logo.png" alt="risk_logo.png" id="risk-logo-img" />
+    </section>
+
+    <div id="notification-container" class="notification">
+      <p id="notification-text"></p>
+    </div>
+
+    <section id="content-container">
+      <header id="game-heading">
+        <h1>Risk</h1>
+        <h2>The world of global domination</h2>
+      </header>
+
+      <div id="join-room" class="disable-join">
+        <form action="/join-room" method="post" id="join-form">
+          <label for="roomId-text" id="room-title">Room-Id : </label>
+          <input type="text" name="roomId" id="roomId-text" required autofocus><br>
+          <div id="joinBtn-container">
+            <button type="submit">Join</button>
+          </div>
+        </form>
       </div>
 
-      <section id="content-container">
-        <header id="game-heading">
-          <h1>Risk</h1>
-          <h2>The world of global domination</h2>
-        </header>
+      <div id="actions-panel">
+        <form method="post" action="/quick-play" id="quick-play-actions">
+          <button type="submit" id="quick-play-btn">Quick play</button>
+        </form>
 
-        <div id="join-room" class="disable-join">
-          <form action="/join-room" method="post" id="join-form">
-            <label for="roomId-text" id="room-title">Room-Id : </label>
-            <input
-              type="text"
-              name="roomId"
-              id="roomId-text"
-              required
-              autofocus
-            ><br>
-            <div id="joinBtn-container">
-              <button type="submit">Join</button>
-            </div>
-          </form>
-        </div>
-
-        <div id="actions-panel">
-          <form method="post" action="/quick-play" id="quick-play-actions">
-            <button type="submit" id="quick-play-btn">Quick play</button>
+        <div id="room-actions">
+          <form action="/create-room" method="post">
+            <button id="create-room-btn">Create Room</button>
           </form>
 
-          <div id="room-actions">
-            <form action="/create-room" method="post">
-              <button id="create-room-btn">Create Room</button>
-            </form>
-
-            <button id="join-room-btn">Join Room</button>
-          </div>
+          <button id="join-room-btn">Join Room</button>
         </div>
-      </section>
-      <section id="menu">
-        <div class="game-info">
-          <button id="game-info-btn">&#9432;</button>
-        </div>
-        <div class="game-info">
-          <form action="/logout" method="post">
-            <button id="logout-button" type="submit">
-              <svg viewBox="0 0 24 24" id="logout-svg">
-                <path
-                  d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2 M9 12h12l-3 -3 M18 15l3 -3"
-                />
-              </svg>
-            </button>
-          </form>
-        </div>
-      </section>
-      <section id="game-information" class="game-info hidden">
-        <article id="about">
-          <h2>About</h2>
-          <p>
-            A strategy game of world domination. Capture territories, grow your
-            armies, and eliminate opponents to control the entire world.
-          </p>
-        </article>
+      </div>
+    </section>
+    <section id="menu">
+      <div class="game-info">
+        <button id="game-info-btn">&#9432;</button>
+      </div>
+      <div class="game-info">
+        <form action="/logout" method="post">
+          <button id="logout-button" type="submit">
+            <svg viewBox="0 0 24 24" id="logout-svg">
+              <path
+                d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2 M9 12h12l-3 -3 M18 15l3 -3" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </section>
+    <section id="game-information" class="game-info hidden">
+      <article id="about">
+        <h2>About</h2>
+        <p>
+          A strategy game of world domination. Capture territories, grow your
+          armies, and eliminate opponents to control the entire world.
+        </p>
+      </article>
 
-        <article id="objective">
-          <h2>Objective</h2>
-          <p>Conquer all 42 territories and defeat all players.</p>
-        </article>
+      <article id="objective">
+        <h2>Objective</h2>
+        <p>Conquer all 42 territories and defeat all players.</p>
+      </article>
 
-        <article id="turn-flow">
-          <h2>Turn Flow</h2>
-          <p>Each turn:</p>
-          <ol>
-            <li>
-              <strong>Reinforce</strong> - Get armies (territories ÷ 3, [ min 3
-              ] + continent bonuses + cards)
-            </li>
-            <li>
-              <strong>Attack</strong> - Invade adjacent territories using troops
-            </li>
-            <li>
-              <strong>Fortify</strong> - Move armies between your connected
-              territories (once)
-            </li>
-          </ol>
-        </article>
+      <article id="turn-flow">
+        <h2>Turn Flow</h2>
+        <p>Each turn:</p>
+        <ol>
+          <li>
+            <strong>Reinforce</strong> - Get armies (territories ÷ 3, [ min 3
+            ] + continent bonuses + cards)
+          </li>
+          <li>
+            <strong>Attack</strong> - Invade adjacent territories using troops
+          </li>
+          <li>
+            <strong>Fortify</strong> - Move armies between your connected
+            territories (once)
+          </li>
+        </ol>
+      </article>
 
-        <article id="combat">
-          <h2>Combat</h2>
-          <ol>
-            <li>Attack with up to 3 troops (need 3+ army)</li>
-            <li>Defender defends with up to 2 troops ( need 1+ army )</li>
-            <li>
-              Highest dice win → loser loses the number of troops they
-              attacked/defended with
-            </li>
-            <li>
-              In case of tie → attacker loses the number of troops they attacked
-              with
-            </li>
-            <li>Capture territory when enemy has no army left</li>
-          </ol>
-        </article>
+      <article id="combat">
+        <h2>Combat</h2>
+        <ol>
+          <li>Attack with up to 3 troops (need 3+ army)</li>
+          <li>Defender defends with up to 2 troops ( need 1+ army )</li>
+          <li>
+            Highest dice win → loser loses the number of troops they
+            attacked/defended with
+          </li>
+          <li>
+            In case of tie → attacker loses the number of troops they attacked
+            with
+          </li>
+          <li>Capture territory when enemy has no army left</li>
+        </ol>
+      </article>
 
-        <article id="cards">
-          <h2>Cards</h2>
-          <ol>
-            <li>Gain 1 card if you capture a territory</li>
-            <li>
-              Trade sets for bonus armies [ all 3 unique/distinct set of cards ]
-            </li>
-            <li>Max 5 cards → must trade [ force trade ]</li>
-            <li>Eliminating a player gives you their cards</li>
-          </ol>
-        </article>
-      </section>
-    </main>
-  </body>
+      <article id="cards">
+        <h2>Cards</h2>
+        <ol>
+          <li>Gain 1 card if you capture a territory</li>
+          <li>
+            Trade sets for bonus armies [ all 3 unique/distinct set of cards ]
+          </li>
+          <li>Max 5 cards → must trade [ force trade ]</li>
+          <li>Eliminating a player gives you their cards</li>
+        </ol>
+      </article>
+    </section>
+  </main>
+</body>
+
 </html>

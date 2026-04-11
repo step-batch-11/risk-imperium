@@ -1,77 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lobby</title>
-    <script type="module" src="scripts/lobby/lobby.js"></script>
-    <link rel="stylesheet" href="styles/players.css" />
-    <link rel="stylesheet" href="styles/lobby.css" />
-    <link rel="stylesheet" href="styles/components_style.css" />
-    <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon" />
-  </head>
 
-  <body>
-    <main>
-      <div id="players-container">
-        <div id="player-1" class="player-container empty">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobby</title>
+  <script type="module" src="scripts/lobby/lobby.js"></script>
+  <link rel="stylesheet" href="styles/players.css" />
+  <link rel="stylesheet" href="styles/lobby.css" />
+  <link rel="stylesheet" href="styles/components_style.css" />
+  <link rel="stylesheet" href="styles/animations.css">
+  <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon" />
+</head>
 
-        <div id="player-2" class="player-container empty">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
-
-        <div id="player-3" class="player-container empty">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
-
-        <div id="player-4" class="player-container empty">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
-
-        <div id="player-5" class="player-container empty">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
-
-        <div id="player-6" class="player-container empty">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
-      </div>
-      <div id="lobby-details">
-        <div id="room-id-container">
-          <h3>Room Id : <span id="room-id"></span></h3>
-          <div id="message">
-            <p id="waiting">Waiting for players</p>
-            <p id="dots"></p>
-          </div>
-        </div>
-        <div id="nav-container">
-          <button id="leave-button" type="button">Leave</button>
-        </div>
+<body>
+  <main>
+    <div id="players-container">
+      <div id="player-1" class="player-container empty">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
       </div>
 
-      <template id="join-room-template">
-        <div>
-          <form action="/join-room">
-            <input type="text" name="room-id">
-            <button type="submit">enter</button>
-          </form>
+      <div id="player-2" class="player-container empty">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
+      </div>
+
+      <div id="player-3" class="player-container empty">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
+      </div>
+
+      <div id="player-4" class="player-container empty">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
+      </div>
+
+      <div id="player-5" class="player-container empty">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
+      </div>
+
+      <div id="player-6" class="player-container empty">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
+      </div>
+    </div>
+    <div id="lobby-details">
+      <div id="room-id-container">
+        <h3>Room Id : <span id="room-id"></span></h3>
+        <div id="message">
+          <p id="waiting">Waiting for players</p>
+          <p id="dots"></p>
         </div>
-      </template>
-      
-      <template id="player-template">
-        <div class="player-container">
-          <div class="player-avatar"></div>
-          <div class="player-name-container"></div>
-        </div>
-      </template>
-    </main>
-  </body>
+      </div>
+      <div id="nav-container">
+        <button id="leave-button" type="button">Leave</button>
+      </div>
+    </div>
+
+    <template id="join-room-template">
+      <div>
+        <form action="/join-room">
+          <input type="text" name="room-id">
+          <button type="submit">enter</button>
+        </form>
+      </div>
+    </template>
+
+    <template id="player-template">
+      <div class="player-container">
+        <div class="player-avatar"></div>
+        <div class="player-name-container"></div>
+      </div>
+    </template>
+  </main>
+</body>
+
 </html>

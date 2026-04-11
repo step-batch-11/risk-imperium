@@ -6,9 +6,6 @@
   --text-centered: middle;
 }
 
-/* =========================================
-   1. MODERN THEME (The Default Skin)
-   ========================================= */
 .theme-modern {
   --color-bg-main: #ede6d6;
   --color-surface: rgba(255, 252, 245, 0.75);
@@ -61,9 +58,6 @@
   --sea-route: #4b4b4b;
 }
 
-/* =========================================
-   2. ANCIENT THEME
-   ========================================= */
 .theme-ancient {
   --color-bg-main: #d9c8b3;
   --color-surface: rgba(225, 210, 190, 0.85);
@@ -126,9 +120,6 @@
   --sea-route: #3a2e22;
 }
 
-/* =========================================
-   3. WINTER THEME
-   ========================================= */
 .theme-winter {
   --color-bg-main: #7f9ebf;
   --color-surface: rgba(240, 248, 255, 0.85);
@@ -192,9 +183,6 @@
   --sea-route: #8caad4;
 }
 
-/* =========================================
-   4. POP THEME
-   ========================================= */
 .theme-pop {
   --color-bg-main: #fdfbfb;
   --color-surface: #ffffff;
