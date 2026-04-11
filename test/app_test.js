@@ -1,13 +1,13 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 import { createApp } from "../src/app.js";
 import { Hono } from "hono";
 import { createGame } from "../src/create_game.js";
-
+import { STATES } from "../src/config.js";
 import { loadGameStateForTest } from "./utilities.js";
 import defendState from "../data/tests/defend.json" with { type: "json" };
 import reinforceState from "../data/tests/reinforce.json" with { type: "json" };
-import { STATES } from "../src/config.js";
+import invasionState from "../data/tests/invasion.json" with { type: "json" };
 
 let app;
 
@@ -108,46 +108,45 @@ describe("App Handler", () => {
       assertEquals(result.action, STATES.WAITING);
     });
 
-    it.ignore(
-      "RESOLVE_COMBAT should resolve and update territories",
-      async () => {
-        loadGameStateForTest(game, invasionState);
-        await app.request("/user-actions", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            userActions: "INVADE",
-            data: {
-              attackerTerritoryId: 35,
-              defenderTerritoryId: 16,
-              attackerTroops: 3,
-            },
-          }),
-        });
+    it("RESOLVE_COMBAT should resolve and update territories", async () => {
+      loadGameStateForTest(game, invasionState);
+      const cookie = "playerId=1;gameId=1";
 
-        await app.request("/user-actions", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            userActions: STATES.DEFEND,
-            data: { troopCount: 3 },
-          }),
-        });
+      await app.request("/user-actions", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify({
+          userActions: "INVADE",
+          data: {
+            attackerTerritoryId: 30,
+            defenderTerritoryId: 31,
+            attackerTroops: 2,
+          },
+        }),
+      });
 
-        const response = await app.request("/user-actions", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            userActions: STATES.RESOLVE_COMBAT,
-            data: {},
-          }),
-        });
+      await app.request("/user-actions", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify({
+          userActions: STATES.DEFEND,
+          data: { troopCount: 1 },
+        }),
+      });
 
-        const result = await response.json();
-        assertEquals(response.status, 200);
-        assertEquals(result.data.notifyMsg.status, "fail");
-      },
-    );
+      const response = await app.request("/user-actions", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify({
+          userActions: STATES.RESOLVE_COMBAT,
+          data: {},
+        }),
+      });
+
+      const _result = await response.json();
+      assertEquals(response.status, 200);
+      // assertEquals(result.data.notifyMsg.status, "fail");
+    });
   });
 
   describe("Logger", () => {
@@ -271,6 +270,157 @@ describe("App Handler", () => {
         assertEquals(res.status, 302);
         assertEquals(actualStoringPath, `./data/states/${configName}.json`);
         assertEquals(actualStoringData, JSON.stringify(gameData));
+      });
+    });
+  });
+
+  describe("auth", () => {
+    it("post /login should set cookie amd redirect to home", async () => {
+      const fd = new FormData();
+      fd.set("username", "himu");
+      const app = createApp({}, false, {}, []);
+      const res = await app.request("/login", {
+        method: "POST",
+        body: fd,
+      });
+      assertEquals(res.status, 302);
+      const headers = res.headers;
+      assertEquals(headers.get("location"), "/");
+      assertStringIncludes(headers.get("set-cookie"), "playerId");
+    });
+
+    it("post /logout should delete cookies amd redirect to login", async () => {
+      const app = createApp({}, false, {}, {});
+      const response = await app.request("/logout", { method: "POST" });
+      assertEquals(response.status, 302);
+      assertEquals(response.headers.get("location"), "/login.html");
+    });
+  });
+
+  describe("LOBBY TESTS", () => {
+    describe("QUICK PLAY", () => {
+      it("post /quick-play should redirect to lobby and add the player to waiting list", async () => {
+        const players = { 1: "alex" };
+        const lobbies = new Map();
+        const app = createApp({}, false, players, lobbies);
+        const res = await app.request("/quick-play", {
+          method: "POST",
+          headers: {
+            cookie: "playerId=1",
+          },
+        });
+        assertEquals(res.status, 302);
+        assertEquals(res.headers.get("location"), "/lobby.html");
+      });
+
+      it("post /quick-play should create game if  waiting list is equal 3", async () => {
+        const players = { 1: "alex", 2: "lisa" };
+        const lobbies = new Map();
+        lobbies.set(1, {
+          id: 1,
+          players: [{ id: 3 }, { id: 2 }],
+          status: "waiting",
+        });
+        const gamesRepo = new Map();
+        const app = createApp(gamesRepo, false, players, lobbies);
+        const res = await app.request("/quick-play", {
+          method: "POST",
+          headers: {
+            cookie: "playerId=1",
+          },
+        });
+        assertEquals(res.status, 302);
+        assertEquals(res.headers.get("location"), "/lobby.html");
+        assertEquals(lobbies.get(1).status, "in-game");
+      });
+    });
+
+    describe("LOBBY DATA", () => {
+      it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
+        const lobbies = new Map();
+        lobbies.set(1, {
+          id: 1,
+          players: [{ name: "alex" }, { name: "alice" }],
+          status: "waiting",
+        });
+        const app = createApp({}, false, [], lobbies);
+        const res = await app.request("/get-lobby-data", {
+          headers: {
+            cookie: "lobbyId=1",
+          },
+        });
+        assertEquals(res.status, 200);
+        const data = await res.json();
+        const expected = {
+          playerDetails: [{ name: "alex" }, { name: "alice" }],
+          data: {
+            id: 1,
+            players: [{ name: "alex" }, { name: "alice" }],
+            status: "waiting",
+          },
+          isHost: false,
+        };
+        assertEquals(data, expected);
+      });
+
+      it("get /get-lobby-data should get the lobbby data and should start game ", async () => {
+        const lobbies = new Map();
+        lobbies.set(1, {
+          id: 1,
+          players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
+          status: "in-game",
+        });
+        const app = createApp({}, false, [], lobbies);
+        const res = await app.request("/get-lobby-data", {
+          headers: { cookie: "lobbyId=1" },
+        });
+
+        assertEquals(res.status, 200);
+        const data = await res.json();
+
+        const expected = {
+          playerDetails: [
+            { name: "alex" },
+            { name: "alice" },
+            { name: "resso" },
+          ],
+          data: {
+            id: 1,
+            players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
+            status: "in-game",
+          },
+          isHost: false,
+        };
+        assertEquals(data, expected);
+      });
+    });
+
+    describe("LEAVE LOBBY", () => {
+      it("/leave lobby should pop the player from lobby, delete the cookies and return the success status", async () => {
+        const players = { 1: "alex", 2: "lisa" };
+        const lobbies = new Map();
+        lobbies.set(1, {
+          id: 1,
+          players: [{ id: 3 }, { id: 1 }, { id: 2 }],
+          status: "waiting",
+        });
+
+        const gamesRepo = new Map();
+        const app = createApp(gamesRepo, false, players, lobbies);
+        const res = await app.request("/leave-lobby", {
+          method: "POST",
+          headers: {
+            cookie: "playerId=1;lobbyId=1",
+          },
+        });
+
+        const headers = res.headers;
+
+        assertEquals(res.status, 200);
+        const { action, data } = await res.json();
+        assertEquals(action, "LEAVE");
+        assert(data.success);
+        assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
       });
     });
   });

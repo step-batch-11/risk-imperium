@@ -10,9 +10,7 @@ import invasion from "../../data/tests/invasion copy.json" with {
   type: "json",
 };
 
-import winState from "../../data/tests/win.json" with {
-  type: "json",
-};
+import winState from "../../data/tests/win.json" with { type: "json" };
 
 import { loadGameStateForTest } from "../utilities.js";
 import { resolveCombatService } from "../../src/services/resolve_combat.js";
@@ -172,7 +170,7 @@ describe("===> RESOLVE COMBAT", () => {
   });
 
   it("should resolve the combat defender wins", () => {
-    const actualResult = resolveCombatService(game, () => 0.3);
+    const actualResult = resolveCombatService(game, {}, 1, [], () => 0.3);
     assertEquals(actualResult.action, STATES.INVASION);
     assertEquals(actualResult.data.notifyMsg.status, "fail");
   });
@@ -184,7 +182,7 @@ describe("===> RESOLVE COMBAT", () => {
         return values[i++ % values.length];
       };
     };
-    const actualResult = resolveCombatService(game, random([0, 1]));
+    const actualResult = resolveCombatService(game, {}, 1, [], random([0, 1]));
     assertEquals(actualResult.action, STATES.MOVE_IN);
     assertEquals(actualResult.data.notifyMsg.status, "success");
   });
@@ -213,7 +211,13 @@ describe("===> RESOLVE  COMBAT WIN STATE", () => {
         return values[i++ % values.length];
       };
     };
-    const actualResult = resolveCombatService(game, random([1, 1, 1, 0, 0]));
+    const actualResult = resolveCombatService(
+      game,
+      {},
+      1,
+      [],
+      random([1, 1, 1, 0, 0]),
+    );
     assertEquals(actualResult.action, "WON");
     assertEquals(actualResult.data.notifyMsg.status, "success");
     assertEquals(actualResult.data.hasEliminated, true);

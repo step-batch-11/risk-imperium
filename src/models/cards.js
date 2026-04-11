@@ -3,8 +3,9 @@ export class Cards {
   constructor() {
     this.#cardTypes = ["1", "2", "3", "4"];
   }
-  drawCard() {
-    return this.#cardTypes[Math.round(Math.random() * 3)];
+
+  drawCard(randomFn = Math.random) {
+    return this.#cardTypes[Math.round(randomFn() * 3)];
   }
 
   isValidCombination(combination) {

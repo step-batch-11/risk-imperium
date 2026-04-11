@@ -60,13 +60,13 @@ export const gameController = async (
       deleteCookieFn(context, "gameId");
       deleteCookieFn(context, "lobbyId");
     }
+
     const gameVersion = game.version;
     setCookieFn(context, "game-version", gameVersion);
 
     return context.json(result);
   } catch (e) {
     console.log(e);
-
     return context.json({ msg: e.message }, 500);
   }
 };

@@ -22,10 +22,8 @@ const handleCapture = (game) => {
 };
 
 const rollDice = (count, randomFunction = Math.random) => {
-  return Array.from(
-    { length: count },
-    () => Math.ceil(randomFunction() * 6),
-  ).sort((a, b) => b - a);
+  return Array.from({ length: count }, () => Math.ceil(randomFunction() * 6))
+    .sort((a, b) => b - a);
 };
 
 const calculateLoss = (defenderDice, attackerDice) => {
@@ -70,12 +68,19 @@ const resolveCombat = (game, randomFunction) => {
   return [attackerTerritoryId, defenderTerritoryId];
 };
 
-export const resolveCombatService = (game, randomFunction = Math.random) => {
+export const resolveCombatService = (
+  game,
+  _data,
+  _activePlayerId,
+  _opponents,
+  randomFunction = Math.random,
+) => {
   const { defenderTerritoryId } = game.stateDetails;
   const defenderId = game.getOwnerOfTerritory(defenderTerritoryId);
 
   const territoriesIds = resolveCombat(game, randomFunction);
   const { attackerDice, defenderDice } = game.stateDetails;
+
   const updatedTerritories = game.getTerritoriesDetails(...territoriesIds);
   const isCurrentCaptured = game.stateDetails.isCaptured;
   const isEliminated = game.isEliminated(defenderId);

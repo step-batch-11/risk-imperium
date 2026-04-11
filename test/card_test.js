@@ -1,5 +1,5 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { assert, assertEquals } from "@std/assert";
+import { assertEquals } from "@std/assert";
 import { Cards } from "../src/models/cards.js";
 
 describe("card tests", () => {
@@ -13,12 +13,17 @@ describe("card tests", () => {
     const result = cards.isValidCombination(combo);
     assertEquals(result, true);
   });
+
   it("should return false for invalid set", () => {
     const combo = ["1", "1", "2"];
     const result = cards.isValidCombination(combo);
     assertEquals(result, false);
   });
-  it("should give a random card from the set", () => {
-    assert(cards.drawCard());
+
+  it("draw card should select a card from the list and return it", () => {
+    assertEquals(
+      cards.drawCard(() => 1),
+      "4",
+    );
   });
 });

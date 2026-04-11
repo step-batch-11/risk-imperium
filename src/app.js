@@ -5,7 +5,7 @@ import { handleWaiting } from "./handlers/passivePlayers.js";
 import { handleGameSetup } from "./handler.js";
 import { handleLoadGameState } from "./handlers/handle_load_game_state.js";
 import { handleSaveGameState } from "./handlers/handle_save_game_state.js";
-import { loginHandler, logoutHandler } from "./handlers/login_handler.js";
+import { loginHandler, logoutHandler } from "./handlers/auth.js";
 import {
   createRoom,
   joinRoom,
