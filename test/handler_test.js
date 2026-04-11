@@ -12,7 +12,6 @@ import initReinforceState from "../data/tests/init_reinforce.json" with {
 };
 import invasionState from "../data/tests/invasion.json" with { type: "json" };
 import defendState from "../data/tests/defend2.json" with { type: "json" };
-
 import captureState from "../data/tests/capture.json" with { type: "json" };
 import { createGame } from "../src/create_game.js";
 import { fortificationService } from "../src/services/fortification.js";
@@ -208,7 +207,6 @@ describe("Api Handler", () => {
         },
         players: [],
       };
-
       const context = {
         get: (name) => {
           if (name === "game") {
@@ -220,7 +218,6 @@ describe("Api Handler", () => {
         },
         json: (data) => data,
       };
-
       const error = await gameController(context, "", () => {});
       assertEquals(error.msg, ERROR_MESSAGE.INVALID_ACTION);
     });
