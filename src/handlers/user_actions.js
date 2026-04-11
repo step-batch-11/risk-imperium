@@ -48,7 +48,7 @@ export const gameController = async (
   context,
   _next,
   setCookieFn = setCookie,
-  deleteCookieFn = deleteCookie
+  deleteCookieFn = deleteCookie,
 ) => {
   try {
     const game = context.get("game");

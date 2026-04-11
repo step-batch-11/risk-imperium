@@ -1,50 +1,25 @@
 :root {
   --primary-font: sans-serif;
   --secondary-font: "MedievalSharp", serif;
+  --territory-name-size: 7px;
+  --troop-count-size: 12px;
+  --text-centered: middle;
+}
 
+/* =========================================
+   1. MODERN THEME (The Default Skin)
+   ========================================= */
+.theme-modern {
   --color-bg-main: #ede6d6;
   --color-surface: rgba(255, 252, 245, 0.75);
-
-  --color-bg-player-details: rgb(255 255 255 / 22%);
-  --color-bg-avatar: #1a1a1a;
-  --color-bg-close-button: #8b2626;
-
-  --color-bg-deploy-troop-selection: #2a2a40;
-  --color-bg-deploy-form: rgba(0, 0, 0, 0.3);
-  --color-bg-deploy-selector-button: #3a3a55;
-  --color-bg-deploy-selector-button-hover: #50507a;
-  --color-bg-deploy-button: linear-gradient(135deg, #4caf50, #6be675);
-  --color-bg-cancel-deploy: #444;
-  --color-bg-cancel-deploy-hover: #666;
-
-  --color-bg-glass-box: linear-gradient(
-    45deg,
-    white,
-    rgba(240, 248, 255, 0.437),
-    white
-  );
+  --map-background: linear-gradient(135deg, #f0f0f0 0%, #dcf0fb 100%);
+  --color-map-stroke: #5c4b37;
+  --color-glass-box: rgba(94, 123, 220, 0.936);
 
   --text-primary: #3e3326;
   --text-secondary: #6f5e49;
   --text-tertiary: #ffffff;
-
-  --color-player-info: #635432;
-  --color-player-name: #c99000;
-
-  --map-background: linear-gradient(135deg, #f0f0f0 0%, #dcf0fb 100%);
-
-  --color-map-stroke: #5c4b37;
-
   --color-troop-count: rgba(0, 0, 0, 0.7);
-
-  --color-selected-territory: green;
-  --color-captured: rgb(8, 204, 8);
-  --color-highlight: rgb(136, 0, 0);
-  --color-highlight-icon: rgba(194, 169, 106, 0.7);
-  --color-selection: #6c7a89;
-  --color-target: #a05a4a;
-
-  --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
 
   --player-1: hsl(4, 75%, 69%);
   --player-2: hsl(209, 75%, 65%);
@@ -53,29 +28,226 @@
   --player-5: hsl(338, 75%, 75%);
   --player-6: hsl(25, 75%, 65%);
 
-  /* --player-1: hsl(4, 60%, 70%); */
-  /* --player-2: hsl(209, 60%, 70%); */
-  /* --player-3: hsl(40, 60%, 70%); */
-  /* --player-4: hsl(193, 60%, 70%); */
-  /* --player-5: hsl(338, 60%, 70%); */
-  /* --player-6: hsl(25, 60%, 70%); */
-
   --color-success: #557153;
   --color-warning: #b07d35;
   --color-info: #425b66;
   --color-fail: #8b3e36;
 
-  --north-america-outline: #b07a6a;
-  --south-america-outline: #6f8fa6;
-  --africa-outline: #c1a45a;
-  --europe-outline: #7f9c8b;
-  --asia-outline: #8c6f9c;
-  --australia-outline: #a4876a;
+  --color-bg-player-details: rgba(255, 255, 255, 0.22);
+  --color-bg-avatar: #1a1a1a;
+  --color-bg-close-button: #8b2626;
+  --color-bg-deploy-troop-selection: #2a2a40;
+  --color-bg-deploy-form: rgba(0, 0, 0, 0.3);
+  --color-bg-deploy-selector-button: #3a3a55;
+  --color-bg-deploy-selector-button-hover: #50507a;
+  --color-bg-deploy-button: linear-gradient(135deg, #4caf50, #6be675);
+  --color-bg-cancel-deploy: #444;
+  --color-bg-cancel-deploy-hover: #666;
+
+  --color-selected-territory: green;
+  --color-captured: rgb(8, 204, 8);
+  --color-highlight: rgb(136, 0, 0);
+  --color-highlight-icon: rgba(194, 169, 106, 0.7);
+  --color-selection: #6c7a89;
+  --color-target: #a05a4a;
+  --selection-shadow: 0 0 10px rgba(80, 70, 50, 0.35);
+
+  --north-america-outline: var(--player-1);
+  --south-america-outline: var(--player-2);
+  --africa-outline: var(--player-3);
+  --europe-outline: var(--player-4);
+  --asia-outline: var(--player-5);
+  --australia-outline: var(--player-6);
   --sea-route: #4b4b4b;
+}
 
-  --territory-name-size: 7px;
-  --troop-count-size: 12px;
-  --text-centered: middle;
+/* =========================================
+   2. ANCIENT THEME
+   ========================================= */
+.theme-ancient {
+  --color-bg-main: #d9c8b3;
+  --color-surface: rgba(225, 210, 190, 0.85);
+  --map-background: linear-gradient(
+    to bottom right,
+    #d9ceb8 0%,
+    #f8f4e6 50%,
+    #e3d8c3 100%
+  );
+  --color-map-stroke: #4a3c2b;
+  --color-glass-box: linear-gradient(
+    45deg,
+    #e3d3be,
+    rgba(225, 210, 190, 0.65),
+    #e3d3be
+  );
 
-  --color-glass-box: rgba(94, 123, 220, 0.936);
+  --text-primary: #111111;
+  --text-secondary: #595959;
+  --text-tertiary: #f2e8d9;
+  --color-troop-count: rgba(17, 17, 17, 0.85);
+
+  --player-1: #a95229;
+  --player-2: #526375;
+  --player-3: #b5985e;
+  --player-4: #6e7d5e;
+  --player-5: #735b6b;
+  --player-6: #8c6a49;
+
+  --color-success: #6e7d5e;
+  --color-warning: #b5985e;
+  --color-info: #7d8b99;
+  --color-fail: #8a4133;
+
+  --color-bg-player-details: rgba(139, 125, 106, 0.22);
+  --color-bg-avatar: #2c241b;
+  --color-bg-close-button: #5a1a1a;
+  --color-bg-deploy-troop-selection: #3e3326;
+  --color-bg-deploy-form: rgba(60, 50, 40, 0.4);
+  --color-bg-deploy-selector-button: #5a4b38;
+  --color-bg-deploy-selector-button-hover: #726048;
+  --color-bg-deploy-button: linear-gradient(135deg, #6e7d5e, #8a9a7a);
+  --color-bg-cancel-deploy: #4a3c2b;
+  --color-bg-cancel-deploy-hover: #5c4b37;
+
+  --color-selected-territory: #6e7d5e;
+  --color-captured: #6e7d5e;
+  --color-highlight: #b5985e;
+  --color-highlight-icon: rgba(181, 152, 94, 0.8);
+  --color-selection: #7d8b99;
+  --color-target: #9c412f;
+  --selection-shadow: 0 0 12px rgba(60, 50, 40, 0.4);
+
+  --north-america-outline: #8b6d45;
+  --south-america-outline: #875540;
+  --europe-outline: #4b5d70;
+  --africa-outline: #91764d;
+  --asia-outline: #5a7046;
+  --australia-outline: #854f54;
+  --sea-route: #3a2e22;
+}
+
+/* =========================================
+   3. WINTER THEME
+   ========================================= */
+.theme-winter {
+  --color-bg-main: #7f9ebf;
+  --color-surface: rgba(240, 248, 255, 0.85);
+
+  --map-background: linear-gradient(
+    45deg,
+    #f0f8ff 0%,
+    #deecfa 50%,
+    #c5e3ff 100%
+  );
+  --color-map-stroke: #2c4c75;
+  --color-glass-box: linear-gradient(
+    45deg,
+    #ffffff,
+    rgba(240, 250, 255, 0.6),
+    #ffffff
+  );
+
+  --text-primary: #0d1f3a;
+  --text-secondary: #3a5a80;
+  --text-tertiary: #ffffff;
+  --color-troop-count: rgba(13, 31, 58, 0.9);
+
+  --player-1: hsl(350, 60%, 60%);
+  --player-2: hsl(215, 60%, 60%);
+  --player-3: hsl(43, 60%, 60%);
+  --player-4: hsl(168, 49%, 55%);
+  --player-5: hsl(192, 60%, 60%);
+  --player-6: hsl(20, 60%, 60%);
+
+  --color-success: #4d8076;
+  --color-warning: #c2a661;
+  --color-info: #4a6b99;
+  --color-fail: #b85b6a;
+
+  --color-bg-player-details: rgba(240, 248, 255, 0.25);
+  --color-bg-avatar: #0a1526;
+  --color-bg-close-button: #8b3e4a;
+  --color-bg-deploy-troop-selection: #1e3a5f;
+  --color-bg-deploy-form: rgba(10, 25, 50, 0.4);
+  --color-bg-deploy-selector-button: #2c5380;
+  --color-bg-deploy-selector-button-hover: #3a6ba3;
+  --color-bg-deploy-button: linear-gradient(135deg, #4d8076, #629e92);
+  --color-bg-cancel-deploy: #2c4c75;
+  --color-bg-cancel-deploy-hover: #3a5a80;
+
+  --color-selected-territory: #629e92;
+  --color-captured: #629e92;
+  --color-highlight: #c2a661;
+  --color-highlight-icon: rgba(194, 166, 97, 0.8);
+  --color-selection: #5e84b8;
+  --color-target: #b85b6a;
+  --selection-shadow: 0 0 12px rgba(74, 107, 153, 0.5);
+
+  --north-america-outline: var(--player-1);
+  --south-america-outline: var(--player-2);
+  --europe-outline: var(--player-3);
+  --africa-outline: var(--player-4);
+  --asia-outline: var(--player-5);
+  --australia-outline: var(--player-6);
+  --sea-route: #8caad4;
+}
+
+/* =========================================
+   4. POP THEME
+   ========================================= */
+.theme-pop {
+  --color-bg-main: #fdfbfb;
+  --color-surface: #ffffff;
+  --map-background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  --color-map-stroke: #4a4a4a;
+  --color-glass-box: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.9)
+  );
+
+  --text-primary: #2b2b2b;
+  --text-secondary: #666666;
+  --text-tertiary: #111111; /* Dark text for light buttons */
+  --color-troop-count: rgba(43, 43, 43, 0.9);
+
+  --player-1: #ff9aa2;
+  --player-2: #aec6cf;
+  --player-3: #b5ead7;
+  --player-4: #fff5ba;
+  --player-5: #ffb347;
+  --player-6: #cbaacb;
+
+  --color-success: #b5ead7;
+  --color-warning: #fff5ba;
+  --color-info: #aec6cf;
+  --color-fail: #ff9aa2;
+
+  --color-bg-player-details: rgba(0, 0, 0, 0.05);
+  --color-bg-avatar: #f0f0f0;
+  --color-bg-close-button: #ff9aa2;
+  --color-bg-deploy-troop-selection: #ffffff;
+  --color-bg-deploy-form: rgba(255, 255, 255, 0.8);
+  --color-bg-deploy-selector-button: #f0f0f0;
+  --color-bg-deploy-selector-button-hover: #e0e0e0;
+  --color-bg-deploy-button: linear-gradient(135deg, #ff9aa2, #ffb8bf);
+  --color-bg-cancel-deploy: #e0e0e0;
+  --color-bg-cancel-deploy-hover: #d0d0d0;
+
+  --color-selected-territory: #b5ead7;
+  --color-captured: #b5ead7;
+  --color-highlight: #fff5ba;
+  --color-highlight-icon: rgba(255, 245, 186, 0.8);
+  --color-selection: #aec6cf;
+  --color-target: #ff9aa2;
+  --selection-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+
+  --north-america-outline: #ff7b85;
+  --south-america-outline: #8ba9b4;
+  --europe-outline: #9ad1bd;
+  --africa-outline: #e6dc9f;
+  --asia-outline: #e69b30;
+  --australia-outline: #af8faf;
+  --sea-route: #c0c0c0;
 }

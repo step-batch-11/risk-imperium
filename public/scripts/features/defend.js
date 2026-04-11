@@ -42,7 +42,7 @@ export const handleDefense = (gameState) => {
     `[data-territory-id="${defenderTerritoryId}"]`,
   );
   const attackerTerritoryId = gameState.invadeDetails.attackerTerritoryId;
-  SFX.DEFEND.play()
+  SFX.DEFEND.play();
   highlightTerritories([attackerTerritoryId], "selected");
   highlightTerritories([defenderTerritoryId], "highlight");
 

@@ -199,8 +199,8 @@ const showDiceAnimations = (overlay, diceValues, configs, playerType) => {
 
 export const displayDiceAnimations = (attackerDice, defenderDice) => {
   const overlay = prepareOverlay();
-  const diceRoll = SFX.DICE_ROLL()
-  diceRoll.play()
+  const diceRoll = SFX.DICE_ROLL();
+  diceRoll.play();
   showDiceAnimations(overlay, attackerDice, ATTACKER_DICE_CONFIGS, "attacker");
   showDiceAnimations(overlay, defenderDice, DEFENDER_DICE_CONFIGS, "defender");
 };

@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lobby</title>
     <script type="module" src="scripts/lobby/lobby.js"></script>
-    <script
-      type="module"
-      src="https://cdn.jsdelivr.net/npm/playful-avatars/index.js"
-    ></script>
-    <link rel="stylesheet" href="./styles/players.css">
-    <link rel="stylesheet" href="./styles/lobby.css">
-    <link rel="stylesheet" href="./styles/components_style.css">
+    <link rel="stylesheet" href="styles/players.css" />
+    <link rel="stylesheet" href="styles/lobby.css" />
+    <link rel="stylesheet" href="styles/components_style.css" />
   </head>
 
   <body>
@@ -55,26 +51,24 @@
             <p id="dots"></p>
           </div>
         </div>
-
-        <template id="join-room-template">
-          <div id="join-room-id">
-            <form action="/join-room">
-              <input type="text">
-              <button type="submit">enter</button>
-            </form>
-          </div>
-        </template>
-
         <div id="nav-container">
           <button id="leave-button" type="button">Leave</button>
         </div>
       </div>
+      <template id="join-room-template">
+        <div>
+          <form action="/join-room">
+            <input type="text" name="room-id">
+            <button type="submit">enter</button>
+          </form>
+        </div>
+      </template>
+      <template id="player-template">
+        <div class="player-container">
+          <div class="player-avatar"></div>
+          <div class="player-name-container"></div>
+        </div>
+      </template>
     </main>
-    <template id="player-template">
-      <div class="player-container">
-        <div class="player-avatar"></div>
-        <div class="player-name-container"></div>
-      </div>
-    </template>
   </body>
 </html>

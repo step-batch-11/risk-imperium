@@ -95,9 +95,7 @@ export const addListenerToCard = (gameState, cardContainer) => {
 const createCardElement = (card, i) => {
   const cardElement = document.createElement("div");
   cardElement.dataset.cardType = TERRITORY_CARD[card];
-  cardElement.textContent = TERRITORY_CARD[card];
   cardElement.classList.add("card");
-
   cardElement.id = `card-${i}`;
   return cardElement;
 };

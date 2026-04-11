@@ -7,11 +7,11 @@ const sounds = {
   },
 
   notification: new Audio("assets/turnStart.wav"),
-  defend: new Audio("assets/defend.mp3")
+  defend: new Audio("assets/defend.mp3"),
 };
 
 export const SFX = {
   DICE_ROLL: sounds.roll,
   TURN: sounds.notification,
-  DEFEND: sounds.defend
+  DEFEND: sounds.defend,
 };

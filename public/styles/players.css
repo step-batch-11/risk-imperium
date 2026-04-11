@@ -50,29 +50,16 @@
   position: absolute;
   inset: 27% 1% 12% auto;
   width: 16.5em;
-
   padding: 1em;
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-#player-details-container {
+  backdrop-filter: blur(2px);
+  background-color: var(--color-bg-player-details);
+  border: var(--player-details-border);
+  border-radius: 6px;
   z-index: 2;
-  position: absolute;
-  inset: 20% 80%;
-  height: 35em;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(7px);
-
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 0 10px rgba(255, 255, 255, 0.1);
-
-  border-radius: 12px;
-  transition: all 0.6s ease-in;
+  transition: transform 0.4s ease-out;
 }
 
 .avatar {
@@ -82,8 +69,7 @@
 }
 
 .player-profile {
-  width: 4em;
-  height: 4em;
+  height: 80px;
   border-radius: 50%;
   border: 2px black;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;

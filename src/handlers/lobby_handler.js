@@ -91,13 +91,14 @@ export const createRoom = (context) => {
   return context.redirect("/lobby.html");
 };
 
-
 export const moveToLobby = (context) => {
   const lobbies = context.get("lobbies");
 
   const player = createPlayer(context);
   let lobby = [...lobbies.values()].find(
-    (l) => l.players.length < 3 && l.status === "waiting" && l.roomType !== "private",
+    (l) =>
+      l.players.length < 3 && l.status === "waiting" &&
+      l.roomType !== "private",
   );
 
   if (!lobby) {

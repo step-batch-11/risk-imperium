@@ -195,8 +195,8 @@ main {
 }
 
 .player-profile {
-  width: 10em;
-  height: 10em;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   border: 2px black;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 12px 0px;

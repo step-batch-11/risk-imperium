@@ -1,6 +1,8 @@
 import {
   addListenerToCardIcon,
+  addListenerToThemeIcon,
   addListenerToTrade,
+  initTheme,
   setupListeners,
 } from "./listeners.js";
 import { renderTerritoriesAndTroops } from "./features/initial_territory_allocate.js";
@@ -20,11 +22,14 @@ globalThis.onload = async () => {
 
   renderTerritoriesAndTroops(players, gameState.territories);
 
+  initTheme();
   setupListeners(gameState);
   renderCurrentPlayerName(gameState);
   renderGameState(gameState);
 
   setup(gameState);
+
+  addListenerToThemeIcon();
   addListenerToTrade(gameState);
   addListenerToCardIcon(gameState.player);
 

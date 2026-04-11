@@ -19,6 +19,6 @@ describe("card tests", () => {
     assertEquals(result, false);
   });
   it("should give a random card from the set", () => {
-    assert(cards.drawCard())
-  })
+    assert(cards.drawCard());
+  });
 });

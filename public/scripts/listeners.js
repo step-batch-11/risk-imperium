@@ -1,5 +1,8 @@
 import { STATES } from "./configs/game_states.js";
-import { NOTIFICATION_MESSAGES } from "./configs/notification_config.js";
+import {
+  NOTIFICATION_MESSAGES,
+  NOTIFICATION_TYPES,
+} from "./configs/notification_config.js";
 import { STYLES } from "./configs/styles.js";
 import {
   removeCardAreaListener,
@@ -101,12 +104,47 @@ const updateTroopCount = (input, offset) => {
 
 export const setupDeployControls = (dialog) => {
   const input = dialog.querySelector("#troop-count-input");
-
   dialog.querySelector("#increase-troops-btn").onclick = () =>
     updateTroopCount(input, +1);
-
   dialog.querySelector("#decrease-troops-btn").onclick = () =>
     updateTroopCount(input, -1);
 
   dialog.querySelector("#cancel-deploy-btn").onclick = () => dialog.close();
+};
+const applyTheme = (selectedTheme) => {
+  document.body.classList.remove(
+    "theme-ancient",
+    "theme-winter",
+    "theme-pop",
+    "theme-modern",
+  );
+  document.body.classList.add(`theme-${selectedTheme}`);
+  localStorage.setItem("user-theme", selectedTheme);
+};
+
+export const initTheme = () => {
+  const savedTheme = localStorage.getItem("user-theme");
+  if (savedTheme) {
+    applyTheme(savedTheme);
+  } else {
+    applyTheme("modern");
+  }
+};
+
+export const addListenerToThemeIcon = () => {
+  const themeArea = document.querySelector("#theme-area");
+
+  themeArea.addEventListener("click", (e) => {
+    const themeBtn = e.target.closest("button");
+    const selectedTheme = themeBtn.id;
+
+    if (!themeBtn || selectedTheme === "theme-area") return;
+
+    applyTheme(selectedTheme);
+    showNotification(
+      `Theme switched to ${selectedTheme}`,
+      NOTIFICATION_TYPES.INFO,
+    );
+    themeArea.hidePopover();
+  });
 };
