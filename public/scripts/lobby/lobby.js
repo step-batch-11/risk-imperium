@@ -65,6 +65,7 @@ const updateLobby = async (id) => {
   const response = await fetch("/get-lobby-data");
 
   const { playerDetails, data, isHost } = await response.json();
+  console.log({ playerDetails, data, isHost });
 
   if (response.status === 200) {
     updatePlayers(playerDetails, data.id);

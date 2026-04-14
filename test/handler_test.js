@@ -357,6 +357,7 @@ describe("Api Handler", () => {
         getCard: () => {
           return "2";
         },
+        addCardToPlayerHand: () => {},
         getGameState: () => "1",
         canGetCard: true,
         players: [],

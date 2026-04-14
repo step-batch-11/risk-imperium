@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="./styles/login.css" />
-    <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon" />
-    <title>Login</title>
-  </head>
 
-  <body>
-    <form method="post" action="/login">
-      <label for="username-input">Username</label>
-      <input
-        type="text"
-        name="username"
-        id="username-input"
-        placeholder="username"
-        required
-        maxlength="15"
-        minlength="2"
-      />
-      <button type="submit">Login</button>
-    </form>
-  </body>
+<head>
+  <link rel="stylesheet" href="./styles/login.css" />
+  <link rel="shortcut icon" href="./assets/favicon.ico" type="image/x-icon" />
+  <title>Login</title>
+</head>
+
+<body>
+  <form method="post" action="/login">
+    <label for="username-input">Username</label>
+    <input type="text" name="username" id="username-input" placeholder="username" required maxlength="10"
+      minlength="2" />
+    <button type="submit">Login</button>
+  </form>
+</body>
+
 </html>

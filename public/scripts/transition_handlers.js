@@ -220,8 +220,12 @@ const handleMoveIn = async (gameState) => {
 };
 
 const handleElimination = (_gameState) => {
+  console.log("elimination");
+
   setTimeout(() => {
     const dialoge = document.querySelector("#elimination-box");
+    console.log(dialoge);
+
     dialoge.classList.toggle("d-none");
     dialoge.classList.add("glass-box");
   }, 1500);
@@ -231,7 +235,6 @@ const handleWin = (gameState) => {
   const dialoge = document.querySelector(".winning-screen");
   dialoge.classList.toggle("hide-screen");
   console.log(dialoge);
-  // dialoge.removeAttribute("hide-win-screen")
   const nameContainer = dialoge.querySelector("#winner-name");
   const avatarContainer = dialoge.querySelector("#winner-container");
   const avatar = renderAvatar(gameState.player.avatar);

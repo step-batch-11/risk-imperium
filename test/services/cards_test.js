@@ -16,6 +16,7 @@ describe("CARD SERVICE TESTS", () => {
       const game = {
         hasCaptured: true,
         getCard: () => 1,
+        addCardToPlayerHand: () => {},
         activePlayerId: 1,
         passToNextPlayer() {
           this.activePlayerId++;

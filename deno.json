@@ -2,14 +2,12 @@
   "tasks": {
     "dev": "DEV_MODE='true' deno run -A --watch main.js",
     "start": "deno run -A --watch main.js",
-    "test": "deno test -A",
+    "test": "deno test -A --reporter=dot",
     "test:watch": "deno test -A --watch",
-    "coverage": "deno test -A --coverage",
+    "coverage": "deno test -A --reporter=dot --coverage",
     "detailed-coverage": {
       "command": "deno coverage --detailed",
-      "dependencies": [
-        "coverage"
-      ]
+      "dependencies": ["coverage"]
     },
     "lint": "deno lint --fix"
   },
