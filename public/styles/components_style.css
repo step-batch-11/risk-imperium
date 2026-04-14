@@ -490,7 +490,7 @@ input[type="number"]::-webkit-inner-spin-button {
   }
 }
 
-.winning-screen {
+.winning-screen, #elimination-box {
   height: 100vh;
   width: 100vw;
   padding : 0px;
@@ -506,6 +506,12 @@ input[type="number"]::-webkit-inner-spin-button {
   line-height: 2em;
   color: rgb(183, 183, 183);
   font-family: "Georgia", serif;
+}
+
+#elimination-box {
+  display : flex;
+  flex-direction: column;
+  gap : 20px
 }
 
 .hide-screen {
@@ -588,6 +594,10 @@ input[type="number"]::-webkit-inner-spin-button {
   box-shadow: 0 0 5px gold, 0 0 10px gold(0, 57%, 35%, 0.706); 
 }
 
+#loser-msg {
+ font-size: 20px;
+}
+
 .final-winner h3 {
   font-size: 36px;
   color: #8b2626;
@@ -663,6 +673,14 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 30px;
 }
 
+#elimination-box h2 {
+ font-size: 42px;
+}
+
+#elimination-box h3 {
+ font-size: 38px;
+}
+
 #winner-name {
   height: 20px;
   font-size: 20px;
@@ -672,26 +690,38 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-bottom : 10px;
 }
 
-#hom-btn {
-margin-top: 50px;
+.loser-msg {
+  color : rgb(230, 229, 229);
+  line-height: 1.4em;
 }
 
-#home-btn a {
+.home-btn a, .lose-btn a{
   text-decoration: none;
-  color: rgb(249, 246, 246);
-  background-color: #2f2e2e;
+  color: rgb(22, 22, 22);
+  background-color: #c5c2c2;
   font-size: 20px;
 }
 
+.lose-btn a {
+  background: transparent;
+}
+
+.lose-btn {
+padding : 0.5em 0.3em;
+border-radius: 5px;
+border : none;
+
+}
+
 #joinBtn-container button,
-#home-btn a {
+.home-btn a {
   padding: 0.3em;
   width: 35%;
   color: var(--text-inverse);
   box-shadow: var(--shadow-soft);
   background-color: var(--color-accent);
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   font-size: 20px;
 }
 

@@ -23,7 +23,6 @@ export const getCard = async (gameState) => {
     const player = gameState.player;
     player.cards.push(data.card);
     addCardAlert();
-    console.log(player.cards);
 
     updateCards(player.cards);
     showNotification(`${player.name} received a card`);

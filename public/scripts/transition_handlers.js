@@ -186,7 +186,6 @@ const handleWaiting = async (gameState) => {
   while (newState === STATES.WAITING) {
     const { action, data, lastAction } = await getNewUpdates();
     newState = action;
-    console.log(action, data);
 
     updateGameState(gameState, data);
 
@@ -220,21 +219,15 @@ const handleMoveIn = async (gameState) => {
 };
 
 const handleElimination = (_gameState) => {
-  console.log("elimination");
-
   setTimeout(() => {
     const dialoge = document.querySelector("#elimination-box");
-    console.log(dialoge);
-
-    dialoge.classList.toggle("d-none");
-    dialoge.classList.add("glass-box");
+    dialoge.classList.toggle("hide-screen");
   }, 1500);
 };
 
 const handleWin = (gameState) => {
   const dialoge = document.querySelector(".winning-screen");
   dialoge.classList.toggle("hide-screen");
-  console.log(dialoge);
   const nameContainer = dialoge.querySelector("#winner-name");
   const avatarContainer = dialoge.querySelector("#winner-container");
   const avatar = renderAvatar(gameState.player.avatar);

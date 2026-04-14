@@ -31,11 +31,9 @@ const createPlayer = (context) => {
 
   const playerId = Number(getCookie(context, "playerId"));
   const username = players[playerId];
-  console.log(username, playerId, getCookie(context, "playerId"), players);
 
   const playerAvatar = AVATARS.pop();
   const player = new Player(playerId, username, playerAvatar);
-  console.log(player);
 
   return player;
 };
