@@ -22,8 +22,6 @@ export class Player {
   }
 
   get avatar() {
-    console.log("In model", this.#avatar);
-
     return this.#avatar;
   }
 

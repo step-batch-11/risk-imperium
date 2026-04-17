@@ -13,7 +13,7 @@ import {
   moveToLobby,
   sendLobbyData,
   startGame,
-} from "./handlers/lobby_handler.js";
+} from "./handlers/lobby/lobby_handler.js";
 
 import {
   redirectInGamePlayer,

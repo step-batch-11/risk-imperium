@@ -1,26 +1,27 @@
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { Player } from "../models/player.js";
-import { createGame } from "../create_game.js";
-import { AVATARS } from "../config.js";
-import { LOBBY_CONFIG } from "../config/lobby.js";
+import { createGame } from "../../create_game.js";
+import { LOBBY_CONFIG, LOBBY_TYPES } from "../../config/lobby.js";
+import { LOBBY_STATES } from "../../config/lobby_states.js";
+import { createLobby, createPlayer } from "./create-lobby.js";
 
-const createLobby = (id, roomType = "public") => {
-  const avatars = structuredClone(AVATARS);
-  return {
-    id,
-    players: [],
-    status: "waiting",
-    roomType,
-    getAvatar: () => avatars.pop(),
-    addAvatar: (avatar) => avatars.push(avatar),
-  };
+const moveJoineeToLobby = (context, lobby) => {
+  const player = createPlayer(context, lobby.getAvatar());
+  const exists = lobby.players.some((p) => p.id === player.id);
+
+  if (!exists) {
+    lobby.players.push(player);
+  }
+  if (lobby.players.length >= LOBBY_CONFIG.MIN_PLAYER_REQUIRED) {
+    lobby.status = LOBBY_STATES.IN_GAME;
+  }
+  return context.json({ success: true });
 };
 
 const setGameId = (context) => {
   const lobbyId = getCookie(context, "lobbyId");
   const lobbies = context.get("lobbies");
   const lobby = lobbies.get(Number(lobbyId));
-  if (lobby.status === "waiting") {
+  if (lobby.status === LOBBY_STATES.WAITING) {
     return { ok: false, lobby };
   }
   const gamesRepo = context.get("gamesRepo");
@@ -28,18 +29,6 @@ const setGameId = (context) => {
   gamesRepo.set(lobby.id, game);
   setCookie(context, "gameId", lobbyId);
   return { ok: true, lobby };
-};
-
-const createPlayer = (context, avatar) => {
-  const players = context.get("players");
-
-  const playerId = Number(getCookie(context, "playerId"));
-  const username = players[playerId];
-
-  const playerAvatar = avatar;
-  const player = new Player(playerId, username, playerAvatar);
-
-  return player;
 };
 
 const isRoomFilled = (lobby) =>
@@ -67,24 +56,11 @@ export const joinRoom = async (context) => {
   return context.json({ success: false });
 };
 
-const moveJoineeToLobby = (context, lobby) => {
-  const player = createPlayer(context, lobby.getAvatar());
-  const exists = lobby.players.some((p) => p.id === player.id);
-
-  if (!exists) {
-    lobby.players.push(player);
-  }
-  if (lobby.players.length >= LOBBY_CONFIG.MIN_PLAYER_REQUIRED) {
-    lobby.status = "in-game";
-  }
-  return context.json({ success: true });
-};
-
 export const createRoom = (context) => {
   const lobbies = context.get("lobbies");
   const counter = context.get("counter");
   const lobbyId = counter.value++;
-  const lobby = createLobby(lobbyId, "private");
+  const lobby = createLobby(lobbyId, LOBBY_TYPES.PRIVATE);
   const player = createPlayer(context, lobby.getAvatar());
   lobby["host"] = +player.id;
   lobbies.set(lobbyId, lobby);
@@ -97,15 +73,12 @@ export const createRoom = (context) => {
 export const moveToLobby = (context) => {
   const lobbies = context.get("lobbies");
 
-  console.log(lobbies);
-
   let lobby = [...lobbies.values()].find(
     (lobby) =>
       lobby.players.length < LOBBY_CONFIG.MAX_PLAYER &&
-      lobby.status === "waiting" &&
-      lobby.roomType !== "private",
+      lobby.status === LOBBY_STATES.WAITING &&
+      lobby.roomType !== LOBBY_TYPES.PRIVATE,
   );
-  console.log(lobby);
 
   if (!lobby) {
     const lobbyId = Date.now();
@@ -119,7 +92,7 @@ export const moveToLobby = (context) => {
   setCookie(context, "lobbyId", lobby.id);
 
   if (lobby.players.length === LOBBY_CONFIG.MAX_PLAYER) {
-    lobby.status = "in-game";
+    lobby.status = LOBBY_STATES.IN_GAME;
     const gamesRepo = context.get("gamesRepo");
     const game = createGame(lobby.players);
     gamesRepo.set(lobby.id, game);
@@ -130,11 +103,14 @@ export const moveToLobby = (context) => {
 
 export const sendLobbyData = (context) => {
   const lobbies = context.get("lobbies");
-  const playerId = Number(getCookie(context, "playerId"));
   const lobbyId = getCookie(context, "lobbyId");
   const lobby = lobbies.get(Number(lobbyId));
 
-  if (lobby.status === "in-game" && lobby.roomType === "public") {
+  const playerId = Number(getCookie(context, "playerId"));
+  if (
+    lobby.status === LOBBY_STATES.IN_GAME &&
+    lobby.roomType === LOBBY_TYPES.PUBLIC
+  ) {
     setCookie(context, "gameId", lobby.id);
   }
   if (lobby.status === "game-started") {
@@ -145,9 +121,12 @@ export const sendLobbyData = (context) => {
     playerDetails: lobby.players.map((p) => ({
       name: p.name,
       avatar: p.avatar,
+      id: p.id,
+      isHost: p.id === lobby.host,
     })),
-    data: lobby,
     isHost: playerId === lobby.host,
+    data: lobby,
+    lobbyState: LOBBY_STATES.IN_GAME,
   };
 
   return context.json(data);
@@ -161,8 +140,9 @@ export const leaveLobbyHandler = (context) => {
   const playerId = Number(getCookie(context, "playerId"));
   const response = { data: {} };
   if (
-    lobby.status === "waiting" ||
-    (lobby.roomType === "private" && lobby.status === "in-game")
+    lobby.status === LOBBY_STATES.WAITING ||
+    (lobby.roomType === LOBBY_TYPES.PRIVATE &&
+      lobby.status === LOBBY_STATES.IN_GAME)
   ) {
     const playerIdx = lobby.players.findIndex(
       (player) => player.id === playerId,
@@ -171,10 +151,9 @@ export const leaveLobbyHandler = (context) => {
     const player = lobby.players.splice(playerIdx, 1);
     const avatar = player[0].avatar;
     lobby.addAvatar(avatar);
-    console.log({ player, avatar });
     lobby.status = lobby.players.length < LOBBY_CONFIG.MIN_PLAYER_REQUIRED
-      ? "waiting"
-      : "in-game";
+      ? LOBBY_STATES.WAITING
+      : LOBBY_STATES.IN_GAME;
     response.action = "LEAVE";
     response.data = { success: true };
     deleteCookie(context, "lobbyId");

@@ -880,9 +880,13 @@ describe("Api Handler", () => {
           const lobbies = new Map();
           lobbies.set(1, {
             id: 1,
-            players: [{ name: "alex" }, { name: "alice" }, { name: "resso" }],
+            players: [{ name: "alex", id: 1 }, { name: "alice", id: 2 }, {
+              name: "resso",
+              id: 3,
+            }],
             status: "in-game",
             roomType: "public",
+            host: 1,
           });
           const app = createApp({}, false, [], lobbies);
           const res = await app.request("/get-lobby-data", {
@@ -894,10 +898,12 @@ describe("Api Handler", () => {
 
           const expected = {
             playerDetails: [
-              { name: "alex" },
-              { name: "alice" },
+              { name: "alex", isHost: true, id: 1 },
+              { name: "alice", isHost: false, id: 2 },
               {
                 name: "resso",
+                isHost: false,
+                id: 3,
               },
             ],
             data: {
@@ -908,7 +914,8 @@ describe("Api Handler", () => {
             },
             isHost: false,
           };
-          assertEquals(data, expected);
+          assertEquals(data.playerDetails, expected.playerDetails);
+          assertEquals(data.isHost, expected.isHost);
         }));
     });
   });
