@@ -56,21 +56,46 @@ const renderPlayerCard = ({ name, avatar }, id) => {
   playerNameContainer.style.color = "black";
 };
 
+const updateRoom = () => {
+  const playerContainers = document.querySelectorAll(".player-container");
+
+  playerContainers.forEach((container) => {
+    const avatarContainer = container.querySelector(".player-avatar");
+    const playerNameContainer = container.querySelector(
+      ".player-name-container",
+    );
+    avatarContainer.innerHTML = "";
+    playerNameContainer.innerHTML = "";
+    container.classList.add("empty");
+  });
+};
+
 const updatePlayers = (players, lobbyId) => {
   displayRoomId(lobbyId);
+  updateRoom();
   players.forEach(renderPlayerCard);
+};
+
+const removeStartButton = () => {
+  const startButton = document.querySelector("#start-btn");
+  if (startButton) {
+    startButton.remove();
+  }
 };
 
 const updateLobby = async (id) => {
   const response = await fetch("/get-lobby-data");
 
-  const { playerDetails, data, isHost } = await response.json();
+  const res = await response.json();
+  console.log(res);
+  const { playerDetails, data, isHost } = res;
+
   if (response.status === 200) {
     updatePlayers(playerDetails, data.id);
   }
 
   if (
-    data.status === "in-game" && data.roomType === "public" ||
+    (data.status === "in-game" && data.roomType === "public") ||
     (data.status === "game-started")
   ) {
     return startQuickGame(id);
@@ -78,6 +103,10 @@ const updateLobby = async (id) => {
 
   if (data.status === "in-game" && isHost) {
     return startHostGame(id);
+  }
+
+  if (data.status === "waiting" && isHost) {
+    return removeStartButton();
   }
 };
 

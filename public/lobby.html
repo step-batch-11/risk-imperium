@@ -54,9 +54,9 @@
           <p id="dots"></p>
         </div>
       </div>
-      <div id="nav-container">
+      <<<<<<< Updated upstream <div id="nav-container">
         <button id="leave-button" type="button">Leave</button>
-      </div>
+    </div>
     </div>
 
     <template id="join-room-template">
@@ -78,3 +78,35 @@
 </body>
 
 </html>
+=======
+<div id="lobby-details">
+  <div id="room-id-container">
+    <h3>Room Id : <span id="room-id"></span></h3>
+    <div id="message">
+      <p id="waiting">Waiting for players</p>
+      <p id="dots"></p>
+    </div>
+  </div>
+  <div id="nav-container">
+    <button id="leave-button" type="button">Leave</button>
+  </div>
+</div>
+<template id="join-room-template">
+  <div>
+    <form action="/join-room">
+      <input type="text" name="room-id">
+      <button type="submit">enter</button>
+    </form>
+  </div>
+</template>
+<template id="player-template">
+  <div class="player-container">
+    <div class="player-avatar"></div>
+    <div class="player-name-container"></div>
+  </div>
+</template>
+</main>
+</body>
+
+</html>
+>>>>>>> Stashed changes
