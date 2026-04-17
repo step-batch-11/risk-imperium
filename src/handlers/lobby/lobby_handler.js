@@ -12,7 +12,7 @@ const moveJoineeToLobby = (context, lobby) => {
     lobby.players.push(player);
   }
   if (lobby.players.length >= LOBBY_CONFIG.MIN_PLAYER_REQUIRED) {
-    lobby.status = LOBBY_STATES.IN_GAME;
+    lobby.status = LOBBY_STATES.READY;
   }
   return context.json({ success: true });
 };
@@ -37,7 +37,7 @@ const isRoomFilled = (lobby) =>
 export const startGame = (context) => {
   const game = setGameId(context);
   if (game.ok) {
-    game.lobby.status = "game-started";
+    game.lobby.status = LOBBY_STATES.IN_GAME;
   }
   return context.json(game);
 };
@@ -107,13 +107,10 @@ export const sendLobbyData = (context) => {
   const lobby = lobbies.get(Number(lobbyId));
 
   const playerId = Number(getCookie(context, "playerId"));
+
   if (
-    lobby.status === LOBBY_STATES.IN_GAME &&
-    lobby.roomType === LOBBY_TYPES.PUBLIC
+    lobby.status === LOBBY_STATES.IN_GAME
   ) {
-    setCookie(context, "gameId", lobby.id);
-  }
-  if (lobby.status === "game-started") {
     setCookie(context, "gameId", lobby.id);
   }
 
@@ -126,7 +123,7 @@ export const sendLobbyData = (context) => {
     })),
     isHost: playerId === lobby.host,
     data: lobby,
-    lobbyState: LOBBY_STATES.IN_GAME,
+    lobbyState: lobby.status,
   };
 
   return context.json(data);
@@ -141,8 +138,7 @@ export const leaveLobbyHandler = (context) => {
   const response = { data: {} };
   if (
     lobby.status === LOBBY_STATES.WAITING ||
-    (lobby.roomType === LOBBY_TYPES.PRIVATE &&
-      lobby.status === LOBBY_STATES.IN_GAME)
+    lobby.status === LOBBY_STATES.READY
   ) {
     const playerIdx = lobby.players.findIndex(
       (player) => player.id === playerId,
@@ -153,7 +149,7 @@ export const leaveLobbyHandler = (context) => {
     lobby.addAvatar(avatar);
     lobby.status = lobby.players.length < LOBBY_CONFIG.MIN_PLAYER_REQUIRED
       ? LOBBY_STATES.WAITING
-      : LOBBY_STATES.IN_GAME;
+      : LOBBY_STATES.READY;
     response.action = "LEAVE";
     response.data = { success: true };
     deleteCookie(context, "lobbyId");

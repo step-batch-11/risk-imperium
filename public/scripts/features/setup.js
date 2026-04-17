@@ -5,7 +5,7 @@ import {
 import { STYLES } from "../configs/styles.js";
 import { TERRITORY_CARD } from "../configs/territory_card.js";
 import { addListenersToPlayerIcon } from "../listeners.js";
-import { renderAvatar } from "../lobby/lobby.js";
+import { createAvatar } from "../lobby/lobby.js";
 import { getAllPlayersDetail, getOwnedContinents } from "../utilities.js";
 import { addGlow } from "../utilities/highlight.js";
 import { showNotification } from "../utilities/notifications.js";
@@ -22,7 +22,7 @@ const renderPlayerDetails = (player, continents) => {
 
   const nameElement = clone.querySelector(".name");
   const avatarElement = clone.querySelector(".avatar");
-  const avatar = renderAvatar(player.avatar);
+  const avatar = createAvatar(player.avatar);
   avatarElement.appendChild(avatar);
   nameElement.textContent = player.name;
 
@@ -100,10 +100,7 @@ const createCardElement = (card, i) => {
   return cardElement;
 };
 
-export const updateCards = (
-  cards,
-  id = "#card-area",
-) => {
+export const updateCards = (cards, id = "#card-area") => {
   const cardsArea = document.querySelector(`${id} > div`);
   const fragment = document.createDocumentFragment();
   cards.forEach((card, i) => fragment.appendChild(createCardElement(card, i)));

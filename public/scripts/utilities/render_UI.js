@@ -2,7 +2,7 @@ import { updateCavalry } from "../features/cavalry_update.js";
 import { STYLES } from "../configs/styles.js";
 
 import { getAllPlayersDetail } from "../utilities.js";
-import { renderAvatar } from "../lobby/lobby.js";
+import { createAvatar } from "../lobby/lobby.js";
 
 export const loadMap = async () => {
   const mapContainer = document.querySelector(".map-layer");
@@ -44,7 +44,7 @@ const renderCurrentUserTurn = (players, currentPlayerId) => {
   const currentPlayer = players[currentPlayerId];
   currentPlayerContainer.dataset.playerId = currentPlayerId;
 
-  const avatar = renderAvatar(currentPlayer.avatar);
+  const avatar = createAvatar(currentPlayer.avatar);
   currentPlayerAvatarHolder.textContent = "";
   currentPlayerAvatarHolder.append(avatar);
   currentPlayerNameHolder.textContent = currentPlayer.name;

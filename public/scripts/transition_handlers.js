@@ -36,7 +36,7 @@ import { handleCombat } from "./features/resolve_combat.js";
 import { captureTerritory } from "./features/capture_territory.js";
 import { showNotification } from "./utilities/notifications.js";
 import { SPECTATOR_MSGs } from "./configs/spectator_messages.js";
-import { renderAvatar } from "./lobby/lobby.js";
+import { createAvatar } from "./lobby/lobby.js";
 import {
   NOTIFICATION_MESSAGES,
   NOTIFICATION_TYPES,
@@ -194,10 +194,7 @@ const handleWaiting = async (gameState) => {
     renderCurrentPlayerName(gameState);
     renderGameState(gameState);
     const players = getAllPlayersDetail(gameState.player, gameState.opponents);
-    renderTerritoriesAndTroops(
-      players,
-      gameState.territories,
-    );
+    renderTerritoriesAndTroops(players, gameState.territories);
     if (action !== STATES.WON && action !== STATES.ELIMINATED) {
       renderPlayersDetails(gameState);
     }
@@ -230,7 +227,7 @@ const handleWin = (gameState) => {
   dialoge.classList.toggle("hide-screen");
   const nameContainer = dialoge.querySelector("#winner-name");
   const avatarContainer = dialoge.querySelector("#winner-container");
-  const avatar = renderAvatar(gameState.player.avatar);
+  const avatar = createAvatar(gameState.player.avatar);
   avatarContainer.prepend(avatar);
   nameContainer.textContent = gameState.player.name;
 };
