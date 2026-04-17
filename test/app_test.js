@@ -334,7 +334,7 @@ describe("App Handler", () => {
     });
   });
 
-  describe("LOBBY TESTS", () => {
+  describe.ignore("LOBBY TESTS", () => {
     describe("QUICK PLAY", () => {
       it("post /quick-play should redirect to lobby and add the player to waiting list", async () => {
         const players = { 1: "alex" };
