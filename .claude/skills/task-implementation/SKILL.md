@@ -10,8 +10,9 @@ description: >
 
 # Task Implementation Skill
 
-Implement one task from the story's task list, get it reviewed and approved, then commit it.
-Do not move to the next task — that decision belongs to the orchestrator.
+Implement one task from the story's task list, get it reviewed and approved,
+then commit it. Do not move to the next task — that decision belongs to the
+orchestrator.
 
 ---
 
@@ -19,13 +20,14 @@ Do not move to the next task — that decision belongs to the orchestrator.
 
 The orchestrator must confirm the following are available:
 
-- The task definition from `docs/<story_number>/tasks.md` — description, acceptance
-  criteria, affected files, test requirements, dependencies
+- The task definition from `docs/<story_number>/tasks.md` — description,
+  acceptance criteria, affected files, test requirements, dependencies
 - Codebase context from Phase 0 (Context Summary) — code style, test framework,
   relevant files and patterns
 - All prior tasks in this story are already committed
 
-If any of these are missing, ask the orchestrator to provide them before proceeding.
+If any of these are missing, ask the orchestrator to provide them before
+proceeding.
 
 ---
 
@@ -33,8 +35,8 @@ If any of these are missing, ask the orchestrator to provide them before proceed
 
 State clearly what you are about to do:
 
-> "Starting **Task \<N\> / \<Total\>: \<Title\>**.
-> Approach: [one sentence describing the implementation strategy]."
+> "Starting **Task \<N\> / \<Total\>: \<Title\>**. Approach: [one sentence
+> describing the implementation strategy]."
 
 ---
 
@@ -69,11 +71,13 @@ Write tests **as part of this step**, not after commit.
 ```
 
 Rules:
+
 - All tests must be **green** before requesting review — no exceptions
 - If tests fail: fix the code or tests, then re-run; do not skip ahead
-- If a **pre-existing, unrelated** test is already failing, call it out explicitly:
-  > "Note: `<test name>` was already failing before this task and is unrelated to
-  > these changes."
+- If a **pre-existing, unrelated** test is already failing, call it out
+  explicitly:
+  > "Note: `<test name>` was already failing before this task and is unrelated
+  > to these changes."
 
 ---
 
@@ -84,7 +88,8 @@ Show the user all of the following:
 1. **Summary** — what was changed and why, in plain language
 2. **Diff / changed files** — key file paths and the nature of each change
 3. **Test results** — pass count, and any notable coverage additions
-4. **Acceptance criteria checklist** — every criterion from the task, ticked off:
+4. **Acceptance criteria checklist** — every criterion from the task, ticked
+   off:
    ```
    - [x] Criterion 1
    - [x] Criterion 2
@@ -92,6 +97,7 @@ Show the user all of the following:
    ```
 
 Then ask:
+
 > "Please review. Reply **Approved** to commit, or share your feedback."
 
 ---
@@ -105,14 +111,14 @@ For each round of feedback:
 3. Re-present for review (Steps 4–5)
 4. Repeat until the user replies **Approved**
 
-If the feedback implies a problem that cannot be resolved within this task's scope —
-for example, a missing design decision, a conflict with another module, or a required
-change to the plan — **do not attempt to silently absorb it**. Instead, signal the
-orchestrator:
+If the feedback implies a problem that cannot be resolved within this task's
+scope — for example, a missing design decision, a conflict with another module,
+or a required change to the plan — **do not attempt to silently absorb it**.
+Instead, signal the orchestrator:
 
-> "This feedback suggests the issue may be outside this task's scope:
-> [describe the problem].
-> I recommend returning to the orchestrator to decide whether to:
+> "This feedback suggests the issue may be outside this task's scope: [describe
+> the problem]. I recommend returning to the orchestrator to decide whether to:
+>
 > 1. Revise the **task breakdown** (Phase 2)
 > 2. Revise the **plan** (Phase 1)
 > 3. Proceed with a documented in-task adjustment"
@@ -135,13 +141,13 @@ Task: <N>/<total> - <task title>"
 
 **Commit message conventions:**
 
-| Field | Rule |
-|-------|------|
-| Type | `feat` `fix` `refactor` `test` `docs` `chore` |
-| Scope | The module or area affected, e.g. `auth`, `api`, `db` |
-| Subject | Imperative mood, ≤72 chars, no trailing period |
-| Body | Explain *what* and *why*, not *how* |
-| `Closes` | Only on the **last** task; omit on all earlier tasks |
+| Field    | Rule                                                  |
+| -------- | ----------------------------------------------------- |
+| Type     | `feat` `fix` `refactor` `test` `docs` `chore`         |
+| Scope    | The module or area affected, e.g. `auth`, `api`, `db` |
+| Subject  | Imperative mood, ≤72 chars, no trailing period        |
+| Body     | Explain _what_ and _why_, not _how_                   |
+| `Closes` | Only on the **last** task; omit on all earlier tasks  |
 
 ---
 
@@ -151,5 +157,5 @@ After committing, return control to the orchestrator:
 
 > "Task \<N\> committed ✓. Returning to orchestrator."
 
-Do not start the next task. The orchestrator decides whether to proceed, pause, or
-navigate to a different phase.
+Do not start the next task. The orchestrator decides whether to proceed, pause,
+or navigate to a different phase.

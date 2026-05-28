@@ -338,4 +338,47 @@ describe("Game", () => {
       assertEquals(game.canGetCard, game.stateDetails.hasCaptured);
     });
   });
+
+  describe("removePlayer", () => {
+    it("should remove a non-active player and leave active player unchanged", () => {
+      const activeIdBefore = game.activePlayerId;
+      const stateBefore = game.getGameState();
+      const countBefore = game.players.length;
+
+      game.removePlayer(2);
+
+      assertEquals(game.players.length, countBefore - 1);
+      assertEquals(game.activePlayerId, activeIdBefore);
+      assertEquals(game.getGameState(), stateBefore);
+      assertFalse(game.players.some((p) => p.id === 2));
+    });
+
+    it("should advance to next player's REINFORCE when active player leaves", () => {
+      const activeIdBefore = game.activePlayerId;
+
+      game.removePlayer(activeIdBefore);
+
+      assertFalse(game.players.some((p) => p.id === activeIdBefore));
+      assertEquals(game.getGameState(), STATES.REINFORCE);
+    });
+
+    it("should be a no-op when called with an unknown player id", () => {
+      const countBefore = game.players.length;
+      const activeIdBefore = game.activePlayerId;
+
+      game.removePlayer(999);
+
+      assertEquals(game.players.length, countBefore);
+      assertEquals(game.activePlayerId, activeIdBefore);
+    });
+
+    it("should set lastUpdate action to LEAVE with the leaving player id", () => {
+      const leavingId = 2;
+
+      game.removePlayer(leavingId);
+
+      assertEquals(game.lastUpdate.action, "LEAVE");
+      assertEquals(game.lastUpdate.playerId, leavingId);
+    });
+  });
 });

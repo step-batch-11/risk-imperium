@@ -3,7 +3,8 @@
 ## Prerequisites
 
 - [Deno](https://deno.com/) v2.7.5+
-- No `npm install` — Deno resolves dependencies from `deno.json` imports on first run
+- No `npm install` — Deno resolves dependencies from `deno.json` imports on
+  first run
 
 ## Commands
 
@@ -44,6 +45,7 @@ Run once after cloning:
 ```
 
 This installs:
+
 - **pre-commit** — runs `deno lint`
 - **pre-push** — runs test suite
 
@@ -51,20 +53,22 @@ This installs:
 
 `deno task dev` sets `DEV_MODE=true`, which unlocks:
 
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /dev` | Redirects to `/dev.html` (game state control panel) |
-| `POST /dev/login { name }` | Creates a player session without normal auth |
-| `GET /load/:state` | Loads a JSON game state from `data/states/<state>.json` |
-| `GET /save/:name` | Saves current game state to `data/states/<name>.json` |
+| Endpoint                   | Purpose                                                 |
+| -------------------------- | ------------------------------------------------------- |
+| `GET /dev`                 | Redirects to `/dev.html` (game state control panel)     |
+| `POST /dev/login { name }` | Creates a player session without normal auth            |
+| `GET /load/:state`         | Loads a JSON game state from `data/states/<state>.json` |
+| `GET /save/:name`          | Saves current game state to `data/states/<name>.json`   |
 
-Use `POST /dev/login` to script multiple players in one session for local testing.
+Use `POST /dev/login` to script multiple players in one session for local
+testing.
 
 ## Testing a Game Locally
 
 1. `deno task dev`
 2. Open `http://localhost:8000/login.html`
-3. In browser console or curl: `POST /dev/login { "name": "Alice" }` → sets `playerId` cookie
+3. In browser console or curl: `POST /dev/login { "name": "Alice" }` → sets
+   `playerId` cookie
 4. Open a second browser profile, repeat for "Bob", "Charlie", etc.
 5. Navigate to `/` → each player goes through lobby → game
 
@@ -79,7 +83,7 @@ The Dockerfile uses `deno:2.7.5` as the base image.
 
 ## Environment Variables
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `PORT` | `8000` | Server listen port |
+| Variable   | Default | Purpose                                |
+| ---------- | ------- | -------------------------------------- |
+| `PORT`     | `8000`  | Server listen port                     |
 | `DEV_MODE` | `false` | Enables dev endpoints and bypass login |

@@ -236,6 +236,24 @@ export class Game {
     }
   }
 
+  removePlayer(playerId) {
+    const index = this.#players.findIndex((player) => player.id === playerId);
+    if (index === -1) return;
+
+    const isActive = index === this.#activePlayerIndex;
+    this.#players.splice(index, 1);
+
+    if (isActive) {
+      // splice shifts next player into this index; wrap if we removed the last
+      this.#activePlayerIndex = this.#activePlayerIndex % this.#players.length;
+      this.#updateState(STATES.REINFORCE);
+    } else if (index < this.#activePlayerIndex) {
+      this.#activePlayerIndex -= 1;
+    }
+
+    this.updateGame("LEAVE", {}, playerId);
+  }
+
   hasPlayerWon() {
     return this.#territories.isConquered;
   }

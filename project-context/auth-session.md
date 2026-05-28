@@ -2,15 +2,17 @@
 
 ## Identity Model
 
-There is no JWT or server-side session store. Identity is tracked entirely through **three cookies** set by the server:
+There is no JWT or server-side session store. Identity is tracked entirely
+through **three cookies** set by the server:
 
-| Cookie | Type | Meaning |
-|--------|------|---------|
+| Cookie     | Type   | Meaning                                     |
+| ---------- | ------ | ------------------------------------------- |
 | `playerId` | number | Set on login; key into the `players` object |
-| `lobbyId` | number | Set when player joins/creates a lobby room |
-| `gameId` | number | Set when a game starts from a lobby |
+| `lobbyId`  | number | Set when player joins/creates a lobby room  |
+| `gameId`   | number | Set when a game starts from a lobby         |
 
-The `players` object (plain JS `{}`) maps `playerId → playerName`. It lives in `main.js` and is injected into every request context.
+The `players` object (plain JS `{}`) maps `playerId → playerName`. It lives in
+`main.js` and is injected into every request context.
 
 ## Login Flow
 
@@ -39,7 +41,8 @@ POST /dev/login  { name }
 
 ## Middleware Guard Chain
 
-Every protected route runs one or more of these guards (defined in `src/middle_ware.js`):
+Every protected route runs one or more of these guards (defined in
+`src/middle_ware.js`):
 
 ```
 rejectUnknownUser
@@ -74,13 +77,13 @@ setGame  (not a guard — enriches context)
 
 ## Route Protection Matrix
 
-| Route | Guards applied |
-|-------|---------------|
-| `GET /` | rejectUnknownUser → redirectInLobbyPlayer → redirectInGamePlayer |
-| `GET /login.html` | redirectLoggedInPlayer |
-| `GET /game.html` | rejectUnknownUser → rejectIfNotInGame |
-| `GET /lobby.html` | rejectUnknownUser → redirectInGamePlayer |
-| `POST /user-actions` | rejectUnknownUser → rejectIfNotInGame → setGame |
-| `GET /setup` | rejectUnknownUser → rejectIfNotInGame → setGame |
-| `POST /logout` | rejectUnknownUser |
-| `POST /leave-lobby` | rejectUnknownUser → redirectInGamePlayer |
+| Route                | Guards applied                                                   |
+| -------------------- | ---------------------------------------------------------------- |
+| `GET /`              | rejectUnknownUser → redirectInLobbyPlayer → redirectInGamePlayer |
+| `GET /login.html`    | redirectLoggedInPlayer                                           |
+| `GET /game.html`     | rejectUnknownUser → rejectIfNotInGame                            |
+| `GET /lobby.html`    | rejectUnknownUser → redirectInGamePlayer                         |
+| `POST /user-actions` | rejectUnknownUser → rejectIfNotInGame → setGame                  |
+| `GET /setup`         | rejectUnknownUser → rejectIfNotInGame → setGame                  |
+| `POST /logout`       | rejectUnknownUser                                                |
+| `POST /leave-lobby`  | rejectUnknownUser → redirectInGamePlayer                         |
