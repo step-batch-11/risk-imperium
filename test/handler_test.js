@@ -8,6 +8,7 @@ import {
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { handleGameSetup } from "../src/handler.js";
 import { STATES } from "../src/config.js";
+import { leaveGameHandler } from "../src/handlers/leave_game.js";
 import { loadGameStateForTest } from "./utilities.js";
 import fortification from "../data/tests/fortification.json" with {
   type: "json",
@@ -1148,6 +1149,114 @@ describe("Api Handler", () => {
         logoutHandler(mockContext, () => {}, mockDeleteCookieFn),
         "/login.html",
       );
+    });
+  });
+
+  describe("leaveGameHandler", () => {
+    const makeGame = (playerIds) => ({
+      players: playerIds.map((id) => ({ id, resolve: null })),
+      removePlayer(id) {
+        const idx = this.players.findIndex((p) => p.id === id);
+        if (idx !== -1) this.players.splice(idx, 1);
+      },
+    });
+
+    it("should return { success: true } and clear gameId and game-version cookies when player is in game", () => {
+      const playerId = 1;
+      const game = makeGame([1, 2, 3]);
+      const cookies = { playerId, gameId: 10, "game-version": 5 };
+
+      const mockGetCookie = (_, key) => cookies[key];
+      const mockDeleteCookie = (_, key) => delete cookies[key];
+
+      const mockContext = {
+        get: (key) => key === "game" ? game : undefined,
+        json: (data) => data,
+        cookies,
+      };
+
+      const result = leaveGameHandler(
+        mockContext,
+        () => {},
+        mockGetCookie,
+        mockDeleteCookie,
+      );
+
+      assertEquals(result, { success: true });
+      assertFalse(game.players.some((p) => p.id === playerId));
+      assertEquals(cookies["gameId"], undefined);
+      assertEquals(cookies["game-version"], undefined);
+      assert("playerId" in cookies);
+    });
+
+    it("should return { success: false } when player is not in the game", () => {
+      const game = makeGame([2, 3]);
+      const cookies = { playerId: 1 };
+
+      const mockGetCookie = (_, key) => cookies[key];
+      const mockDeleteCookie = (_, key) => delete cookies[key];
+
+      const mockContext = {
+        get: (key) => key === "game" ? game : undefined,
+        json: (data) => data,
+      };
+
+      const result = leaveGameHandler(
+        mockContext,
+        () => {},
+        mockGetCookie,
+        mockDeleteCookie,
+      );
+
+      assertEquals(result, { success: false });
+      assertEquals(game.players.length, 2);
+    });
+
+    it("POST /leave-game integration: should remove player, clear cookies, return success", async () => {
+      const players = { 1: "alice", 2: "bob", 3: "carol" };
+      const game = createGame();
+      const gamesRepo = new Map([[1, game]]);
+      const lobbies = new Map();
+      const app = createApp(gamesRepo, false, players, lobbies);
+
+      const res = await app.request("/leave-game", {
+        method: "POST",
+        headers: { cookie: "playerId=1;gameId=1" },
+      });
+
+      assertEquals(res.status, 200);
+      const body = await res.json();
+      assert(body.success);
+      assertStringIncludes(res.headers.get("set-cookie"), "gameId=; Max-Age=0");
+      assertStringIncludes(
+        res.headers.get("set-cookie"),
+        "game-version=; Max-Age=0",
+      );
+    });
+
+    it("POST /leave-game: unknown user should redirect to /login.html", async () => {
+      const app = createApp(new Map(), false, {}, new Map());
+
+      const res = await app.request("/leave-game", {
+        method: "POST",
+        headers: { cookie: "playerId=99;gameId=1" },
+      });
+
+      assertEquals(res.status, 302);
+      assertEquals(res.headers.get("location"), "/login.html");
+    });
+
+    it("POST /leave-game: player not in game should redirect to /", async () => {
+      const players = { 1: "alice" };
+      const app = createApp(new Map(), false, players, new Map());
+
+      const res = await app.request("/leave-game", {
+        method: "POST",
+        headers: { cookie: "playerId=1;gameId=99" },
+      });
+
+      assertEquals(res.status, 302);
+      assertEquals(res.headers.get("location"), "/");
     });
   });
 });
