@@ -112,6 +112,15 @@
               <li><button type="button" id="pop">Pop</button></li>
             </ul>
           </div>
+
+          <button class="action-btn" id="exit-game-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Exit
+          </button>
         </div>
       </section>
 
@@ -200,6 +209,14 @@
           <div></div>
           <button id="trade" disabled>trade</button>
         </div>
+
+        <dialog id="exit-confirm-dialog">
+          <p>Are you sure you want to leave the game?</p>
+          <div id="exit-dialog-actions">
+            <button type="button" id="exit-cancel-btn">Cancel</button>
+            <button type="button" id="exit-confirm-btn">Confirm</button>
+          </div>
+        </dialog>
       </section>
     </div>
   </div>
