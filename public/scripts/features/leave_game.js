@@ -13,7 +13,7 @@ export const initLeaveGame = () => {
   confirmBtn.addEventListener("click", async () => {
     const { success } = await leaveGame();
     if (success) {
-      window.location.href = "/";
+      globalThis.location.href = "/";
     }
   });
 };

@@ -1,5 +1,9 @@
 # Plan: [31] - Leave game (#44)
 
+## Status: Completed
+
+Implemented in 4 tasks. All tests passing. Final commit: 95e9ff9.
+
 ## Objective
 
 A player in an active game can click an "Exit" button at any time, confirm their
