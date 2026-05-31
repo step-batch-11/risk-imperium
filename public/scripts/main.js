@@ -14,6 +14,7 @@ import {
   renderGameState,
 } from "./utilities/render_UI.js";
 import { setup } from "./features/setup.js";
+import { initLeaveGame } from "./features/leave_game.js";
 import { getAllPlayersDetail } from "./utilities.js";
 
 globalThis.onload = async () => {
@@ -34,6 +35,7 @@ globalThis.onload = async () => {
   addListenerToThemeIcon();
   addListenerToTrade(gameState);
   addListenerToCardIcon(gameState.player);
+  initLeaveGame();
 
   await playIntroReveal(gameState);
 
