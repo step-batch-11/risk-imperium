@@ -90,11 +90,7 @@ export const captureTerritory = (
 
   if (maxLimit <= 0) return handlePostCapture(gameState, defender, maxLimit);
 
-  setTroopLimit(
-    maxLimit,
-    0,
-    maxLimit,
-  );
+  setTroopLimit(maxLimit, 0, maxLimit);
 
   addListenerTroopSelector((troopCount) =>
     handlePostCapture(gameState, defender, troopCount)
