@@ -16,7 +16,7 @@ import { showNotification } from "../utilities/notifications.js";
 import { addCardAlert, renderTradeIndicator } from "./cards.js";
 import { renderPlayersDetails, updateCards } from "./setup.js";
 
-const dialogPositions = (territoryElement) => {
+const cordinatesOf = (territoryElement) => {
   const element = territoryElement.getBoundingClientRect();
 
   const x = element.left;
@@ -34,6 +34,7 @@ const addPlayerIdToTerritory = (gameState, defenderTerritoryId) => {
     gameState.territories,
     defenderTerritoryId,
   );
+
   territoryElement.dataset.player = gameState.player.colorId;
 };
 
@@ -78,7 +79,7 @@ export const captureTerritory = (
     defenderTerritoryId,
   );
 
-  const event = dialogPositions(territoryElement);
+  const event = cordinatesOf(territoryElement);
 
   const defender = getPlayerById(gameState.opponents, defenderTerritoryId);
 

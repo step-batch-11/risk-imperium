@@ -13,7 +13,8 @@ import {
   moveToLobby,
   sendLobbyData,
   startGame,
-} from "./handlers/lobby_handler.js";
+} from "./handlers/lobby/lobby_handler.js";
+
 import {
   redirectInGamePlayer,
   redirectInLobbyPlayer,
@@ -76,7 +77,7 @@ export const createApp = (
 
   app.get("/get-data", setGame, handleWaiting);
 
-  app.get("/get-lobby-data", sendLobbyData);
+  app.get("/get-lobby-data", rejectUnknownUser, sendLobbyData);
 
   app.get(
     "/login.html",

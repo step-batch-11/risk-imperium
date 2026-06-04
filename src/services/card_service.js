@@ -45,6 +45,7 @@ export const getCardService = (game) => {
 
   if (game.hasCaptured) {
     card = game.getCard();
+    game.addCardToPlayerHand(card);
   }
 
   game.passToNextPlayer();

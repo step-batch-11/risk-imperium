@@ -148,6 +148,11 @@ export class Game {
     return this.#territories.setTroops(territoryId, count);
   }
 
+  addCardToPlayerHand(card) {
+    const player = this.#activePlayer;
+    player.cards.push(card);
+  }
+
   moveCavalry() {
     this.#cavalry.moveCavalry();
   }
