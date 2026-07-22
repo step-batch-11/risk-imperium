@@ -26,6 +26,14 @@ const renderPlayerDetails = (player, continents) => {
   avatarElement.appendChild(avatar);
   nameElement.textContent = player.name;
 
+  const leftBadge = clone.querySelector(".left-badge");
+  if (player.isLeft) {
+    clone.querySelector(".player-info").classList.add("left");
+    leftBadge.style.display = "block";
+  } else {
+    leftBadge.style.display = "none";
+  }
+
   const territoryCountElement = clone.querySelector(".territory-count");
   const territoryCount = player.territories.length;
   territoryCountElement.textContent = `Territories : ${territoryCount}`;
