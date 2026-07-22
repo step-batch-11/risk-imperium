@@ -103,8 +103,14 @@ export class Game {
   }
 
   #changeTurn() {
-    this.#activePlayerIndex = (this.#activePlayerIndex + 1) %
-      this.#players.length;
+    const startIndex = this.#activePlayerIndex;
+    do {
+      this.#activePlayerIndex = (this.#activePlayerIndex + 1) %
+        this.#players.length;
+    } while (
+      this.#players[this.#activePlayerIndex].isLeft &&
+      this.#activePlayerIndex !== startIndex
+    );
     return this.#activePlayerIndex;
   }
 

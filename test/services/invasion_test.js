@@ -99,6 +99,18 @@ describe("Invasion test", () => {
       assertEquals(invadeService(game, invadeDetail), expected);
       assertEquals(game.getGameState(), STATES.DEFEND);
     });
+
+    it("should auto-defend and skip DEFEND state for left player", () => {
+      game.leaveGame(3);
+      const invadeDetail = {
+        attackerTerritoryId: 2,
+        attackerTroops: 2,
+        defenderTerritoryId: 1,
+      };
+      const result = invadeService(game, invadeDetail);
+      assertEquals(result.action, STATES.RESOLVE_COMBAT);
+      assertEquals(result.newState, undefined);
+    });
   });
 });
 

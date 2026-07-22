@@ -6,7 +6,9 @@ export const leaveGameHandler = (context) => {
   const playerId = Number(getCookie(context, "playerId"));
 
   game.leaveGame(playerId);
-  broadCastNewUpdates(game.players);
+
+  const otherPlayers = game.players.filter((p) => p.id !== playerId);
+  broadCastNewUpdates(otherPlayers);
 
   deleteCookie(context, "gameId");
 
