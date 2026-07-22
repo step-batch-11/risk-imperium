@@ -460,5 +460,49 @@ describe("App Handler", () => {
         assertStringIncludes(headers.get("set-cookie"), "lobbyId=; Max-Age=0");
       });
     });
+
+    describe("LEAVE GAME", () => {
+      it("/leave-game should mark player as left and return LEFT action", async () => {
+        const game = createGame();
+        game.initTerritories();
+        const players = { 1: "Jon" };
+        const gamesRepo = {
+          get: () => game,
+          has: () => true,
+        };
+        const app = createApp(gamesRepo, false, players);
+        const res = await app.request("/leave-game", {
+          method: "POST",
+          headers: {
+            cookie: "playerId=1;gameId=1",
+          },
+        });
+
+        assertEquals(res.status, 200);
+        const { action } = await res.json();
+        assertEquals(action, "LEFT");
+        assert(game.isPlayerLeft(1));
+      });
+
+      it("/leave-game should clear gameId cookie", async () => {
+        const game = createGame();
+        game.initTerritories();
+        const players = { 1: "Jon" };
+        const gamesRepo = {
+          get: () => game,
+          has: () => true,
+        };
+        const app = createApp(gamesRepo, false, players);
+        const res = await app.request("/leave-game", {
+          method: "POST",
+          headers: {
+            cookie: "playerId=1;gameId=1",
+          },
+        });
+
+        const headers = res.headers;
+        assertStringIncludes(headers.get("set-cookie"), "gameId=; Max-Age=0");
+      });
+    });
   });
 });

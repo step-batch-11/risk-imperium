@@ -14,6 +14,7 @@ import {
   sendLobbyData,
   startGame,
 } from "./handlers/lobby/lobby_handler.js";
+import { leaveGameHandler } from "./handlers/leave_game.js";
 
 import {
   redirectInGamePlayer,
@@ -112,6 +113,14 @@ export const createApp = (
     rejectUnknownUser,
     redirectInGamePlayer,
     leaveLobbyHandler,
+  );
+
+  app.post(
+    "/leave-game",
+    rejectUnknownUser,
+    rejectIfNotInGame,
+    setGame,
+    leaveGameHandler,
   );
 
   if (isDevMode) {
