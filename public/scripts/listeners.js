@@ -20,6 +20,7 @@ import { setUpNextPhase } from "./transition_handlers.js";
 import { setTroopLimit } from "./utilities.js";
 import { showNotification } from "./utilities/notifications.js";
 import { renderRemainingTroopsToDeploy } from "./utilities/render_UI.js";
+import { leaveGame } from "./server_calls.js";
 
 export const addListenersToPlayerIcon = () => {
   const playerIcon = document.querySelector("#player-details-button");
@@ -146,5 +147,28 @@ export const addListenerToThemeIcon = () => {
       NOTIFICATION_TYPES.INFO,
     );
     themeArea.hidePopover();
+  });
+};
+
+export const addListenerToExitGame = () => {
+  const exitBtn = document.querySelector("#exit-game");
+  const dialog = document.querySelector("#exit-confirm");
+  const confirmBtn = document.querySelector("#exit-confirm-btn");
+  const cancelBtn = document.querySelector("#exit-cancel-btn");
+
+  exitBtn.addEventListener("click", () => {
+    dialog.showModal();
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    dialog.close();
+  });
+
+  confirmBtn.addEventListener("click", async () => {
+    dialog.close();
+    const { action } = await leaveGame();
+    if (action === "LEFT") {
+      window.location.href = "/";
+    }
   });
 };

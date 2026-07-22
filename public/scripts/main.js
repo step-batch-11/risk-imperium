@@ -1,5 +1,6 @@
 import {
   addListenerToCardIcon,
+  addListenerToExitGame,
   addListenerToThemeIcon,
   addListenerToTrade,
   initTheme,
@@ -34,6 +35,7 @@ globalThis.onload = async () => {
   addListenerToThemeIcon();
   addListenerToTrade(gameState);
   addListenerToCardIcon(gameState.player);
+  addListenerToExitGame();
 
   await playIntroReveal(gameState);
 

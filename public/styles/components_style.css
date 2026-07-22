@@ -781,3 +781,53 @@ border : none;
   color: white;
   background-color: var(--color-bg-deploy-selector-button-hover);
 }
+
+#exit-confirm {
+  border: var(--ui-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--text-primary);
+  padding: 24px 32px;
+  text-align: center;
+  font-family: var(--primary-font);
+}
+
+#exit-confirm p {
+  margin: 0 0 20px;
+  font-size: 1.1em;
+}
+
+#exit-confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+#exit-confirm-actions button {
+  padding: 8px 24px;
+  border: var(--ui-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--primary-font);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+#exit-cancel-btn {
+  background: var(--color-surface);
+  color: var(--text-secondary);
+}
+
+#exit-cancel-btn:hover {
+  color: var(--text-primary);
+}
+
+#exit-confirm-btn {
+  background: #c0392b;
+  color: white;
+  border-color: #c0392b;
+}
+
+#exit-confirm-btn:hover {
+  background: #e74c3c;
+}

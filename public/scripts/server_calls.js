@@ -106,3 +106,8 @@ export const createRoom = async () => {
   const res = await fetch("/create-room");
   return await res.json();
 };
+
+export const leaveGame = async () => {
+  const res = await fetch("/leave-game", { method: "POST" });
+  return await res.json();
+};
