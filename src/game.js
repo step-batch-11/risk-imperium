@@ -225,6 +225,25 @@ export class Game {
     return territoryCount <= 0;
   }
 
+  isPlayerLeft(playerId) {
+    const player = this.#players.find((p) => p.id === playerId);
+    return player ? player.isLeft : false;
+  }
+
+  leaveGame(playerId) {
+    const player = this.#players.find((p) => p.id === playerId);
+    if (!player || player.isLeft) return;
+
+    player.isLeft = true;
+    player.cards = [];
+
+    if (this.isTurnOf(playerId)) {
+      this.#changeTurn();
+    }
+
+    this.#updateId();
+  }
+
   eliminatePlayer(defenderId) {
     const index = this.#players.findIndex((player) => player.id === defenderId);
     const defender = this.#players[index];
@@ -286,6 +305,7 @@ export class Game {
         const opponentDetails = {
           ...playerBasicDetails,
           territories: playerTerritories,
+          isLeft: player.isLeft,
         };
         opponents[player.id] = opponentDetails;
       }
@@ -310,7 +330,12 @@ export class Game {
     const basicDetails = currentPlayer.getBasicDetails();
 
     const territories = this.#territories.getTerritoriesOf(playerId);
-    const currentPlayerDetails = { ...basicDetails, territories, cards };
+    const currentPlayerDetails = {
+      ...basicDetails,
+      territories,
+      cards,
+      isLeft: currentPlayer.isLeft,
+    };
     const playerState = this.isTurnOf(playerId) ? this.#state : STATES.WAITING;
     return {
       continents: this.#continents.getContinents(),

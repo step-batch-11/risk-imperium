@@ -30,6 +30,10 @@ export class Player {
   get cards() {
     return this.#cards;
   }
+
+  set cards(value) {
+    this.#cards = value;
+  }
   set color(colorId) {
     this.#colorId = colorId;
   }

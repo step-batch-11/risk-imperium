@@ -338,4 +338,93 @@ describe("Game", () => {
       assertEquals(game.canGetCard, game.stateDetails.hasCaptured);
     });
   });
+
+  describe("leaveGame", () => {
+    it("should mark player as left", () => {
+      game.leaveGame(1);
+      assert(game.isPlayerLeft(1));
+    });
+
+    it("should discard left player cards", () => {
+      const player = game.players.find((p) => p.id === 6);
+      player.cards.push("1", "2", "3");
+      game.leaveGame(6);
+      assertEquals(player.cards, []);
+    });
+
+    it("should skip turn when active player leaves", () => {
+      const initialActiveId = game.activePlayerId;
+      game.leaveGame(initialActiveId);
+      assert(game.activePlayerId !== initialActiveId);
+    });
+
+    it("should not skip turn when non-active player leaves", () => {
+      const activeId = game.activePlayerId;
+      const otherPlayerId = activeId === 1 ? 2 : 1;
+      game.leaveGame(otherPlayerId);
+      assertEquals(game.activePlayerId, activeId);
+    });
+
+    it("should update game version", () => {
+      const initialVersion = game.version;
+      game.leaveGame(1);
+      assert(game.version > initialVersion);
+    });
+
+    it("should be a no-op if player already left", () => {
+      game.leaveGame(1);
+      const versionAfterFirstLeave = game.version;
+      game.leaveGame(1);
+      assertEquals(game.version, versionAfterFirstLeave);
+    });
+
+    it("should be a no-op if player does not exist", () => {
+      const initialVersion = game.version;
+      game.leaveGame(999);
+      assertEquals(game.version, initialVersion);
+    });
+  });
+
+  describe("isPlayerLeft", () => {
+    it("should return false for non-left players", () => {
+      assertFalse(game.isPlayerLeft(1));
+    });
+
+    it("should return true for left players", () => {
+      game.leaveGame(1);
+      assert(game.isPlayerLeft(1));
+    });
+
+    it("should return false for non-existent player", () => {
+      assertFalse(game.isPlayerLeft(999));
+    });
+  });
+
+  describe("getSetup includes isLeft", () => {
+    it("should include isLeft in player details", () => {
+      const setup = game.getSetup(1);
+      assertEquals(setup.player.isLeft, false);
+    });
+
+    it("should include isLeft in opponent details", () => {
+      const setup = game.getSetup(1);
+      const opponents = Object.values(setup.opponents);
+      opponents.forEach((opp) => {
+        assert("isLeft" in opp);
+        assertEquals(opp.isLeft, false);
+      });
+    });
+
+    it("should reflect left status in player details", () => {
+      game.leaveGame(1);
+      const setup = game.getSetup(1);
+      assertEquals(setup.player.isLeft, true);
+    });
+
+    it("should reflect left status in opponent details", () => {
+      game.leaveGame(2);
+      const setup = game.getSetup(1);
+      assertEquals(setup.opponents[2].isLeft, true);
+    });
+  });
 });
