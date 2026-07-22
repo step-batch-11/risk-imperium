@@ -108,22 +108,27 @@ const handleAttack = async (
   defenderTerritoryId,
   attackerTroops,
 ) => {
-  const { newState } = await invade({
+  const { newState, action } = await invade({
     attackerTerritoryId,
     defenderTerritoryId,
     attackerTroops,
   });
+
+  removeSkipButton();
+  removeHighlights("selected");
+  removeHighlights("target");
+  removeHighlights("can-attack");
+
+  if (action) {
+    setUpNextPhase(gameState, action);
+    return;
+  }
 
   showNotification(
     NOTIFICATION_MESSAGES.WAIT_FOR_DEFENDER,
     NOTIFICATION_TYPES.INFO,
     5000,
   );
-
-  removeSkipButton();
-  removeHighlights("selected");
-  removeHighlights("target");
-  removeHighlights("can-attack");
 
   setUpNextPhase(gameState, newState);
 };

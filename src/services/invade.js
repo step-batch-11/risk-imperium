@@ -70,6 +70,19 @@ export const invadeService = (game, data) => {
     attackerTroops,
   }, game.activePlayerId);
 
+  if (game.isPlayerLeft(defenderId)) {
+    const territoryTroops = game.troopCountAtTerritory(defenderTerritoryId);
+    const autoDefendTroops = Math.min(2, territoryTroops);
+    game.stateDetails.defenderTroopCount = autoDefendTroops;
+    game.updateGame(STATES.DEFEND, {
+      attackerId,
+      defenderId,
+      defenderTroopCount: autoDefendTroops,
+    }, game.activePlayerId);
+    game.setNewState(STATES.RESOLVE_COMBAT);
+    return { action: STATES.RESOLVE_COMBAT };
+  }
+
   game.setNewState(STATES.DEFEND);
 
   return { newState: STATES.WAITING, data: {} };
