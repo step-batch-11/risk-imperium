@@ -5,7 +5,11 @@ export class Cards {
   }
 
   drawCard(randomFn = Math.random) {
-    return this.#cardTypes[Math.round(randomFn() * 3)];
+    const roll = Math.floor(randomFn() * 10);
+    if (roll < 3) return "1";
+    if (roll < 6) return "2";
+    if (roll < 9) return "3";
+    return "4";
   }
 
   isValidCombination(combination) {

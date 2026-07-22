@@ -382,7 +382,7 @@ export class Game {
   removePlayerCards(cards) {
     const currentPlayer = this.#activePlayer;
     const playerCards = currentPlayer.cards;
-    for (const card in cards) {
+    for (const card of cards) {
       const idx = playerCards.findIndex((c) => c === card);
       playerCards.splice(idx, 1);
     }
