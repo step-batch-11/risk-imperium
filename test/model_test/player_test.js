@@ -19,4 +19,19 @@ describe("Player", () => {
   it("get avatar should retun the  avatar when called", () => {
     assertEquals(player.avatar, AVATARS[0]);
   });
+
+  it("isLeft should default to false", () => {
+    assertEquals(player.isLeft, false);
+  });
+
+  it("isLeft should be settable", () => {
+    player.isLeft = true;
+    assertEquals(player.isLeft, true);
+  });
+
+  it("setting isLeft should not affect other properties", () => {
+    player.isLeft = true;
+    assertEquals(player.name, name);
+    assertEquals(player.avatar, AVATARS[0]);
+  });
 });

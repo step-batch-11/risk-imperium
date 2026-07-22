@@ -5,6 +5,7 @@ export class Player {
   #resolver;
   #colorId;
   #avatar;
+  #isLeft;
 
   constructor(id, name, avatar, cards = []) {
     this.#id = id;
@@ -12,6 +13,7 @@ export class Player {
     this.#cards = cards;
     this.#colorId;
     this.#avatar = avatar;
+    this.#isLeft = false;
   }
 
   get id() {
@@ -39,6 +41,14 @@ export class Player {
       colorId: this.#colorId,
       avatar: this.#avatar,
     };
+  }
+
+  get isLeft() {
+    return this.#isLeft;
+  }
+
+  set isLeft(value) {
+    this.#isLeft = value;
   }
 
   set resolve(resolve) {
