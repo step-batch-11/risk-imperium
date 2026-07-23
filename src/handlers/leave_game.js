@@ -11,6 +11,8 @@ export const leaveGameHandler = (context) => {
   broadCastNewUpdates(otherPlayers);
 
   deleteCookie(context, "gameId");
+  deleteCookie(context, "game-version");
+  deleteCookie(context, "lobbyId");
 
   return context.json({ action: "LEFT" });
 };

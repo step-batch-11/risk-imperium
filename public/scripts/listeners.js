@@ -168,9 +168,6 @@ export const addListenerToExitGame = () => {
     dialog.close();
     const { action } = await leaveGame();
     if (action === "LEFT") {
-      document.cookie = "gameId=; path=/; max-age=0";
-      document.cookie = "game-version=; path=/; max-age=0";
-      document.cookie = "lobbyId=; path=/; max-age=0";
       globalThis.location.href = "/";
     }
   });
