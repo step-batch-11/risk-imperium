@@ -223,6 +223,7 @@ const handleElimination = (_gameState) => {
 };
 
 const handleWin = (gameState) => {
+  SFX.WINNING.play();
   const dialoge = document.querySelector(".winning-screen");
   dialoge.classList.toggle("hide-screen");
   const nameContainer = dialoge.querySelector("#winner-name");

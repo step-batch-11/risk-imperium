@@ -8,10 +8,12 @@ const sounds = {
 
   notification: new Audio("assets/turnStart.wav"),
   defend: new Audio("assets/defend.mp3"),
+  winning: new Audio("assets/winning.mpeg"),
 };
 
 export const SFX = {
   DICE_ROLL: sounds.roll,
   TURN: sounds.notification,
   DEFEND: sounds.defend,
+  WINNING: sounds.winning,
 };

@@ -19,6 +19,7 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
   const isReinforce = game.getGameState() === STATES.REINFORCE;
   const isInitialReinforcement =
     game.getGameState() === STATES.INITIAL_REINFORCEMENT;
+  const hasWonTheGame = game.getGameState() === STATES.WON
   const isDefending = game.isPlayerDefending(playerId);
 
   if (isActive && isReinforce) {
@@ -33,10 +34,14 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
     };
   }
 
+  if (isActive && hasWonTheGame) {
+    return { action: STATES.WON, data, lastAction: game.lastUpdate };
+  }
+
   if (isActive) {
     return { action: STATES.RESOLVE_COMBAT, data, lastAction: game.lastUpdate };
   }
-
+  
   if (isDefending) {
     const invadeDetails = game.invadeDetail;
     return {
@@ -45,6 +50,7 @@ const handleDifferentGameVersionId = (game, playerId, gameVersionId) => {
       lastAction: game.lastUpdate,
     };
   }
+
 
   return { action: STATES.WAITING, data, lastAction: game.lastUpdate };
 };
@@ -55,10 +61,17 @@ const serveUpdatesToPlayer = (
   playerId,
   gameVersionId,
   setCookieFn = setCookie,
+  deleteCookieFn = deleteCookie,
 ) => {
   const gameVersion = game.version;
   const result = handleDifferentGameVersionId(game, playerId, gameVersionId);
   setCookieFn(context, "game-version", gameVersion);
+
+  if (result.action === STATES.WON) {
+    deleteCookieFn(context, "gameId");
+    deleteCookieFn(context, "lobbyId");
+  }
+
   return result;
 };
 
@@ -92,6 +105,7 @@ export const handleWaiting = async (
       playerId,
       gameVersionId,
       setCookieFn,
+      deleteCookieFn,
     );
     return context.json(result);
   }
@@ -112,6 +126,7 @@ export const handleWaiting = async (
         playerId,
         gameVersionId,
         setCookieFn,
+        deleteCookieFn,
       );
       return context.json(result);
     })

@@ -104,6 +104,7 @@ export class Game {
 
   #changeTurn() {
     const startIndex = this.#activePlayerIndex;
+
     do {
       this.#activePlayerIndex = (this.#activePlayerIndex + 1) %
         this.#players.length;
@@ -247,6 +248,11 @@ export class Game {
       this.#changeTurn();
     }
 
+    if (this.hasPlayerWon()) {
+      this.#activePlayerIndex = this.#players.findIndex((p) => !p.isLeft);
+      this.#updateState(STATES.WON);
+    }
+
     this.#updateId();
   }
 
@@ -262,7 +268,8 @@ export class Game {
   }
 
   hasPlayerWon() {
-    return this.#territories.isConquered;
+    return this.#territories.isConquered ||
+      this.#players.filter((p) => !p.isLeft).length === 1;
   }
 
   changeTurn() {
