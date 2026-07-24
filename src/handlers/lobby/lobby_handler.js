@@ -27,6 +27,7 @@ const setGameId = (context) => {
   const gamesRepo = context.get("gamesRepo");
   const game = createGame(lobby.players);
   gamesRepo.set(lobby.id, game);
+  lobbies.delete(lobby.id);
   setCookie(context, "gameId", lobbyId);
   return { ok: true, lobby };
 };
@@ -96,6 +97,7 @@ export const moveToLobby = (context) => {
     const gamesRepo = context.get("gamesRepo");
     const game = createGame(lobby.players);
     gamesRepo.set(lobby.id, game);
+    lobbies.delete(lobby.id);
   }
 
   return context.redirect("/lobby.html");
@@ -109,7 +111,21 @@ export const sendLobbyData = (context) => {
   const playerId = Number(getCookie(context, "playerId"));
 
   if (!lobby) {
-    return context.text("Game NOt foudn ", 400);
+    const gamesRepo = context.get("gamesRepo");
+    if (gamesRepo.has(Number(lobbyId))) {
+      setCookie(context, "gameId", lobbyId);
+      return context.json({
+        lobbyState: LOBBY_STATES.IN_GAME,
+        playerDetails: [],
+        data: { id: Number(lobbyId) },
+      });
+    }
+    // ponytail: lobby deleted before game started, redirect client home
+    return context.json({
+      lobbyState: LOBBY_STATES.DELETED,
+      playerDetails: [],
+      data: {},
+    });
   }
   if (
     lobby.status === LOBBY_STATES.IN_GAME
@@ -138,8 +154,12 @@ export const leaveLobbyHandler = (context) => {
 
   const lobby = lobbies.get(lobbyId);
 
-  const playerId = Number(getCookie(context, "playerId"));
   const response = { data: {} };
+  if (!lobby) {
+    return context.json(response);
+  }
+
+  const playerId = Number(getCookie(context, "playerId"));
   if (
     lobby.status === LOBBY_STATES.WAITING ||
     lobby.status === LOBBY_STATES.READY
@@ -156,6 +176,7 @@ export const leaveLobbyHandler = (context) => {
         lobby.roomType === LOBBY_TYPES.PUBLIC)
       ? LOBBY_STATES.WAITING
       : LOBBY_STATES.READY;
+    
     response.action = "LEAVE";
     response.data = { success: true };
     deleteCookie(context, "lobbyId");
