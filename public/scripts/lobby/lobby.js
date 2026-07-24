@@ -98,6 +98,10 @@ const updateLobby = async (id) => {
     updatePlayers(playerDetails, data.id);
   }
 
+  if (lobbyState === LOBBY_STATES.DELETED) {
+    return (globalThis.location = "/");
+  }
+
   if (
     lobbyState === LOBBY_STATES.IN_GAME
   ) {
