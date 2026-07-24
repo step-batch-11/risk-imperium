@@ -7,6 +7,16 @@ const main = () => {
   const gamesRepo = new Map();
   const counter = { value: 100 };
 
+  // ponytail: clean up finished games every 30s, 1 min buffer after win
+  setInterval(() => {
+    const now = Date.now();
+    for (const [id, game] of gamesRepo) {
+      if (game.endedAt && now - game.endedAt > 60000) {
+        gamesRepo.delete(id);
+      }
+    }
+  }, 30000);
+
   const isDevMode = Deno.env.get("DEV_MODE") === "true";
 
   const app = createApp(gamesRepo, isDevMode, players, lobbies, {

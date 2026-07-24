@@ -1137,17 +1137,20 @@ describe("Api Handler", () => {
       };
 
       const mockDeleteCookieFn = (context, key) => delete context.cookies[key];
+      const mockGetCookieFn = (context, key) => context.cookies[key];
+      const players = { 1: "testUser" };
 
       const mockContext = {
-        get: (key) => store[key],
+        get: (key) => ({ players })[key],
         cookies,
         redirect: (location) => location,
       };
 
       assertEquals(
-        logoutHandler(mockContext, () => {}, mockDeleteCookieFn),
+        logoutHandler(mockContext, () => {}, mockDeleteCookieFn, mockGetCookieFn),
         "/login.html",
       );
+      assertEquals(players[1], undefined);
     });
   });
 });
