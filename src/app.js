@@ -72,6 +72,7 @@ export const createApp = (
     redirectInLobbyPlayer,
     moveToLobby,
   );
+  
   app.post("/create-room", createRoom);
   app.post("/join-room", joinRoom);
   app.get("/start-game", startGame);

@@ -120,7 +120,6 @@ export const sendLobbyData = (context) => {
         data: { id: Number(lobbyId) },
       });
     }
-    // ponytail: lobby deleted before game started, redirect client home
     return context.json({
       lobbyState: LOBBY_STATES.DELETED,
       playerDetails: [],
