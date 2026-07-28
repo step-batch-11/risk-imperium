@@ -120,6 +120,9 @@ export class Game {
       throw new Error(ERROR_MESSAGE.INVALID_STATE);
     }
     this.#state = state;
+    if (state === STATES.WON) {
+      this.endedAt = Date.now();
+    }
     return state;
   }
 

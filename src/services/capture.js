@@ -46,7 +46,7 @@ export const captureService = (game, data) => {
       updatedTerritories,
       hasEliminated,
       hasWon: game.hasPlayerWon(),
-      newCards: game.activePlayer.cards,
+      newCards: game.activePlayer.cards
     },
   };
 };

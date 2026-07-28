@@ -1,5 +1,6 @@
 import { STATES } from "../config.js";
 import { getCardService, tradeCardService } from "../services/card_service.js";
+import { scheduleCleanup } from "../services/cleanup.js";
 
 import { deleteCookie, setCookie } from "hono/cookie";
 import { reinforcementsServices } from "../services/reinforcement.js";
@@ -57,6 +58,8 @@ export const gameController = async (
     const result = gameService(userActions, game, data);
 
     if (result.action === STATES.WON) {
+      const gameId = Number(getCookieFn(context, "gameId"));
+      scheduleCleanup(context.get("gamesRepo"), gameId);
       deleteCookieFn(context, "gameId");
       deleteCookieFn(context, "lobbyId");
     }
